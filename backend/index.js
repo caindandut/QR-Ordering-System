@@ -5,6 +5,8 @@ import dotenv from 'dotenv'; // Đọc file .env
 import { PrismaClient } from '@prisma/client'; // Import Prisma
 import authRoutes from './routes/authRoutes.js';
 import menuRoutes from './routes/menuRoutes.js';
+import tableRoutes from './routes/tableRoutes.js';
+import categoryRoutes from './routes/categoryRoutes.js';
 // --- Khởi tạo ---
 dotenv.config(); // Nạp các biến từ file .env
 const app = express(); // Tạo app Express
@@ -31,6 +33,8 @@ app.use(express.json());
 // Ví dụ: /register sẽ trở thành /api/auth/register
 app.use('/api/auth', authRoutes);
 app.use('/api/menu', menuRoutes);
+app.use('/api/tables', tableRoutes);
+app.use('/api/categories', categoryRoutes);
 
 // --- API Test (Health Check) ---
 // Giúp kiểm tra xem server có "sống" hay không
