@@ -7,6 +7,7 @@ import authRoutes from './routes/authRoutes.js';
 import menuRoutes from './routes/menuRoutes.js';
 import tableRoutes from './routes/tableRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
+import uploadRoutes from './routes/uploadRoutes.js';
 // --- Khởi tạo ---
 dotenv.config(); // Nạp các biến từ file .env
 const app = express(); // Tạo app Express
@@ -35,6 +36,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/menu', menuRoutes);
 app.use('/api/tables', tableRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // --- API Test (Health Check) ---
 // Giúp kiểm tra xem server có "sống" hay không
