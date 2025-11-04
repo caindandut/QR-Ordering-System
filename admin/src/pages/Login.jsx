@@ -1,5 +1,5 @@
 // src/pages/Login.jsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 
@@ -11,12 +11,21 @@ import { Label } from '@/components/ui/label';
 export default function LoginPage() {
   // 1. Lấy hàm `login` từ "Não"
   const login = useAuthStore((state) => state.login);
+  const accessToken = useAuthStore((state) => state.accessToken);
   const navigate = useNavigate(); // Hook để chuyển trang
   
   // 2. State cục bộ cho form
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    // Nếu phát hiện CÓ accessToken (đã đăng nhập)
+    if (accessToken) {
+      // Chuyển hướng ngay lập tức về trang chủ
+      navigate('/', { replace: true });
+    }
+  }, [accessToken, navigate]); // Chạy lại khi token thay đổi
 
   const handleSubmit = async (e) => {
     e.preventDefault();
