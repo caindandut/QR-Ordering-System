@@ -84,7 +84,7 @@ router.post('/login', async (req, res) => {
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
     if (!isPasswordCorrect) {
-      return res.status(401).json({ message: 'Sai mật khẩu.' }); // 401 = Unauthorized
+      return res.status(401).json({ message: 'Mật khẩu không đúng' }); // 401 = Unauthorized
     }
 
     // 4. TẠO TOKENS (Phần quan trọng)
