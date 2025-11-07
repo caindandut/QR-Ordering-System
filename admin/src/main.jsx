@@ -7,6 +7,8 @@ import {
   RouterProvider,
 } from 'react-router-dom';
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
 // Import các Layout và Trang
 import RootLayout from './layouts/RootLayout';
 import AdminLayout from './layouts/AdminLayout';
@@ -19,6 +21,9 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import ManageOrdersPage from './pages/ManageOrders';
 import ManageMenuPage from './pages/ManageMenu';
 import ManageStaffPage from './pages/ManageStaff';
+
+
+const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
   {
@@ -67,6 +72,9 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    {/* 👇 3. Bọc <RouterProvider> bằng <QueryClientProvider> */}
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
   </React.StrictMode>
 );
