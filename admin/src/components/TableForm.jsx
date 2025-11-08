@@ -15,10 +15,12 @@ import {
 // `onSubmit` là hàm mutation của chúng ta
 // `isLoading` là trạng thái của mutation
 export default function TableForm({ onSubmit, isLoading, initialData = {} }) {
-  // 1. Dùng state cục bộ để quản lý form
-  const [name, setName] = useState(initialData.name || '');
-  const [capacity, setCapacity] = useState(initialData.capacity || 0);
-  const [status, setStatus] = useState(initialData.status || 'AVAILABLE');
+  // Dùng `?.` (Optional Chaining)
+// Nó có nghĩa là: "Hãy thử đọc 'name'. Nếu 'initialData' là null,
+// đừng báo lỗi, cứ coi như kết quả là 'undefined'."
+const [name, setName] = useState(initialData?.name || '');
+const [capacity, setCapacity] = useState(initialData?.capacity || 0);
+const [status, setStatus] = useState(initialData?.status || 'AVAILABLE');
 
   //2. "CÁI MÓC" (HOOK) ĐỂ SYNC PROP VÀO STATE
   // Tác dụng: Chạy lại code này BẤT CỨ KHI NÀO `initialData` thay đổi.

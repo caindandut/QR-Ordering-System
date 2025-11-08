@@ -20,8 +20,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { useToast } from "@/hooks/use-toast"; // 👈 Import toast
-import { PlusCircle, Edit } from 'lucide-react';
+import { PlusCircle, Edit, Trash2 } from 'lucide-react';
 import { translateTableStatus } from '@/lib/translations'; // 👈 Import hàm "dịch"
 import TableForm from '../components/TableForm'; // 👈 Import Form của chúng ta
 
@@ -44,6 +54,11 @@ const updateTable = async ({ id, data }) => {
   return response.data;
 };
 
+// 👇 HÀM MỚI: Xóa bàn (Chỉ cần ID)
+const deleteTable = async (id) => {
+  await api.delete(`/api/tables/${id}`);
+};
+
 export default function ManageTablesPage() {
   // --- STATE QUẢN LÝ ---
   // 1. Dùng 1 state để mở/đóng Dialog
@@ -52,6 +67,9 @@ export default function ManageTablesPage() {
   //    Nếu `null`: là chế độ Thêm mới
   //    Nếu có object `table`: là chế độ Sửa
   const [editingTable, setEditingTable] = useState(null);
+
+  // 👇 2. STATE MỚI: "Bộ nhớ tạm" cho việc Xóa
+  const [tableToDelete, setTableToDelete] = useState(null);
   // 2. Lấy "Bộ não tổng"
   const queryClient = useQueryClient();
   
@@ -116,6 +134,26 @@ export default function ManageTablesPage() {
     },
   });
 
+  // 👇 3. LOGIC MỚI: (DELETE)
+  // Đây là "Công nhân Xóa"
+  const deleteTableMutation = useMutation({
+    mutationFn: deleteTable,
+    onSuccess: () => {
+      toast({ title: "Đã xóa!", description: "Đã xóa bàn thành công." });
+      // 4. "Ảo thuật": Tự làm mới bảng
+      queryClient.invalidateQueries({ queryKey: ['tables'] });
+      setTableToDelete(null); // Đóng Alert Dialog
+    },
+    onError: (error) => {
+      toast({
+        title: "Lỗi!",
+        description: error.response?.data?.message || "Không thể xóa bàn.",
+        variant: "destructive",
+      });
+      setTableToDelete(null); // Đóng Alert Dialog
+    },
+  });
+
   // --- HÀM XỬ LÝ SỰ KIỆN ---
   
   // 1. Khi nhấn nút "Thêm bàn mới"
@@ -140,6 +178,14 @@ export default function ManageTablesPage() {
       addTableMutation.mutate(data);
     }
   };
+
+  // 👇 5. HÀM MỚI: Khi nhấn "Xác nhận Xóa"
+  const handleDeleteConfirm = () => {
+    if (tableToDelete) {
+      deleteTableMutation.mutate(tableToDelete.id);
+    }
+  };
+
   // --- XỬ LÝ TRẠNG THÁI LOADING/ERROR ---
   if (isLoading) {
     return <div>Đang tải dữ liệu bàn...</div>;
@@ -180,6 +226,39 @@ export default function ManageTablesPage() {
           />
         </DialogContent>
       </Dialog>
+
+      {/* 👇 6. ALERT DIALOG (Hộp thoại) ĐỂ XÁC NHẬN XÓA --- */}
+      {/* Nó nằm ở đây (ngoài bảng), nhưng vô hình */}
+      <AlertDialog
+        // 6a. Tự mở/đóng dựa trên state `tableToDelete`
+        open={!!tableToDelete}
+        onOpenChange={(open) => !open && setTableToDelete(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Bạn có chắc chắn không?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Hành động này sẽ xóa vĩnh viễn bàn
+              <strong className="mx-1">
+                {tableToDelete?.name}
+              </strong>. 
+              Bạn không thể hoàn tác hành động này.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            {/* 6b. Nút Hủy: Đặt state về null để đóng */}
+            <AlertDialogCancel>Hủy</AlertDialogCancel>
+            {/* 6c. Nút Xác nhận: Gọi hàm xóa */}
+            <AlertDialogAction 
+              onClick={handleDeleteConfirm}
+              disabled={deleteTableMutation.isLoading}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deleteTableMutation.isLoading ? "Đang xóa..." : "Vẫn xóa"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
         
       </div>
 
@@ -205,14 +284,25 @@ export default function ManageTablesPage() {
                 <TableCell>
                   {translateTableStatus(table.status, 'vi')}
                 </TableCell>
-                <TableCell className="text-right">
+                <TableCell className="text-right space-x-3">
                   <Button 
                   variant="outline" 
                   size="sm" 
                   onClick={() => handleOpenEditDialog(table)}
                   >
-                    <Edit className="mr-2 h-4 w-4" />
+                    <Edit className="mr-1 h-4 w-4" />
                     Sửa
+                  </Button>
+
+                  {/* 👇 7. NÚT XÓA MỚI */}
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    // 7a. Chỉ "ghi" vào state, không gọi API
+                    onClick={() => setTableToDelete(table)}
+                  >
+                    <Trash2 className="mr-1 h-4 w-4" />
+                    Xóa
                   </Button>
                 </TableCell>
               </TableRow>
