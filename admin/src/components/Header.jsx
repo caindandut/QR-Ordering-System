@@ -19,15 +19,39 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import Sidebar from './Sidebar';
+import { useToast } from '@/hooks/use-toast';
 
 export default function Header() {
   const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
   const navigate = useNavigate();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const { toast } = useToast();
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    try {
+      // 4. Chờ cho "bộ não" gọi API và xóa state
+      await logout();
+      
+      // 5. Hiển thị thông báo thành công
+      toast({
+        title: "Đã đăng xuất",
+        description: "Bạn đã đăng xuất thành công. Hẹn gặp lại!",
+        // variant: "success"
+      });
+
+    } catch (error) {
+      // (Phòng trường hợp logout bị lỗi, hiếm khi xảy ra)
+      console.error("Logout error:", error);
+      toast({
+        title: "Lỗi",
+        description: "Không thể đăng xuất. Vui lòng thử lại.",
+        variant: "destructive",
+      });
+    }
+    
+    // 6. Chuyển hướng về trang login
+    // (Luôn chuyển hướng dù thành công hay thất bại)
     navigate('/login');
   };
 

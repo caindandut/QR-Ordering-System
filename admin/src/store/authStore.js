@@ -10,7 +10,7 @@ import api from '../services/api';
 // persist() bọc bên ngoài để lưu trữ
 export const useAuthStore = create(
   persist(
-    (set) => ({
+    (set, get) => ({
       // 1. Dữ liệu (State)
       user: null,
       accessToken: null,
@@ -37,25 +37,57 @@ export const useAuthStore = create(
             accessToken: accessToken,
             refreshToken: refreshToken,
           });
+
+          // Cập nhật header mặc định của Axios
+          api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
           
           return { success: true };
         } catch (error) {
           return { success: false, error: error.response?.data?.message || "Lỗi đăng nhập" };
         }
       },
+
+      // 👇 [KỸ NĂNG MỚI 1] Chỉ cập nhật accessToken
+      // Dùng khi "gia hạn vé" thành công
+      setAccessToken: (token) => {
+        set({ accessToken: token });
+        // Cập nhật header mặc định của Axios
+        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      },
+
+      // 👇 [KỸ NĂNG MỚI 2] Nâng cấp Logout
+      // Giờ nó sẽ gọi API để hủy Refresh Token
         
       // Hàm này được gọi khi logout
-      logout: () =>
-        set({
+      logout: async () => {
+        const { refreshToken } = get(); // Lấy refreshToken hiện tại
+
+        if (refreshToken) {
+          try {
+            // Bảo backend hủy token này
+            await api.post('/api/auth/logout', { refreshToken });
+          } catch (error) {
+            console.error("Lỗi khi logout:", error);
+          }
+      }
+      set({
           user: null,
           accessToken: null,
           refreshToken: null,
-        }),
-      
-      // (Chúng ta sẽ thêm logic gọi API vào đây sau)
-    }),
+      });
+
+      // Xóa header mặc định
+        delete api.defaults.headers.common['Authorization'];
+    },
+  }),
     {
       name: 'auth-storage', // Tên key trong localStorage
+      // Kỹ năng phụ: Tự động "cài đặt" token vào Axios khi F5
+      onRehydrateStorage: () => (state) => {
+        if (state.accessToken) {
+          api.defaults.headers.common['Authorization'] = `Bearer ${state.accessToken}`;
+        }
+      }
     }
   )
 );

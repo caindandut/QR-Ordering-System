@@ -7,17 +7,22 @@ import { useAuthStore } from '../store/authStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useToast } from "@/hooks/use-toast";
 
 export default function LoginPage() {
   // 1. Lấy hàm `login` từ "Não"
   const login = useAuthStore((state) => state.login);
   const accessToken = useAuthStore((state) => state.accessToken);
   const navigate = useNavigate(); // Hook để chuyển trang
+
+  const { toast } = useToast();
+
+  const [isLoading, setIsLoading] = useState(false);
   
   // 2. State cục bộ cho form
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  // const [error, setError] = useState('');
 
   useEffect(() => {
     // Nếu phát hiện CÓ accessToken (đã đăng nhập)
@@ -29,17 +34,30 @@ export default function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(''); // Xóa lỗi cũ
+    setIsLoading(true); // Bắt đầu loading
+    // setError(''); // Xóa lỗi cũ
 
     // 3. Gọi hàm login từ "Não"
     const result = await login(email, password);
+    setIsLoading(false); // Kết thúc loading
 
     if (result.success) {
       // 4. Nếu thành công, chuyển hướng về trang chủ
+      toast({
+        title: "Đăng nhập thành công!",
+        description: "Chào mừng bạn đã trở lại.",
+        // variant: "success"
+        duration: 3000
+      });
       navigate('/'); // (Trang '/' là Dashboard của chúng ta)
     } else {
       // 5. Nếu thất bại, hiển thị lỗi
-      setError(result.error);
+      toast({
+        title: "Đăng nhập thất bại",
+        description: result.error || "Vui lòng kiểm tra lại thông tin đăng nhập.",
+        variant: "destructive"
+      });
+      // setError(result.error);
     }
   };
 
@@ -55,6 +73,7 @@ export default function LoginPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            disabled={isLoading}
           />
         </div>
         <div>
@@ -65,11 +84,13 @@ export default function LoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            disabled={isLoading}
           />
         </div>
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-        <Button type="submit" className="w-full">
-          Đăng nhập
+        
+        {/* {error && <p className="text-red-500 text-sm">{error}</p>} */}
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
         </Button>
       </form>
     </div>
