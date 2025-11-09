@@ -46,7 +46,10 @@ api.interceptors.response.use(
     
     // 3. CHỈ xử lý nếu lỗi là 403 (Token hết hạn) VÀ
     //    chúng ta chưa thử lại request này (`_retry`)
-    if (error.response?.status === 403 && !originalRequest._retry) {
+    if (error.response?.status === 403 && 
+      originalRequest.url !== '/api/auth/refresh' &&
+      !originalRequest._retry
+    ) {
       
       originalRequest._retry = true; // Đánh dấu là đã thử 1 lần
       
