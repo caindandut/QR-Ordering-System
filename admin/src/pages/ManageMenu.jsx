@@ -1,69 +1,171 @@
-// src/pages/ManageMenu.jsx
-import { useQuery } from '@tanstack/react-query';
+// src/pages/ManageMenuPage.jsx
+import { useState } from 'react'; // 👈 Thêm useState
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'; // 👈 Thêm useMutation, useQueryClient
 import api from '../services/api';
+import { useToast } from "@/hooks/use-toast"; // 👈 Thêm toast
 
-// 1. Import "linh kiện"
+// Import "linh kiện" (như cũ)
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { PlusCircle, Edit, Trash2 } from 'lucide-react';
-import { translateMenuStatus } from '@/lib/translations'; // 👈 Import hàm "dịch" mới
+import { translateMenuStatus } from '@/lib/translations'; // 👈 Import từ file dịch
 
-// 2. Định nghĩa hàm "lấy" (Fetch)
-// TẠI SAO GỌI /api/menu/all?
-// Tác dụng: API này (Giai đoạn 1) đã được code để `include` (kèm theo)
-// thông tin Category. Chúng ta không cần gọi API lần 2.
+// 👇 1. IMPORT CÁC "LINH KIỆN" MỚI
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
+import MenuForm from '../components/MenuForm'; // 👈 Import Form "thông minh"
+
+// --- CÁC HÀM GỌI API ---
 const fetchMenuItems = async () => {
-  const response = await api.get('/api/menu/all'); // Lấy TẤT CẢ (kể cả món ẩn)
+  const response = await api.get('/api/menu/all');
   return response.data;
 };
 
-// --- Component chính ---
+// 👇 2. CÁC HÀM "GHI" (WRITE) MỚI
+const createMenuItem = async (newItem) => {
+  const response = await api.post('/api/menu', newItem);
+  return response.data;
+};
+
+const updateMenuItem = async ({ id, data }) => {
+  const response = await api.patch(`/api/menu/${id}`, data);
+  return response.data;
+};
+// ---
+
 export default function ManageMenuPage() {
-  
-  // 3. "Móc" (Hook) useQuery
+  // --- STATE QUẢN LÝ UI ---
+  // (Giống hệt trang Bàn ăn, chỉ đổi tên biến)
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingMenuItem, setEditingMenuItem] = useState(null);
+
+  // --- HOOKS ---
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  // --- LOGIC ĐỌC (READ) ---
   const {
     data: menuItems,
     isLoading,
     isError,
     error,
   } = useQuery({
-    queryKey: ['menuItems'], // 👈 Tên "ngăn kéo" cache mới
+    queryKey: ['menuItems'],
     queryFn: fetchMenuItems,
   });
 
-  // 4. Xử lý trạng thái Loading/Error
-  if (isLoading) {
-    return <div>Đang tải dữ liệu món ăn...</div>;
-  }
-  if (isError) {
-    return <div>Lỗi: {error.message}</div>;
-  }
+  // --- 👇 3. LOGIC GHI (CREATE & UPDATE) ---
+  
+  // "Công nhân" Thêm
+  const addMenuMutation = useMutation({
+    mutationFn: createMenuItem,
+    onSuccess: () => {
+      toast({ title: "Thành công!", description: "Đã thêm món ăn mới." });
+      // "CÂU THẦN CHÚ" LÀM MỚI
+      queryClient.invalidateQueries({ queryKey: ['menuItems'] });
+      setIsFormOpen(false); // Đóng Modal
+    },
+    onError: (error) => {
+      toast({
+        title: "Lỗi!",
+        description: error.response?.data?.message || "Không thể thêm món.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // "Công nhân" Sửa
+  const updateMenuMutation = useMutation({
+    mutationFn: updateMenuItem,
+    onSuccess: () => {
+      toast({ title: "Thành công!", description: "Đã cập nhật món ăn." });
+      // "CÂU THẦN CHÚ" LÀM MỚI
+      queryClient.invalidateQueries({ queryKey: ['menuItems'] });
+      setIsFormOpen(false); // Đóng Modal
+    },
+    onError: (error) => {
+      toast({
+        title: "Lỗi!",
+        description: error.response?.data?.message || "Không thể cập nhật.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // --- 👇 4. CÁC HÀM XỬ LÝ SỰ KIỆN (Event Handlers) ---
+  const handleOpenAddDialog = () => {
+    setEditingMenuItem(null); // `null` = Chế độ Thêm
+    setIsFormOpen(true);
+  };
+  
+  const handleOpenEditDialog = (item) => {
+    setEditingMenuItem(item); // `object` = Chế độ Sửa
+    setIsFormOpen(true);
+  };
+
+  // Hàm "ngã rẽ", quyết định gọi công nhân nào
+  const handleFormSubmit = (data) => {
+    if (editingMenuItem) {
+      // Chế độ Sửa
+      updateMenuMutation.mutate({ id: editingMenuItem.id, data });
+    } else {
+      // Chế độ Thêm
+      addMenuMutation.mutate(data);
+    }
+  };
+
+  // ... (Xử lý Loading/Error như cũ) ...
+  if (isLoading) return <div>Đang tải dữ liệu món ăn...</div>;
+  if (isError) return <div>Lỗi: {error.message}</div>;
 
   // Hàm lấy 2 chữ cái đầu (cho Avatar Fallback)
   const getInitials = (name) => {
     return name?.split(' ').map((n) => n[0]).join('').toUpperCase() || 'MÓN';
   };
-
-  // 5. Render (Hiển thị)
+  
   return (
     <div className="flex flex-col gap-4">
       {/* --- TIÊU ĐỀ & NÚT THÊM --- */}
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Quản lý Món ăn</h1>
-        <Button>
+        {/* Nút "Thêm" gọi hàm `handleOpenAddDialog` */}
+        <Button onClick={handleOpenAddDialog}>
           <PlusCircle className="mr-2 h-4 w-4" />
           Thêm món ăn mới
         </Button>
       </div>
+
+      {/* --- 👇 5. DIALOG (Modal) THÊM/SỬA --- */}
+      <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
+        <DialogContent className="max-w-2xl"> {/* Cho Modal rộng hơn */}
+          <DialogHeader>
+            <DialogTitle>
+              {editingMenuItem ? 'Sửa món ăn' : 'Thêm món ăn mới'}
+            </DialogTitle>
+            <DialogDescription>
+              Điền thông tin chi tiết cho món ăn.
+            </DialogDescription>
+          </DialogHeader>
+          
+          {/* Render Form "chuyên gia" */}
+          <MenuForm
+            onSubmit={handleFormSubmit}
+            // Báo loading (từ CẢ 2 "công nhân")
+            isLoading={addMenuMutation.isLoading || updateMenuMutation.isLoading}
+            // Truyền dữ liệu ban đầu
+            initialData={editingMenuItem}
+          />
+        </DialogContent>
+      </Dialog>
 
       {/* --- BẢNG DỮ LIỆU --- */}
       <div className="border rounded-lg">
@@ -80,35 +182,28 @@ export default function ManageMenuPage() {
           </TableHeader>
           <TableBody>
             {menuItems && menuItems.map((item) => {
-              // 6. "Dịch" trạng thái
               const { text, variant } = translateMenuStatus(item.status, 'vi');
-              
               return (
                 <TableRow key={item.id}>
-                  {/* 7. Dùng <Avatar> */}
                   <TableCell>
                     <Avatar>
                       <AvatarImage src={item.imageUrl} alt={item.name} />
                       <AvatarFallback>{getInitials(item.name)}</AvatarFallback>
                     </Avatar>
                   </TableCell>
-                  
                   <TableCell className="font-medium">{item.name}</TableCell>
-                  
-                  <TableCell>
-                    {item.price.toLocaleString('vi-VN')}đ
-                  </TableCell>
-                  
-                  {/* 8. Dùng data liên quan (category?.name) */}
+                  <TableCell>{item.price.toLocaleString('vi-VN')}đ</TableCell>
                   <TableCell>{item.category?.name || 'N/A'}</TableCell>
-                  
-                  {/* 9. Dùng <Badge> */}
                   <TableCell>
                     <Badge variant={variant}>{text}</Badge>
                   </TableCell>
-                  
                   <TableCell className="text-right space-x-2">
-                    <Button variant="outline" size="sm">
+                    {/* Nút "Sửa" gọi hàm `handleOpenEditDialog` */}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleOpenEditDialog(item)}
+                    >
                       <Edit className="h-4 w-4" />
                     </Button>
                     <Button variant="destructive" size="sm">
