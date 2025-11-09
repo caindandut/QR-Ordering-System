@@ -1,4 +1,3 @@
-// --- Import các thư viện ---
 import express from 'express'; // Framework để tạo server
 import cors from 'cors'; // Cho phép frontend gọi API
 import dotenv from 'dotenv'; // Đọc file .env

@@ -1,4 +1,3 @@
-// src/pages/ManageTables.jsx
 import { useState, useRef } from 'react'; // 👈 Thêm useState
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../services/api'; 
@@ -321,6 +320,9 @@ export default function ManageTablesPage() {
             <h3 className="hidden print:block print:text-black text-2xl font-bold mb-4">
               {qrCodeTable?.name}
             </h3>
+             <p className="hidden print:block print:text-black text-sm mb-4">
+              Quét mã để đặt món bằng Camera/Zalo
+            </p>
             {/* 6. "Vẽ" QR Code */}
             <QRCode
               value={qrUrl} // 👈 Giá trị (URL)

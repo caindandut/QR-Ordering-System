@@ -1,4 +1,3 @@
-// middleware/uploadMiddleware.js
 import multer from 'multer';
 
 // TẠI SAO DÙNG memoryStorage()?

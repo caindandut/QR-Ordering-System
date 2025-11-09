@@ -1,4 +1,3 @@
-// routes/categoryRoutes.js
 import express from 'express';
 import { prisma } from '../index.js';
 import { authenticateToken } from '../middleware/authMiddleware.js';

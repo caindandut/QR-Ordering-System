@@ -1,4 +1,3 @@
-// src/pages/Dashboard.jsx
 import {
   Card,
   CardContent,

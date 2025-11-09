@@ -1,4 +1,3 @@
-// routes/uploadRoutes.js
 import express from 'express';
 import streamifier from 'streamifier';
 import cloudinary from '../config/cloudinary.js'; // Import cấu hình cloudinary

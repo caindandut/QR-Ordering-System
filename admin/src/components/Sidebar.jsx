@@ -1,6 +1,5 @@
-// src/components/Sidebar.jsx
 import { NavLink } from 'react-router-dom';
-import { Home, ClipboardList, Utensils, Users, X, LayoutGrid } from 'lucide-react';
+import { Home, ClipboardList, Utensils, Users, X, LayoutGrid, Table } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { SheetClose } from '@/components/ui/sheet';
 
@@ -50,7 +49,7 @@ export default function Sidebar({ onLinkClick, isMobileSheet = false }) {
           <NavItem to="/orders" icon={ClipboardList} onClick={onLinkClick}>
             Quản lý Đơn hàng
           </NavItem>
-          <NavItem to="/tables" icon={Utensils} onClick={onLinkClick}>
+          <NavItem to="/tables" icon={Table} onClick={onLinkClick}>
             Quản lý Bàn ăn
           </NavItem>
           <NavItem to="/menu" icon={Utensils} onClick={onLinkClick}>

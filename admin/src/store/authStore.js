@@ -1,4 +1,3 @@
-// src/store/authStore.js
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware'; // 👈 Import middleware persist
 import api from '../services/api';

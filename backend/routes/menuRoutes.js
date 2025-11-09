@@ -1,4 +1,3 @@
-// routes/menuRoutes.js
 import express from 'express';
 import { prisma } from '../index.js';
 import { authenticateToken, authorizeAdmin } from '../middleware/authMiddleware.js';

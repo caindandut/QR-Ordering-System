@@ -1,4 +1,3 @@
-// routes/authRoutes.js
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -139,59 +138,56 @@ router.post('/refresh', async (req, res) => {
 
   try {
     // 2. Kiểm tra xem token này có tồn tại trong DB không
-    // TẠI SAO?
-    // Tác dụng: Đây là bước bảo mật. Nếu user nhấn "Đăng xuất",
-    // chúng ta sẽ XÓA token này khỏi DB.
-    // Kẻ gian dù có trộm được token cũng không thể gia hạn.
     const tokenInDb = await prisma.userToken.findUnique({
       where: { token: refreshToken },
     });
 
     if (!tokenInDb) {
+      // Đây chính là lỗi: "không hợp lệ hoặc không có trong DB"
       return res.status(403).json({ message: 'Refresh token không hợp lệ (không có trong DB).' });
     }
 
     // 3. Xác thực Refresh Token (Check hạn, check chữ ký)
-    // TẠI SAO DÙNG REFRESH_TOKEN_SECRET?
-    // Tác dụng: Dùng "bí mật" của Refresh Token
-    // để đảm bảo nó hợp lệ.
-    jwt.verify(
+    //    Chúng ta dùng `jwt.verify` (bản đồng bộ) trong try...catch
+    //    Nếu token sai/hết hạn, nó sẽ ném lỗi và nhảy xuống `catch`
+    const payload = jwt.verify(
       refreshToken,
-      process.env.REFRESH_TOKEN_SECRET,
-      (err, payload) => {
-        if (err) {
-          return res.status(403).json({ message: 'Refresh token không hợp lệ hoặc đã hết hạn.' });
-        }
-        
-        // 4. Token hợp lệ! Tạo một ACCESS TOKEN MỚI
-        // (Lấy userId và role từ payload của refresh token)
-        // (Lưu ý: Payload của refresh token của chúng ta chỉ có userId,
-        //  chúng ta cần lấy lại role từ tokenInDb hoặc payload.
-        //  Chúng ta nên sửa lại API /login để refresh token cũng chứa role)
-        
-        // --- Sửa lại logic 1 chút ---
-        // Payload của Refresh Token chỉ có userId. 
-        // Chúng ta cần lấy role từ DB để tạo Access Token mới.
-        
-        // Tốt hơn, hãy sửa API /login:
-        // Cả Access và Refresh Token đều nên chứa { userId: user.id, role: user.role }
-        // Hoặc chúng ta tìm user từ payload.userId
-        
-        // Tạm thời, chúng ta sẽ tạo lại Access Token mới
-        // với thông tin từ payload (giả sử nó có userId)
-        const newAccessToken = jwt.sign(
-          { userId: payload.userId, role: payload.role }, // Giả định payload có cả role
-                                                        // Nếu không, bạn cần truy vấn DB: const user = await prisma.user.find(payload.userId)
-          process.env.ACCESS_TOKEN_SECRET,
-          { expiresIn: '15m' } // Cấp vé 15 phút mới
-        );
-
-        res.status(200).json({
-          accessToken: newAccessToken,
-        });
-      }
+      process.env.REFRESH_TOKEN_SECRET
     );
+
+    // 👇 [PHẦN SỬA LỖI QUAN TRỌNG NHẤT] 👇
+    
+    // 4. Dùng `userId` từ payload để TÌM LẠI user trong DB
+    //    (Để lấy `role` mới nhất, đảm bảo user còn tồn tại)
+    const user = await prisma.user.findUnique({
+      where: { id: payload.userId },
+    });
+
+    if (!user) {
+      // User đã bị xóa khỏi DB?
+      return res.status(403).json({ message: 'Người dùng không tồn tại.' });
+    }
+
+    // 5. Token hợp lệ! Tạo một ACCESS TOKEN MỚI
+    //    (Lần này đã có `role` chính xác từ DB)
+    const newAccessToken = jwt.sign(
+      { userId: user.id, role: user.role }, // 👈 LẤY ROLE TỪ DB
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: '15m' } // Cấp vé 15 phút mới
+    );
+
+    res.status(200).json({
+      accessToken: newAccessToken,
+    });
+    
   } catch (error) {
+    // 6. Xử lý lỗi
+    // Nếu lỗi là từ jwt.verify (TokenExpiredError, JsonWebTokenError)
+    if (error.name === 'TokenExpiredError' || error.name === 'JsonWebTokenError') {
+      return res.status(403).json({ message: 'Refresh token không hợp lệ hoặc đã hết hạn.' });
+    }
+    
+    // Các lỗi khác (lỗi database...)
     res.status(500).json({ message: 'Lỗi server', error: error.message });
   }
 });

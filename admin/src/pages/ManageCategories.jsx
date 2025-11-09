@@ -1,4 +1,3 @@
-// src/pages/ManageCategoriesPage.jsx
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../services/api';
