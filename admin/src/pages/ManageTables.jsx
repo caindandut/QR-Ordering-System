@@ -414,7 +414,7 @@ export default function ManageTablesPage() {
                   onClick={() => handleOpenEditDialog(table)}
                   >
                     <Edit className="mr-1 h-4 w-4" />
-                    Sửa
+                    {/* Sửa */}
                   </Button>
 
                   {/* 👇 7. NÚT XÓA MỚI */}
@@ -425,7 +425,7 @@ export default function ManageTablesPage() {
                     onClick={() => setTableToDelete(table)}
                   >
                     <Trash2 className="mr-1 h-4 w-4" />
-                    Xóa
+                    {/* Xóa */}
                   </Button>
                 </TableCell>
               </TableRow>

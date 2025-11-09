@@ -170,6 +170,7 @@ export default function MenuForm({ onSubmit, isLoading, initialData = null }) {
         <Label htmlFor="nameJp">Tên món (Tiếng Nhật)</Label>
         <Input
           id="nameJp" value={nameJp} onChange={(e) => setNameJp(e.target.value)}
+          required
         />
       </div>
 

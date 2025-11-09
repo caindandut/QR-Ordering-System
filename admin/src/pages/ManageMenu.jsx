@@ -8,6 +8,16 @@ import { useToast } from "@/hooks/use-toast"; // 👈 Thêm toast
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -40,6 +50,10 @@ const updateMenuItem = async ({ id, data }) => {
   const response = await api.patch(`/api/menu/${id}`, data);
   return response.data;
 };
+
+const deleteMenuItem = async (id) => {
+  await api.delete(`/api/menu/${id}`);
+};
 // ---
 
 export default function ManageMenuPage() {
@@ -47,6 +61,7 @@ export default function ManageMenuPage() {
   // (Giống hệt trang Bàn ăn, chỉ đổi tên biến)
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingMenuItem, setEditingMenuItem] = useState(null);
+  const [itemToDelete, setItemToDelete] = useState(null);
 
   // --- HOOKS ---
   const queryClient = useQueryClient();
@@ -101,6 +116,26 @@ export default function ManageMenuPage() {
     },
   });
 
+  // 👇 [THÊM MỚI] 4. LOGIC XÓA (DELETE)
+  // Đây là "Công nhân Xóa"
+  const deleteMenuMutation = useMutation({
+    mutationFn: deleteMenuItem,
+    onSuccess: () => {
+      toast({ title: "Đã xóa!", description: "Đã xóa món ăn thành công." });
+      // "Ảo thuật": Tự làm mới bảng
+      queryClient.invalidateQueries({ queryKey: ['menuItems'] });
+      setItemToDelete(null); // Đóng Alert Dialog
+    },
+    onError: (error) => {
+      toast({
+        title: "Lỗi!",
+        description: error.response?.data?.message || "Không thể xóa món ăn.",
+        variant: "destructive",
+      });
+      setItemToDelete(null);
+    },
+  });
+
   // --- 👇 4. CÁC HÀM XỬ LÝ SỰ KIỆN (Event Handlers) ---
   const handleOpenAddDialog = () => {
     setEditingMenuItem(null); // `null` = Chế độ Thêm
@@ -120,6 +155,12 @@ export default function ManageMenuPage() {
     } else {
       // Chế độ Thêm
       addMenuMutation.mutate(data);
+    }
+  };
+
+  const handleDeleteConfirm = () => {
+    if (itemToDelete) {
+      deleteMenuMutation.mutate(itemToDelete.id);
     }
   };
 
@@ -167,6 +208,35 @@ export default function ManageMenuPage() {
         </DialogContent>
       </Dialog>
 
+      {/* 👇 [THÊM MỚI] 6. ALERT DIALOG ĐỂ XÁC NHẬN XÓA --- */}
+      <AlertDialog
+        open={!!itemToDelete}
+        onOpenChange={(open) => !open && setItemToDelete(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Bạn có chắc chắn không?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Hành động này sẽ xóa vĩnh viễn món ăn:
+              <strong className="mx-1">
+                {itemToDelete?.name}
+              </strong>. 
+              Bạn không thể hoàn tác hành động này.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Hủy</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleDeleteConfirm}
+              disabled={deleteMenuMutation.isLoading}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deleteMenuMutation.isLoading ? "Đang xóa..." : "Vẫn xóa"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       {/* --- BẢNG DỮ LIỆU --- */}
       <div className="border rounded-lg">
         <Table>
@@ -186,13 +256,22 @@ export default function ManageMenuPage() {
               return (
                 <TableRow key={item.id}>
                   <TableCell>
-                    <Avatar>
-                      <AvatarImage src={item.imageUrl} alt={item.name} />
-                      <AvatarFallback>{getInitials(item.name)}</AvatarFallback>
+                    <Avatar className="h-12 w-12 md:h-20 md:w-20 rounded-md">
+                      <AvatarImage 
+                      src={item.imageUrl} 
+                      alt={item.name} 
+                      className="object-cover"/>
+                      <AvatarFallback>
+                        {getInitials(item.name)}
+                      </AvatarFallback>
                     </Avatar>
                   </TableCell>
-                  <TableCell className="font-medium">{item.name}</TableCell>
-                  <TableCell>{item.price.toLocaleString('vi-VN')}đ</TableCell>
+                  <TableCell className="font-medium">
+                    {item.name}
+                  </TableCell>
+                  <TableCell>
+                    {item.price.toLocaleString('vi-VN')}đ
+                  </TableCell>
                   <TableCell>{item.category?.name || 'N/A'}</TableCell>
                   <TableCell>
                     <Badge variant={variant}>{text}</Badge>
@@ -205,9 +284,15 @@ export default function ManageMenuPage() {
                       onClick={() => handleOpenEditDialog(item)}
                     >
                       <Edit className="h-4 w-4" />
+                      {/* Sửa */}
                     </Button>
-                    <Button variant="destructive" size="sm">
+                    <Button
+                     variant="destructive" 
+                     size="sm"
+                     onClick={() => setItemToDelete(item)}
+                    >
                       <Trash2 className="h-4 w-4" />
+                      {/* Xóa */}
                     </Button>
                   </TableCell>
                 </TableRow>

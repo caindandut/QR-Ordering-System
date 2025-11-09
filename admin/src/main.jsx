@@ -21,6 +21,7 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import ManageOrdersPage from './pages/ManageOrders';
 import ManageMenuPage from './pages/ManageMenu';
 import ManageStaffPage from './pages/ManageStaff';
+import ManageCategoriesPage from './pages/ManageCategories';
 
 
 const queryClient = new QueryClient();
@@ -57,6 +58,10 @@ const router = createBrowserRouter([
               {
                 path: 'menu', // URL sẽ là /menu
                 element: <ManageMenuPage />,
+              },
+              {
+                path: 'categories',
+                element: <ManageCategoriesPage />,
               },
               {
                 path: 'staff', // URL sẽ là /staff
