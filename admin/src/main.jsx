@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AdminRoute } from './components/AdminRoute';
 
 // Import các Layout và Trang
 import RootLayout from './layouts/RootLayout';
@@ -63,8 +64,13 @@ const router = createBrowserRouter([
                 element: <ManageCategoriesPage />,
               },
               {
-                path: 'staff', // URL sẽ là /staff
-                element: <ManageStaffPage />,
+                element: <AdminRoute />,
+                children: [
+                  {
+                    path: 'staff',
+                    element: <ManageStaffPage />,
+                  },
+                ],
               },
             ],
           },

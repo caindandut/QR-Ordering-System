@@ -63,7 +63,7 @@ export default function LoginPage() {
   return (
     <div className="flex items-center justify-center h-screen">
       <form onSubmit={handleSubmit} className="w-full max-w-sm p-8 space-y-4 border rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-center">Đăng nhập Admin</h2>
+        <h2 className="text-2xl font-bold text-center">Đăng nhập</h2>
         <div>
           <Label htmlFor="email">Email</Label>
           <Input

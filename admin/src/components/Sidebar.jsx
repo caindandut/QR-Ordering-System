@@ -2,9 +2,10 @@ import { NavLink } from 'react-router-dom';
 import { Home, ClipboardList, Utensils, Users, X, LayoutGrid, Table } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { SheetClose } from '@/components/ui/sheet';
+import { useAuthStore } from '../store/authStore';
 
 // NavItem (không đổi)
-const NavItem = ({ to, icon: Icon, children, onClick }) => (
+const NavItem = ({ to,  icon: Icon, children, onClick }) => (
   <NavLink
     to={to}
     end={to === '/'}
@@ -23,6 +24,10 @@ const NavItem = ({ to, icon: Icon, children, onClick }) => (
 
 // 👇 1. NHẬN PROP MỚI: isMobileSheet = false (mặc định là false)
 export default function Sidebar({ onLinkClick, isMobileSheet = false }) {
+  // 👇 2. LẤY DỮ LIỆU `user` TỪ "BỘ NÃO"
+  //    (Lưu ý: chúng ta chỉ cần `user`, không cần `user.role`
+  //     để tránh lỗi nếu user là null)
+  const user = useAuthStore((state) => state.user);
   return (
     <div className="h-full border-r bg-gray-900 w-64 text-white">
       <div className="flex h-full max-h-screen flex-col gap-2">
@@ -58,9 +63,11 @@ export default function Sidebar({ onLinkClick, isMobileSheet = false }) {
           <NavItem to="/categories" icon={LayoutGrid} onClick={onLinkClick}>
             Quản lý Danh mục
           </NavItem>
-          <NavItem to="/staff" icon={Users} onClick={onLinkClick}>
-            Quản lý Nhân viên
-          </NavItem>
+          {user?.role === 'ADMIN' && (
+            <NavItem to="/staff" icon={Users} onClick={onLinkClick}>
+              Quản lý Nhân viên
+            </NavItem>
+          )}
         </nav>
       </div>
     </div>
