@@ -5,13 +5,13 @@ import { SheetClose } from '@/components/ui/sheet';
 import { useAuthStore } from '../store/authStore';
 
 // NavItem (không đổi)
-const NavItem = ({ to,  icon: Icon, children, onClick }) => (
+const NavItem = ({ to, icon: Icon, children, onClick }) => (
   <NavLink
     to={to}
     end={to === '/'}
     className={({ isActive }) =>
       cn(
-        'flex items-center gap-3 rounded-lg px-3 py-2 text-gray-400 transition-all hover:text-white hover:bg-gray-700',
+        'flex items-center gap-2 rounded-lg px-3 py-2 text-gray-400 transition-all hover:text-white hover:bg-gray-700',
         isActive && 'bg-gray-800 text-white'
       )
     }

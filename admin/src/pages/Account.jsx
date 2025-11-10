@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import api from '../lib/api';
+import api from '../services/api';
 import { useAuthStore } from '../store/authStore';
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -10,11 +10,17 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import ProfileForm from '../components/ProfileForm';
+import PasswordForm from '../components/PasswordForm';
+
 const updateProfile = async (data) => {
   const response = await api.patch('/api/auth/me', data);
   return response.data;
 };
-// ---
+
+const changePassword = async (data) => {
+  const response = await api.post('/api/auth/change-password', data);
+  return response.data;
+};
 
 export default function AccountPage() {
   const queryClient = useQueryClient();
@@ -49,9 +55,29 @@ export default function AccountPage() {
     },
   });
 
+  const changePasswordMutation = useMutation({
+    mutationFn: changePassword,
+    onSuccess: (data) => {
+      toast({ title: "Thành công!", description: data.message });
+      // (Không cần invalidateQueries vì không ảnh hưởng Bảng)
+      // (Chúng ta cần 1 cách để reset form con)
+    },
+    onError: (error) => {
+      toast({
+        title: "Lỗi đổi mật khẩu!",
+        description: error.response?.data?.message || "Không thể đổi mật khẩu.",
+        variant: "destructive",
+      });
+    },
+  });
+
   // 4. Hàm Submit (để truyền cho Form "con")
   const handleProfileSubmit = (data) => {
     updateProfileMutation.mutate(data);
+  };
+
+  const handlePasswordSubmit = (data) => {
+    changePasswordMutation.mutate(data);
   };
 
   return (
@@ -76,17 +102,18 @@ export default function AccountPage() {
           </CardContent>
         </Card>
 
-        {/* --- CARD 2: ĐỔI MẬT KHẨU (Sẽ làm ở bước 2.8.3) --- */}
-        <Card>
+       <Card>
           <CardHeader>
             <CardTitle>Đổi mật khẩu</CardTitle>
             <CardDescription>
-              Thay đổi mật khẩu đăng nhập của bạn.
+              Thay đổi mật khẩu đăng nhập của bạn. Yêu cầu mật khẩu cũ.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {/* (Chúng ta sẽ tạo <PasswordForm /> ở đây) */}
-            <p>(Form đổi mật khẩu sẽ ở đây)</p>
+            <PasswordForm 
+              onSubmit={handlePasswordSubmit}
+              isLoading={changePasswordMutation.isLoading}
+            />
           </CardContent>
         </Card>
       </div>

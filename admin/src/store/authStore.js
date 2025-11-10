@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware'; // 👈 Import middleware persist
+import { persist } from 'zustand/middleware';
 import api from '../services/api';
 // TẠI SAO DÙNG persist?
 // Tác dụng: Tự động lưu "kho" này vào localStorage.
@@ -78,7 +78,7 @@ export const useAuthStore = create(
       // Xóa header mặc định
         delete api.defaults.headers.common['Authorization'];
     },
-    
+
     updateUser: (newUserData) => {
       set((state) => ({
         user: {

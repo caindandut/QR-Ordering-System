@@ -104,14 +104,14 @@ export default function Header() {
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
-            <Link to="/account">
+            <Link to="/account" className="flex items-center gap-1">
               <User className="mr-2 h-4 w-4" />
               <span>Tài khoản</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={handleLogout} className="text-red-500">
-            <LogOut className="mr-2 h-4 w-4" />
+            <LogOut className="mr-1 h-4 w-4" />
             <span>Đăng xuất</span>
           </DropdownMenuItem>
         </DropdownMenuContent>

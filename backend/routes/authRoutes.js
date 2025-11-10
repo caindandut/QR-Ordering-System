@@ -1,9 +1,11 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { prisma } from '../index.js'; // Import prisma từ file index
+import { prisma } from '../index.js';
+import { authenticateToken } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
+
 
 // 1. API Đăng ký (Register)
 // TẠI SAO LÀ 'POST'?
@@ -209,6 +211,100 @@ router.post('/logout', async (req, res) => {
         // Bỏ qua lỗi nếu không tìm thấy token
         res.status(200).json({ message: 'Đăng xuất thành công.' });
     }
+});
+
+router.use(authenticateToken); 
+
+router.get('/me', async (req, res) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.userId }, // 👈 Lấy ID từ token
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        avatarUrl: true,
+        phone: true,
+        role: true,
+      }
+    });
+    if (!user) return res.status(404).json({ message: "Không tìm thấy người dùng." });
+    res.status(200).json({ user });
+  } catch (error) {
+    res.status(500).json({ message: 'Lỗi server', error: error.message });
+  }
+});
+
+// [API MỚI 2] Cập nhật "chính tôi" (Profile)
+// (Form "Thông tin cá nhân" sẽ gọi API này)
+router.patch('/me', async (req, res) => {
+  const { name, phone, avatarUrl } = req.body;
+  
+  try {
+    const dataToUpdate = { name, phone, avatarUrl };
+    
+    const updatedUser = await prisma.user.update({
+      where: { id: req.user.userId }, // 👈 Cập nhật "chính tôi"
+      data: dataToUpdate,
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        avatarUrl: true,
+        phone: true,
+        role: true,
+      }
+    });
+    
+    res.status(200).json({ user: updatedUser });
+  } catch (error) {
+    res.status(500).json({ message: 'Lỗi server', error: error.message });
+  }
+});
+
+// [API MỚI 3] Đổi Mật khẩu
+// (Form "Đổi mật khẩu" sẽ gọi API này)
+router.post('/change-password', async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+  const userId = req.user.userId;
+
+  if (!oldPassword || !newPassword) {
+    return res.status(400).json({ message: 'Vui lòng nhập đủ mật khẩu cũ và mới.' });
+  }
+
+  try {
+    // 1. Lấy user (bao gồm cả password hash)
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    // 2. So sánh mật khẩu cũ
+    const isOldPasswordCorrect = await bcrypt.compare(oldPassword, user.password);
+    if (!isOldPasswordCorrect) {
+      return res.status(401).json({ message: 'Mật khẩu cũ không chính xác.' });
+    }
+    
+    // 3. (Tùy chọn) Kiểm tra nếu mật khẩu mới trùng mật khẩu cũ
+    const isNewPasswordSameAsOld = await bcrypt.compare(newPassword, user.password);
+    if (isNewPasswordSameAsOld) {
+      return res.status(400).json({ message: 'Mật khẩu mới không được trùng với mật khẩu cũ.' });
+    }
+
+    // 4. Mã hóa và lưu mật khẩu MỚI
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    await prisma.user.update({
+      where: { id: userId },
+      data: { password: hashedNewPassword },
+    });
+    
+    // (Tùy chọn bảo mật: Có thể xóa hết Refresh Token ở đây
+    //  để "đá" user ra khỏi các thiết bị khác)
+    // await prisma.userToken.deleteMany({ where: { userId } });
+
+    res.status(200).json({ message: 'Đổi mật khẩu thành công.' });
+  } catch (error) {
+    res.status(500).json({ message: 'Lỗi server', error: error.message });
+  }
 });
 
 
