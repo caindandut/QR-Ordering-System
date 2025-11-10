@@ -78,6 +78,15 @@ export const useAuthStore = create(
       // Xóa header mặc định
         delete api.defaults.headers.common['Authorization'];
     },
+    
+    updateUser: (newUserData) => {
+      set((state) => ({
+        user: {
+          ...state.user,
+          ...newUserData,
+        }
+      }));
+    }
   }),
     {
       name: 'auth-storage', // Tên key trong localStorage
