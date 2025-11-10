@@ -19,13 +19,9 @@ import { Badge } from '@/components/ui/badge';
 import StaffForm from '../components/StaffForm';
 
 const fetchStaff = async () => {
-  // const response = await api.get('/api/staff'); 
-  // return response.data;
-  // TODO: Tạm thời trả về data giả, vì API Giai đoạn 1 chưa có
-  return [
-    {id: 1, name: "Admin QTV", email: "admin@gmail.com", phone: "123456", role: "ADMIN", avatarUrl: ""},
-    {id: 2, name: "Nhân Viên A", email: "staff@gmail.com", phone: "654321", role: "STAFF", avatarUrl: ""}
-  ];
+  const response = await api.get('/api/staff'); 
+  return response.data;
+  
 };
 const createStaff = async (newStaff) => {
   const response = await api.post('/api/staff', newStaff);
