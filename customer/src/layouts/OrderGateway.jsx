@@ -1,78 +1,92 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams, Outlet, Navigate } from 'react-router-dom';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from '@/components/ui/dialog';
+import { useSearchParams, Outlet } from 'react-router-dom'; 
+import { useQuery } from '@tanstack/react-query';
+import api from '../services/api'; 
+
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { Loader2 } from 'lucide-react'; 
+
+
+const fetchTableDetails = async (tableId) => {
+  const response = await api.get(`/api/tables/${tableId}`);
+  return response.data; 
+};
 
 export default function OrderGateway() {
-  // `useSearchParams` là "Đầu đọc Thẻ"
-  const [searchParams] = useSearchParams();
-  const tableId = searchParams.get('table_id'); // Lấy `table_id` từ URL
 
-  // 2. KIỂM TRA "PHIÊN" (localStorage)
+  const [searchParams] = useSearchParams();
+  const tableId = searchParams.get('table_id');
+
   const [customerName, setCustomerName] = useState(
     () => localStorage.getItem('customer_name') || null
   );
   
-  // 3. State cho Modal (Hộp thoại)
-  const [isNameDialogOpen, setIsNameDialogOpen] = useState(false);
   const [tempName, setTempName] = useState('');
 
+  const {
+    data: tableData,
+    isLoading: isLoadingTable,
+    isError: isTableError,
+  } = useQuery({
+    queryKey: ['table', tableId], 
+    queryFn: () => fetchTableDetails(tableId),
+    enabled: !!tableId, 
+  });
+
+
   useEffect(() => {
-    // 4. KIỂM TRA LOGIC
     if (tableId) {
-      // Nếu có ID Bàn
-      // 4a. Lưu ID Bàn vào localStorage để dùng sau
       localStorage.setItem('table_id', tableId);
       
-      // 4b. Kiểm tra xem đã có tên chưa
-      if (!customerName) {
-        // Nếu chưa có tên -> Mở Modal bắt nhập tên
-        setIsNameDialogOpen(true);
+      if (tableData) {
+        localStorage.setItem('table_name', tableData.name);
       }
     }
-    // Nếu không có tableId (sẽ xử lý ở Bước 5)
-  }, [tableId, customerName]); // Chạy lại khi 2 giá trị này thay đổi
+  }, [tableId, tableData]); 
 
-  // 5. XỬ LÝ KHI NHẬP TÊN
+  // 5. Hàm Submit Form (như cũ)
   const handleNameSubmit = (e) => {
     e.preventDefault();
     if (tempName) {
-      // 5a. Lưu tên vào localStorage
       localStorage.setItem('customer_name', tempName);
-      // 5b. Cập nhật state (để component render lại)
       setCustomerName(tempName);
-      // 5c. Đóng Modal
-      setIsNameDialogOpen(false);
     }
   };
 
-  // 6. LOGIC "CỔNG VÀO"
 
-  // 6a. LỖI: Nếu vào mà không có `table_id`
   if (!tableId) {
-    // (Sau này có thể thay bằng 1 trang 404 đẹp)
     return <div className="p-4 text-red-500">Lỗi: Vui lòng quét lại mã QR của bàn.</div>;
   }
   
-  // 6b. CHỜ NHẬP TÊN: Nếu có `table_id` nhưng CHƯA có tên
-  if (tableId && !customerName) {
+  if (isLoadingTable) {
     return (
-      <Dialog open={isNameDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Chào mừng đến với nhà hàng </DialogTitle>
-            <DialogDescription>
-              Vui lòng nhập tên của bạn để bắt đầu gọi món.
-            </DialogDescription>
-          </DialogHeader>
+      <div className="flex items-center justify-center h-screen gap-2">
+        <Loader2 className="h-6 w-6 animate-spin" />
+        <span>Đang tải thông tin bàn...</span>
+      </div>
+    );
+  }
+  
+
+  if (isTableError) {
+    return <div className="p-4 text-red-500">Lỗi: Mã QR không hợp lệ. Bàn không tồn tại.</div>;
+  }
+
+  if (!customerName) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50 p-4">
+        <div className="w-full max-w-md p-8 bg-white shadow-lg rounded-lg">
+          
+          {/* Lời chào đã được cập nhật */}
+          <h1 className="text-2xl font-bold text-center mb-2">
+            Chào mừng đến nhà hàng
+          </h1>
+          <p className="text-xl text-center text-gray-700 mb-6">
+            Bạn đang ở <span className="font-bold text-blue-600">{tableData?.name}</span>
+          </p>
+          {/* Form này y hệt form trong <Dialog> cũ */}
           <form onSubmit={handleNameSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name">Tên của bạn</Label>
@@ -83,14 +97,14 @@ export default function OrderGateway() {
                 required
               />
             </div>
-            <Button type="submit" className="w-full">Bắt đầu</Button>
+            <Button type="submit" className="w-full">
+              Bắt đầu gọi món
+            </Button>
           </form>
-        </DialogContent>
-      </Dialog>
+        </div>
+      </div>
     );
   }
   
-  // 6c. THÀNH CÔNG: Nếu CÓ `table_id` và CÓ `customerName`
-  //    Cho phép render các trang con (Menu, Giỏ hàng...)
-  return <Outlet />;
+  return <Outlet />; 
 }

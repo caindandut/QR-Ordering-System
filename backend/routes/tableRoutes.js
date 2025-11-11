@@ -4,6 +4,27 @@ import { authenticateToken } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
+router.get('/:id', async (req, res) => {
+  try {
+    const tableId = parseInt(req.params.id);
+    const table = await prisma.table.findUnique({
+      where: { id: tableId },
+      select: { // Chỉ trả về dữ liệu an toàn
+        id: true,
+        name: true,
+        capacity: true,
+      }
+    });
+
+    if (!table) {
+      return res.status(404).json({ message: 'Không tìm thấy bàn.' });
+    }
+    res.status(200).json(table);
+  } catch (error) {
+    res.status(500).json({ message: 'Lỗi server', error: error.message });
+  }
+});
+
 // TẠI SAO DÙNG router.use(authenticateToken)?
 // Tác dụng: Áp dụng "trạm gác" cho TẤT CẢ các API bên dưới.
 // Điều này có nghĩa là mọi API trong file này (tạo, sửa, xóa bàn)
