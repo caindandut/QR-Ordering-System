@@ -1,5 +1,4 @@
-// src/App.jsx
-import { Button } from "@/components/ui/button" // Import từ alias ta vừa cấu hình
+import { Button } from "@/components/ui/button"
 
 function App() {
   return (
