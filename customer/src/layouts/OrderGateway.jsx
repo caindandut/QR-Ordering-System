@@ -68,7 +68,7 @@ export default function OrderGateway() {
       <Dialog open={isNameDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Chào mừng đến với nhà hàng</DialogTitle>
+            <DialogTitle>Chào mừng đến với nhà hàng </DialogTitle>
             <DialogDescription>
               Vui lòng nhập tên của bạn để bắt đầu gọi món.
             </DialogDescription>
