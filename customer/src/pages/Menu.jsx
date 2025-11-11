@@ -1,4 +1,4 @@
-export default function HomePage() {
+export default function MenuPage() {
   // Lấy dữ liệu từ localStorage để chào
   const name = localStorage.getItem('customer_name');
   const table = localStorage.getItem('table_id');
