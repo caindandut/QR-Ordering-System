@@ -1,6 +1,6 @@
 import { useMemo } from 'react'; 
 import { useQuery } from '@tanstack/react-query';
-import api from '../lib/api';
+import api from '../services/api';
 import { useCartStore } from '../store/cartStore';
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -106,7 +106,7 @@ export default function MenuPage() {
                   <img 
                     src={item.imageUrl} 
                     alt={item.name} 
-                    className="w-full h-48 object-cover rounded-md"
+                    className="w-full h-80 object-cover rounded-md"
                   />
                 </CardContent>
                 <CardFooter className="flex justify-between items-center">
