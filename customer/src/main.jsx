@@ -6,7 +6,7 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import RootLayout from './layouts/RootLayout';
 import OrderGateway from './layouts/OrderGateway';
-import HomePage from './pages/Menu';
+import MenuPage from './pages/Menu';
 import ErrorPage from './pages/ErrorPage';
 
 const queryClient = new QueryClient();
