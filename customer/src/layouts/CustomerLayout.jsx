@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom';
-import CustomerHeader from '../components/CustomerHeader';
+import CustomerHeader from '../components/Header';
 import CartButton from '../components/CartButton';
 
 export default function CustomerLayout() {

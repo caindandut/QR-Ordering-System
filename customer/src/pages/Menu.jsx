@@ -81,11 +81,12 @@ export default function MenuPage() {
   if (isError) return <div className="p-4 text-red-500">Lỗi: Không thể tải thực đơn.</div>;
 
   return (
-    <div className="p-4 pb-24"> {/* Thêm padding-bottom để không bị "Giỏ hàng mini" che */}
+    <div className="p-4 md:p-8 pb-24"> {/* Thêm padding-bottom để không bị "Giỏ hàng mini" che */}
       {/* 6. HIỂN THỊ CÁC NHÓM MÓN ĂN */}
       {/* Object.keys(groupedMenu) sẽ là: ["Khai vị", "Món chính", "Đồ uống"]
         Chúng ta lặp qua các "chìa khóa" (key) này
       */}
+      <h1 className="text-4xl font-bold mb-8">Thực Đơn</h1>
       {Object.keys(groupedMenu).map((categoryName) => (
         <section key={categoryName} className="mb-8">
           
@@ -126,9 +127,6 @@ export default function MenuPage() {
           </div>
         </section>
       ))}
-      
-      {/* 8. "GIỎ HÀNG MINI" SẼ TỰ NỔI LÊN */}
-      <CartButton />
     </div>
   );
 }
