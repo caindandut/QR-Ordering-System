@@ -8,6 +8,7 @@ import OrderGateway from './layouts/OrderGateway';
 import CustomerLayout from './layouts/CustomerLayout';
 import MenuPage from './pages/Menu';
 import ErrorPage from './pages/ErrorPage';
+import CartPage from './pages/Cart';
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
                 index: true, 
                 element: <MenuPage />,
               },
+              {
+                path: 'cart',
+                element: <CartPage />,
+              }
             ]
           }
         ]
