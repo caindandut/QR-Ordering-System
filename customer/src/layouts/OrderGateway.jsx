@@ -17,7 +17,10 @@ const fetchTableDetails = async (tableId) => {
 export default function OrderGateway() {
 
   const [searchParams] = useSearchParams();
-  const tableId = searchParams.get('table_id');
+  const urlTableId = searchParams.get('table_id');
+
+  const localTableId = localStorage.getItem('table_id');
+  const tableId = urlTableId || localTableId;
 
   const [customerName, setCustomerName] = useState(
     () => localStorage.getItem('customer_name') || null
@@ -37,14 +40,14 @@ export default function OrderGateway() {
 
 
   useEffect(() => {
-    if (tableId) {
-      localStorage.setItem('table_id', tableId);
+    if (urlTableId) {
+      localStorage.setItem('table_id', urlTableId);
       
       if (tableData) {
         localStorage.setItem('table_name', tableData.name);
       }
     }
-  }, [tableId, tableData]); 
+  }, [urlTableId, tableData]); 
 
   // 5. Hàm Submit Form (như cũ)
   const handleNameSubmit = (e) => {
