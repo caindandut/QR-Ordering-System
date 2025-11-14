@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useCartStore } from '../store/cartStore'; 
 import { useMutation } from '@tanstack/react-query';
 import api from '../services/api.js';
 import { useToast } from "@/hooks/use-toast";
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, Minus, Trash2 } from 'lucide-react';
+import { Plus, Minus, Trash2, ArrowLeft } from 'lucide-react';
 
 
 const placeOrder = async (orderData) => {
@@ -97,7 +97,17 @@ export default function CartPage() {
   // Nếu có giỏ hàng
   return (
     <div className="p-4 md:p-8">
-      <h1 className="text-4xl font-bold mb-8">Giỏ hàng của bạn</h1>
+      <div className="flex justify-between items-center mb-8">
+        <h3 className="text-4xl font-bold">Giỏ hàng của bạn</h3>
+        
+        {/* Nút "Thêm món" (Quay lại Menu) */}
+        <Button asChild variant="outline">
+          <Link to="/order">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Thêm món
+          </Link>
+        </Button>
+      </div>
       
       <Card>
         <CardHeader>
