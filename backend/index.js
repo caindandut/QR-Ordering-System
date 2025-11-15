@@ -9,6 +9,8 @@ import categoryRoutes from './routes/categoryRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 import staffRoutes from './routes/staffRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
 // --- Khởi tạo ---
 dotenv.config(); // Nạp các biến từ file .env
 const app = express(); // Tạo app Express
@@ -21,18 +23,12 @@ const port = process.env.PORT || 8080; // Đặt cổng server
 // nhanh chóng làm cạn kiệt kết nối database và sập server.
 export const prisma = new PrismaClient();
 
-// --- Cấu hình Middleware (Phần mềm trung gian) ---
+
 app.use(cors()); // Cho phép mọi domain gọi API này (để test)
 
-// TẠI SAO DÙNG express.json()?
-// Tác dụng: Nó "dịch" các request có body là JSON (thường từ React gửi lên)
-// để chúng ta có thể đọc được trong `req.body`
 app.use(express.json());
 
-// TẠI SAO DÙNG /api/auth?
-// Tác dụng: Đây là "tiền tố" (prefix). Mọi API trong file authRoutes
-// sẽ bắt đầu bằng /api/auth.
-// Ví dụ: /register sẽ trở thành /api/auth/register
+
 app.use('/api/auth', authRoutes);
 app.use('/api/menu', menuRoutes);
 app.use('/api/tables', tableRoutes);
@@ -41,15 +37,45 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/staff', staffRoutes);
 app.use('/api/orders', orderRoutes);
 
-// --- API Test (Health Check) ---
-// Giúp kiểm tra xem server có "sống" hay không
-app.get('/', (req, res) => {
-  res.send('Chào mừng đến với API Nhà hàng!');
+const httpServer = createServer(app);
+
+export const io = new Server(httpServer, {
+  cors: {
+    origin: "*", // (Cho phép mọi domain - có thể sửa lại sau)
+    methods: ["GET", "POST"]
+  }
 });
 
-// --- TODO: Import các API Routes (sẽ làm ở bước 3) ---
+// 5. 🧠 KHÁI NIỆM: "Rooms" (Phòng)
+//    Chúng ta lắng nghe kết nối
+io.on('connection', (socket) => {
+  console.log(`Một người dùng đã kết nối: ${socket.id}`);
+  
+  // 5a. Khi Khách hàng (Frontend) "tham gia"
+  socket.on('join_order_room', (orderId) => {
+    // 5b. Cho socket này vào 1 "phòng" riêng
+    //    (Ví dụ: "order_123")
+    socket.join(`order_${orderId}`);
+    console.log(`Socket ${socket.id} đã vào phòng order_${orderId}`);
+  });
+  
+  socket.on('disconnect', () => {
+    console.log(`Người dùng đã ngắt kết nối: ${socket.id}`);
+  });
+});
+
+// 6. Chạy httpServer (thay vì app)
+httpServer.listen(port, () => {
+  console.log(`Server (HTTP + Socket.IO) đang chạy tại http://localhost:${port}`);
+});
+
+// app.get('/', (req, res) => {
+//   res.send('Chào mừng đến với API Nhà hàng!');
+// });
+
+
 
 // --- Khởi động Server ---
-app.listen(port, () => {
-  console.log(`Server đang chạy tại http://localhost:${port}`);
-});
+// app.listen(port, () => {
+//   console.log(`Server đang chạy tại http://localhost:${port}`);
+// });
