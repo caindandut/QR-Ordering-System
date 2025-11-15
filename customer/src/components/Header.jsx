@@ -1,44 +1,148 @@
-// import { useNavigate } from 'react-router-dom';
+// src/components/CustomerHeader.jsx
+import { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom'; // 👈 Thêm Link, useLocation
 import { Button } from '@/components/ui/button';
-import { LogOut } from 'lucide-react';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetClose,
+  SheetTrigger,
+} from '@/components/ui/sheet';
+// 👇 1. Import "linh kiện" mới
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { Badge } from '@/components/ui/badge';
+import { LogOut, Menu, BookOpen, ClipboardList, ShoppingCart } from 'lucide-react'; // 👈 Thêm icon Giỏ hàng
 
+// 👇 2. Import "bộ não" Giỏ hàng
+import { useCartStore } from '../store/cartStore';
 
 export default function CustomerHeader() {
-//   const navigate = useNavigate();
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
   
+  // 👇 3. LẤY DỮ LIỆU TỪ HOOKS
+  const location = useLocation(); // Hook để biết URL hiện tại
+  const pathname = location.pathname; // Ví dụ: "/order", "/order/cart"
+  
+  // Lấy `totalItems` từ "bộ não" Giỏ hàng (dùng selector tối ưu)
+  const totalItems = useCartStore((state) => state.getTotalItems());
+
   const handleLogout = () => {
-    // 1. XÓA "PHIÊN" (SESSION) CỦA KHÁCH
-    // Xóa mọi thứ ta đã lưu
+    // Logic "Xóa Phiên" (không đổi)
     localStorage.removeItem('customer_name');
     localStorage.removeItem('table_id');
     localStorage.removeItem('table_name');
-    localStorage.removeItem('cart-storage'); // 👈 XÓA CẢ GIỎ HÀNG
-    
-    // 2. TẢI LẠI TRANG
-    // Tác dụng: Đây là cách "reset" ứng dụng đơn giản và
-    // an toàn nhất. Nó sẽ buộc OrderGateway chạy lại từ đầu,
-    // và vì `customer_name` đã bị xóa, nó sẽ tự động
-    // hiển thị Modal (Hộp thoại) nhập tên.
+    localStorage.removeItem('cart-storage');
     window.location.reload();
   };
-  
+
+  const handleLinkClick = () => {
+    setIsSheetOpen(false);
+  };
+
+  // 👇 4. TẠO COMPONENT LINK TÁI SỬ DỤNG
+  //    (Component này tự biết "highlight" khi active)
+  const NavLink = ({ to, icon: Icon, children }) => (
+    <Link to={to} onClick={handleLinkClick}>
+      <Button
+        variant={pathname === to ? 'secondary' : 'ghost'} // 👈 Tự highlight
+        className="w-full justify-start text-lg md:text-sm md:justify-center md:w-auto"
+      >
+        <Icon className="h-5 w-5 md:mr-2" />
+        <span className="md:hidden lg:inline-block">{children}</span>
+        {/* Chỉ hiện Badge (số lượng) cho Giỏ hàng */}
+        {to === '/order/cart' && totalItems > 0 && (
+          <Badge className="ml-2 md:hidden lg:inline-block">{totalItems}</Badge>
+        )}
+      </Button>
+    </Link>
+  );
+
   return (
     <header className="flex items-center justify-between p-4 border-b sticky top-0 bg-white z-10">
-      <h1 className="text-xl font-bold">Nhà hàng</h1>
       
-      <div className="flex items-center gap-2">
-        {/* (Nút Dark Mode & Ngôn ngữ sẽ ở đây sau) */}
+      {/* --- PHẦN BÊN TRÁI (LEFT) --- */}
+      <div className="flex items-center gap-4">
         
-        {/* Nút Đăng xuất */}
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          onClick={handleLogout}
-          title="Thoát (Xóa tên của bạn)"
-        >
-          <LogOut className="h-5 w-5" />
-        </Button>
+        {/* 5. GIAO DIỆN MOBILE (SHEET) */}
+        {/* `md:hidden`: Ẩn trên Desktop */}
+        <div className="md:hidden">
+          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="icon">
+                <Menu className="h-5 w-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[300px]">
+              <SheetHeader>
+                <SheetTitle className="text-2xl">QR Quán Ăn</SheetTitle>
+              </SheetHeader>
+              <nav className="flex flex-col gap-2 mt-8">
+                <SheetClose asChild>
+                  <NavLink to="/order" icon={BookOpen}>Thực đơn</NavLink>
+                </SheetClose>
+                <SheetClose asChild>
+                  <NavLink to="/order/cart" icon={ShoppingCart}>Giỏ hàng</NavLink>
+                </SheetClose>
+                <SheetClose asChild>
+                  <NavLink to="/order/status" icon={ClipboardList}>Đơn hàng</NavLink>
+                </SheetClose>
+              </nav>
+            </SheetContent>
+          </Sheet>
+        </div>
+
+        {/* 6. GIAO DIỆN DESKTOP (HEADER LINKS) */}
+        {/* `hidden md:flex`: Ẩn trên Mobile, Hiện trên Desktop */}
+        <div className="hidden md:flex items-center gap-2">
+          <h1 className="text-xl font-bold mr-4">Nhà hàng</h1>
+          <NavLink to="/order" icon={BookOpen}>Thực đơn</NavLink>
+          <NavLink to="/order/cart" icon={ShoppingCart}>Giỏ hàng</NavLink>
+          <NavLink to="/order/status" icon={ClipboardList}>Đơn hàng</NavLink>
+        </div>
       </div>
+
+      {/* --- PHẦN BÊN PHẢI (RIGHT) --- */}
+      {/* 7. NÚT "ĐĂNG XUẤT" VỚI CẢNH BÁO (AlertDialog) */}
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button 
+            variant="ghost" 
+            className="text-red-500 hover:text-red-600"
+          >
+            Đăng xuất
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Bạn có chắc chắn muốn đăng xuất?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Nếu bạn đăng xuất, toàn bộ giỏ hàng và dữ liệu của bạn sẽ bị mất.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Hủy</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleLogout}
+              className="bg-destructive hover:bg-destructive/90"
+            >
+              Vẫn Đăng xuất
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
     </header>
   );
 }

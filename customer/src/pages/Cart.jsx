@@ -40,7 +40,7 @@ export default function CartPage() {
     mutationFn: placeOrder,
     
     // 6. "ẢO THUẬT" KHI THÀNH CÔNG (onSuccess)
-    onSuccess: (data) => { // `data` là `newOrder` trả về từ API 
+    onSuccess: () => { // `data` là `newOrder` trả về từ API 
       toast({
         title: "Đặt món thành công!",
         description: "Đơn hàng của bạn đã được gửi đến bếp.",
@@ -51,7 +51,7 @@ export default function CartPage() {
       
       // 6b. CHUYỂN HƯỚNG sang trang Theo dõi Đơn hàng
       //    (Chúng ta sẽ tạo trang /order/status ở Giai đoạn 3.5)
-      navigate(`/order/status/${data.id}`); 
+      navigate(`/order/status/`); 
     },
     onError: (error) => {
       toast({

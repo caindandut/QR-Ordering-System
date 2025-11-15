@@ -33,7 +33,7 @@ export default function Sidebar({ onLinkClick, isMobileSheet = false }) {
       <div className="flex h-full max-h-screen flex-col gap-2">
         
         <div className="flex h-16 items-center justify-between border-b border-gray-700 px-6">
-          <h1 className="text-lg font-bold">QR Quán Ăn</h1>
+          <h1 className="text-lg font-bold">Nhà hàng</h1>
           
           {/* 👇 2. CHỈ RENDER NÚT "X" KHI isMobileSheet LÀ TRUE */}
           {isMobileSheet && (

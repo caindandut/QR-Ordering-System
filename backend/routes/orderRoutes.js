@@ -108,4 +108,38 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// GET /api/orders?table_id=5&customer_name=...
+router.get('/', async (req, res) => {
+  const { table_id, customer_name } = req.query; // Lấy từ query params
+
+  if (!table_id || !customer_name) {
+    return res.status(400).json({ message: 'Thiếu thông tin bàn hoặc tên khách hàng.' });
+  }
+
+  try {
+    const orders = await prisma.order.findMany({
+      where: {
+        tableId: parseInt(table_id, 10),
+        customerName: customer_name,
+      },
+      include: { // Vẫn lấy chi tiết
+        details: {
+          include: {
+            menuItem: { select: { name: true, imageUrl: true } }
+          }
+        },
+        table: { select: { name: true } }
+      },
+      orderBy: {
+        createdAt: 'desc' // 👈 Sắp xếp đơn mới nhất lên đầu
+      }
+    });
+    // (Lưu ý: API này không trả về lỗi nếu không tìm thấy,
+    // nó chỉ trả về một mảng rỗng [])
+    res.status(200).json(orders);
+  } catch (error) {
+    res.status(500).json({ message: 'Lỗi server', error: error.message });
+  }
+});
+
 export default router;

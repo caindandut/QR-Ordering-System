@@ -9,6 +9,7 @@ import CustomerLayout from './layouts/CustomerLayout';
 import MenuPage from './pages/Menu';
 import ErrorPage from './pages/ErrorPage';
 import CartPage from './pages/Cart';
+import OrderStatusPage from './pages/OrderStatus';
 
 const queryClient = new QueryClient();
 
@@ -32,7 +33,11 @@ const router = createBrowserRouter([
               {
                 path: 'cart',
                 element: <CartPage />,
-              }
+              },
+              {
+                path: 'status', 
+                element: <OrderStatusPage />,
+              },
             ]
           }
         ]
