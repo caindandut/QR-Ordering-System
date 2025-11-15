@@ -3,6 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import api from '../services/api';
 import { useToast } from "@/hooks/use-toast";
 import { useAuthStore } from '../store/authStore'; 
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -24,6 +25,7 @@ const uploadImage = async (file) => {
 // 2. `isLoading`: Trạng thái của "Công nhân" đó
 export default function ProfileForm({ onSubmit, isLoading }) {
   const { toast } = useToast();
+  const { t } = useTranslation();
   
   const user = useAuthStore((state) => state.user);
 
@@ -46,10 +48,10 @@ export default function ProfileForm({ onSubmit, isLoading }) {
     mutationFn: uploadImage,
     onSuccess: (data) => {
       setAvatarUrl(data.imageUrl); // Cập nhật state của Form
-      toast({ title: "Upload ảnh đại diện thành công!" });
+      toast({ title: t('account_page.upload_success') });
     },
     onError: () => {
-        toast({ title: "Upload ảnh thất bại.", variant: "destructive" });
+        toast({ title: t('account_page.upload_error'), variant: "destructive" });
     },
   });
 
@@ -75,7 +77,7 @@ export default function ProfileForm({ onSubmit, isLoading }) {
     <form onSubmit={handleSubmit} className="space-y-4">
       {/* 1. Logic Upload Ảnh (Y HỆT StaffForm) */}
       <div className="space-y-2">
-        <Label htmlFor="avatar">Ảnh đại diện</Label>
+        <Label htmlFor="avatar">{t('account_page.avatar')}</Label>
         <Input
           id="avatar" type="file" accept="image/*"
           onChange={handleFileChange}
@@ -86,7 +88,7 @@ export default function ProfileForm({ onSubmit, isLoading }) {
         ) : (
           avatarUrl && (
             <Avatar className="h-20 w-20 mt-2">
-              <AvatarImage src={avatarUrl} alt="Ảnh đại diện" />
+              <AvatarImage src={avatarUrl} alt={t('account_page.avatar')} />
               <AvatarFallback>{name[0]}</AvatarFallback>
             </Avatar>
           )
@@ -94,7 +96,7 @@ export default function ProfileForm({ onSubmit, isLoading }) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email">{t('account_page.email')}</Label>
         <Input
           id="email"
           type="email"
@@ -105,17 +107,17 @@ export default function ProfileForm({ onSubmit, isLoading }) {
       
       {/* 3. Tên Nhân viên */}
       <div className="space-y-2">
-        <Label htmlFor="name">Tên hiển thị</Label>
+        <Label htmlFor="name">{t('account_page.display_name')}</Label>
         <Input id="name" value={name} onChange={(e) => setName(e.target.value)} required />
       </div>
       
       <div className="space-y-2">
-        <Label htmlFor="phone">Số điện thoại</Label>
+        <Label htmlFor="phone">{t('account_page.phone')}</Label>
         <Input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
       </div>
 
       <Button type="submit" disabled={isLoading || uploadImageMutation.isLoading} className="w-full">
-        {isLoading ? 'Đang lưu...' : (uploadImageMutation.isLoading ? 'Đang xử lý ảnh...' : 'Lưu thay đổi')}
+        {isLoading ? t('common.saving') : (uploadImageMutation.isLoading ? t('account_page.processing_image') : t('account_page.save_changes'))}
       </Button>
     </form>
   );

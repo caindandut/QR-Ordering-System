@@ -13,6 +13,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from 'react-i18next';
 import { PlusCircle, Edit, Trash2 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -43,6 +44,7 @@ export default function ManageStaffPage() {
   
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   // --- LOGIC ĐỌC (READ) ---
   const { 
@@ -59,14 +61,14 @@ export default function ManageStaffPage() {
   const addStaffMutation = useMutation({
     mutationFn: createStaff,
     onSuccess: () => {
-      toast({ title: "Thành công!", description: "Đã thêm nhân viên mới." });
+      toast({ title: t('staff_page.success_add_title'), description: t('staff_page.success_add_desc') });
       queryClient.invalidateQueries({ queryKey: ['staff'] });
       setIsFormOpen(false);
     },
     onError: (error) => {
       toast({
-        title: "Lỗi!",
-        description: error.response?.data?.message || "Không thể thêm nhân viên.",
+        title: t('staff_page.error_title'),
+        description: error.response?.data?.message || t('staff_page.error_add_desc'),
         variant: "destructive",
       });
     },
@@ -76,14 +78,14 @@ export default function ManageStaffPage() {
   const updateStaffMutation = useMutation({
     mutationFn: updateStaff,
     onSuccess: () => {
-      toast({ title: "Thành công!", description: "Đã cập nhật nhân viên." });
+      toast({ title: t('staff_page.success_update_title'), description: t('staff_page.success_update_desc') });
       queryClient.invalidateQueries({ queryKey: ['staff'] }); 
       setIsFormOpen(false);
     },
     onError: (error) => {
       toast({
-        title: "Lỗi!",
-        description: error.response?.data?.message || "Không thể cập nhật nhân viên.",
+        title: t('staff_page.error_title'),
+        description: error.response?.data?.message || t('staff_page.error_update_desc'),
         variant: "destructive",
       });
     },
@@ -93,14 +95,14 @@ export default function ManageStaffPage() {
   const deleteStaffMutation = useMutation({
     mutationFn: deleteStaff,
     onSuccess: () => {
-      toast({ title: "Đã xóa!", description: "Đã xóa nhân viên." });
+      toast({ title: t('staff_page.success_delete_title'), description: t('staff_page.success_delete_desc') });
       queryClient.invalidateQueries({ queryKey: ['staff'] });
       setStaffToDelete(null);
     },
     onError: (error) => {
       toast({
-        title: "Lỗi!",
-        description: error.response?.data?.message || "Không thể xóa nhân viên.",
+        title: t('staff_page.error_title'),
+        description: error.response?.data?.message || t('staff_page.error_delete_desc'),
         variant: "destructive",
       });
       setStaffToDelete(null);
@@ -132,18 +134,18 @@ export default function ManageStaffPage() {
     }
   };
 
-  if (isLoading) return <div>Đang tải danh sách nhân viên...</div>;
-  if (isError) return <div>Lỗi: {error.message}</div>;
+  if (isLoading) return <div>{t('staff_page.loading')}</div>;
+  if (isError) return <div>{t('staff_page.error', { message: error.message })}</div>;
 
   const getInitials = (name) => name?.split(' ').map((n) => n[0]).join('').toUpperCase() || 'NV';
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-foreground">Quản lý Nhân viên</h1>
+        <h1 className="text-3xl font-bold text-foreground">{t('staff_page.title')}</h1>
         <Button onClick={handleOpenAddDialog}>
           <PlusCircle className="mr-2 h-4 w-4" />
-          Thêm nhân viên
+          {t('staff_page.add_new')}
         </Button>
       </div>
 
@@ -151,9 +153,9 @@ export default function ManageStaffPage() {
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>{editingStaff ? 'Sửa nhân viên' : 'Thêm nhân viên mới'}</DialogTitle>
+            <DialogTitle>{editingStaff ? t('staff_page.edit_title') : t('staff_page.add_title')}</DialogTitle>
             <DialogDescription>
-              Điền thông tin chi tiết cho nhân viên.
+              {t('staff_page.form_desc')}
             </DialogDescription>
           </DialogHeader>
           <StaffForm // 👈 Dùng Form "Nhân viên"
@@ -171,19 +173,19 @@ export default function ManageStaffPage() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Bạn có chắc chắn không?</AlertDialogTitle>
+            <AlertDialogTitle>{t('common.are_you_sure')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Hành động này sẽ xóa nhân viên <strong className="mx-1">{staffToDelete?.name}</strong>.
+              {t('staff_page.delete_desc')} <strong className="mx-1">{staffToDelete?.name}</strong>.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Hủy</AlertDialogCancel>
+            <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
             <AlertDialogAction 
               onClick={handleDeleteConfirm}
               disabled={deleteStaffMutation.isLoading}
               className="bg-destructive hover:bg-destructive/90"
             >
-              {deleteStaffMutation.isLoading ? "Đang xóa..." : "Vẫn xóa"}
+              {deleteStaffMutation.isLoading ? t('common.deleting') : t('common.confirm_delete')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -194,11 +196,11 @@ export default function ManageStaffPage() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Nhân viên</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>SĐT</TableHead>
-              <TableHead>Vai trò</TableHead>
-              <TableHead className="text-right">Hành động</TableHead>
+              <TableHead>{t('staff_page.staff_column')}</TableHead>
+              <TableHead>{t('staff_page.email')}</TableHead>
+              <TableHead>{t('staff_page.phone')}</TableHead>
+              <TableHead>{t('staff_page.role')}</TableHead>
+              <TableHead className="text-right">{t('common.action')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -215,7 +217,7 @@ export default function ManageStaffPage() {
                 <TableCell>{staff.phone || 'N/A'}</TableCell>
                 <TableCell>
                   <Badge variant={staff.role === 'ADMIN' ? 'default' : 'secondary'}>
-                    {staff.role}
+                    {staff.role === 'ADMIN' ? t('staff_page.role_admin') : t('staff_page.role_staff')}
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right space-x-2">

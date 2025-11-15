@@ -36,6 +36,7 @@ import { useToast } from "@/hooks/use-toast"; // 👈 Import toast
 import { PlusCircle, Edit, Trash2, QrCode, Check, Printer, Copy } from 'lucide-react';
 import { translateTableStatus } from '@/lib/translations'; // 👈 Import hàm "dịch"
 import TableForm from '../components/TableForm'; // 👈 Import Form của chúng ta
+import { useTranslation } from 'react-i18next';
 
 // Hàm "lấy" dữ liệu (không đổi)
 const fetchTables = async () => {
@@ -88,6 +89,8 @@ export default function ManageTablesPage() {
   
   // 3. Lấy hook "thông báo"
   const { toast } = useToast();
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language;
 
   // --- LOGIC ĐỌC (READ) ---
   const {
@@ -108,8 +111,8 @@ export default function ManageTablesPage() {
     // 5. "ẢO THUẬT" TỰ CẬP NHẬT
     onSuccess: () => {
       toast({
-        title: "Thành công!",
-        description: "Đã thêm bàn mới thành công.",
+        title: t('tables_page.success_add_title'),
+        description: t('tables_page.success_add_desc'),
         duration: 3000
       });
       // 5a. BÁO CHO `useQuery` BIẾT DỮ LIỆU ĐÃ CŨ
@@ -120,8 +123,8 @@ export default function ManageTablesPage() {
     
     onError: (error) => {
       toast({
-        title: "Lỗi!",
-        description: error.response?.data?.message || "Không thể thêm bàn.",
+        title: t('tables_page.error_title'),
+        description: error.response?.data?.message || t('tables_page.error_add_desc'),
         variant: "destructive",
       });
     },
@@ -131,8 +134,8 @@ export default function ManageTablesPage() {
     mutationFn: updateTable,
     onSuccess: () => {
       toast({ 
-        title: "Thành công!",
-        description: "Đã cập nhật bàn.",
+        title: t('tables_page.success_update_title'),
+        description: t('tables_page.success_update_desc'),
         duration: 3000 
       });
       queryClient.invalidateQueries({ queryKey: ['tables'] });
@@ -140,8 +143,8 @@ export default function ManageTablesPage() {
     },
     onError: (error) => {
       toast({
-        title: "Lỗi!",
-        description: error.response?.data?.message || "Không thể cập nhật.",
+        title: t('tables_page.error_title'),
+        description: error.response?.data?.message || t('tables_page.error_update_desc'),
         variant: "destructive",
       });
     },
@@ -152,15 +155,15 @@ export default function ManageTablesPage() {
   const deleteTableMutation = useMutation({
     mutationFn: deleteTable,
     onSuccess: () => {
-      toast({ title: "Đã xóa!", description: "Đã xóa bàn thành công." });
+      toast({ title: t('tables_page.success_delete_title'), description: t('tables_page.success_delete_desc') });
       // 4. "Ảo thuật": Tự làm mới bảng
       queryClient.invalidateQueries({ queryKey: ['tables'] });
       setTableToDelete(null); // Đóng Alert Dialog
     },
     onError: (error) => {
       toast({
-        title: "Lỗi!",
-        description: error.response?.data?.message || "Không thể xóa bàn.",
+        title: t('tables_page.error_title'),
+        description: error.response?.data?.message || t('tables_page.error_delete_desc'),
         variant: "destructive",
       });
       setTableToDelete(null); // Đóng Alert Dialog
@@ -206,15 +209,15 @@ export default function ManageTablesPage() {
     // 2b. Tên file khi lưu PDF
     documentTitle: `QR-Ban-${qrCodeTable?.name || 'qr-code'}`,
     // 2c. (Tùy chọn) Thông báo sau khi in
-    onAfterPrint: () => toast({ title: "Đã gửi lệnh in!" }),
+    onAfterPrint: () => toast({ title: t('tables_page.print_success') }),
   });
 
   // --- XỬ LÝ TRẠNG THÁI LOADING/ERROR ---
   if (isLoading) {
-    return <div>Đang tải dữ liệu bàn...</div>;
+    return <div>{t('tables_page.loading')}</div>;
   }
   if (isError) {
-    return <div>Lỗi: {error.message}</div>;
+    return <div>{t('tables_page.error', { message: error.message })}</div>;
   }
 
   // 👇 4. Xây dựng chuỗi URL cho QR Code
@@ -227,11 +230,11 @@ export default function ManageTablesPage() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-foreground">Quản lý Bàn ăn</h1>
+        <h1 className="text-3xl font-bold text-foreground">{t('tables_page.title')}</h1>
         {/* Nút "Thêm" bây giờ gọi hàm riêng */}
         <Button onClick={handleOpenAddDialog}>
           <PlusCircle className="mr-2 h-4 w-4" />
-          Thêm bàn mới
+          {t('tables_page.add_new')}
         </Button>
         {/* --- DIALOG (Modal) THÔNG MINH --- */}
       {/* Nó dùng chung 1 state `isDialogOpen`.
@@ -242,11 +245,11 @@ export default function ManageTablesPage() {
           <DialogHeader>
             {/* Tiêu đề thay đổi động (dynamic) */}
             <DialogTitle>
-              {editingTable ? 'Sửa bàn ăn' : 'Thêm bàn ăn mới'}
+              {editingTable ? t('tables_page.edit_title') : t('tables_page.add_title')}
             </DialogTitle>
 
             <DialogDescription>
-              Điền thông tin chi tiết cho bàn. Nhấn "Lưu" khi hoàn thành.
+              {t('tables_page.form_desc')}
             </DialogDescription>
 
           </DialogHeader>
@@ -270,25 +273,25 @@ export default function ManageTablesPage() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Bạn có chắc chắn không?</AlertDialogTitle>
+            <AlertDialogTitle>{t('common.are_you_sure')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Hành động này sẽ xóa vĩnh viễn bàn
+              {t('tables_page.delete_desc_1')}
               <strong className="mx-1">
                 {tableToDelete?.name}
               </strong>. 
-              Bạn không thể hoàn tác hành động này.
+              {t('tables_page.delete_desc_2')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             {/* 6b. Nút Hủy: Đặt state về null để đóng */}
-            <AlertDialogCancel>Hủy</AlertDialogCancel>
+            <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
             {/* 6c. Nút Xác nhận: Gọi hàm xóa */}
             <AlertDialogAction 
               onClick={handleDeleteConfirm}
               disabled={deleteTableMutation.isLoading}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {deleteTableMutation.isLoading ? "Đang xóa..." : "Vẫn xóa"}
+              {deleteTableMutation.isLoading ? t('common.deleting') : t('common.confirm_delete')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -307,11 +310,11 @@ export default function ManageTablesPage() {
         <DialogContent className="max-w-xs p-0">
           <DialogHeader className="p-6 pb-2"> {/* Thêm padding cho Header */}
             <DialogTitle className="text-center">
-              Mã QR: {qrCodeTable?.name}
+              {t('tables_page.qr_title', { name: qrCodeTable?.name })}
             </DialogTitle>
 
             <DialogDescription className="text-center">
-              Dùng mã này để khách hàng quét và gọi món tại bàn.
+              {t('tables_page.qr_desc')}
             </DialogDescription>
             
           </DialogHeader>
@@ -321,7 +324,7 @@ export default function ManageTablesPage() {
               {qrCodeTable?.name}
             </h3>
              <p className="hidden print:block print:text-black text-sm mb-4">
-              Quét mã để đặt món bằng Camera/Zalo
+              {t('tables_page.qr_scan_text')}
             </p>
             {/* 6. "Vẽ" QR Code */}
             <QRCode
@@ -360,7 +363,7 @@ export default function ManageTablesPage() {
               ) : (
                 <Copy className="mr-2 h-4 w-4" />
               )}
-              {isCopied ? 'Đã copy!' : 'Copy URL'}
+              {isCopied ? t('tables_page.copied') : t('tables_page.copy_url')}
             </Button>
 
             <Button
@@ -368,7 +371,7 @@ export default function ManageTablesPage() {
               className="w-full"
             >
               <Printer className="mr-2 h-4 w-4" />
-              In mã QR
+              {t('tables_page.print_qr')}
             </Button>
           </div>
         </DialogContent>
@@ -381,10 +384,10 @@ export default function ManageTablesPage() {
           <TableHeader>
             <TableRow>
               <TableHead>ID</TableHead>
-              <TableHead>Tên bàn</TableHead>
-              <TableHead>Sức chứa</TableHead>
-              <TableHead>Trạng thái</TableHead>
-              <TableHead className="text-right">Hành động</TableHead>
+              <TableHead>{t('tables_page.table_name')}</TableHead>
+              <TableHead>{t('tables_page.capacity')}</TableHead>
+              <TableHead>{t('common.status')}</TableHead>
+              <TableHead className="text-right">{t('common.action')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -395,7 +398,7 @@ export default function ManageTablesPage() {
                 <TableCell>{table.capacity}</TableCell>
                 {/* 8. Dùng hàm "dịch" (bạn cần thêm vào `lib/utils.js`) */}
                 <TableCell>
-                  {translateTableStatus(table.status, 'vi')}
+                  {translateTableStatus(table.status, lang)}
                 </TableCell>
                 <TableCell className="text-right space-x-3">
 

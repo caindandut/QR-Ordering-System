@@ -19,7 +19,9 @@ import {
 } from '@/components/ui/sheet';
 import Sidebar from './Sidebar';
 import { ModeToggle } from "./ModeToggle";
+import { LanguageToggle } from "./LanguageToggle";
 import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from 'react-i18next';
 
 export default function Header() {
   const user = useAuthStore((state) => state.user);
@@ -27,6 +29,7 @@ export default function Header() {
   const navigate = useNavigate();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const handleLogout = async () => {
     try {
@@ -35,17 +38,16 @@ export default function Header() {
       
       // 5. Hiển thị thông báo thành công
       toast({
-        title: "Đã đăng xuất",
-        description: "Bạn đã đăng xuất thành công. Hẹn gặp lại!",
-        // variant: "success"
+        title: t('header.logout_success_title'),
+        description: t('header.logout_success_desc'),
       });
 
     } catch (error) {
       // (Phòng trường hợp logout bị lỗi, hiếm khi xảy ra)
       console.error("Logout error:", error);
       toast({
-        title: "Lỗi",
-        description: "Không thể đăng xuất. Vui lòng thử lại.",
+        title: t('header.logout_error_title'),
+        description: t('header.logout_error_desc'),
         variant: "destructive",
       });
     }
@@ -80,8 +82,9 @@ export default function Header() {
       {/* Spacer - Đẩy toggle và avatar sang phải (cả mobile và desktop) */}
       <div className="flex-grow"></div>
       
-      {/* Toggle theme và Avatar */}
+      {/* Toggle theme, language và Avatar */}
       <div className="flex items-center gap-2">
+        <LanguageToggle />
         <ModeToggle />
         
         {/* Dropdown Avatar */}
@@ -103,13 +106,13 @@ export default function Header() {
             <DropdownMenuItem asChild>
               <Link to="/account" className="flex items-center">
                 <User className="mr-2 h-4 w-4" />
-                <span>Tài khoản</span>
+                <span>{t('header.account')}</span>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout} className="text-red-500 dark:text-red-400 focus:text-red-600 dark:focus:text-red-300">
               <LogOut className="mr-2 h-4 w-4" />
-              <span>Đăng xuất</span>
+              <span>{t('header.logout')}</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

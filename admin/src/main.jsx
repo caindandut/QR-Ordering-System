@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import './i18n';
+import { Suspense } from 'react';
 import {
   createBrowserRouter,
   RouterProvider,
@@ -82,10 +84,12 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <ThemeProvider attribute="class" defaultTheme="system" storageKey="admin-ui-theme">
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-      </QueryClientProvider>
-    </ThemeProvider>
+    <Suspense fallback={<div>Đang tải ngôn ngữ...</div>}>
+      <ThemeProvider attribute="class" defaultTheme="system" storageKey="customer-ui-theme">
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+        </QueryClientProvider>
+      </ThemeProvider>
+    </Suspense>
   </React.StrictMode>
 );

@@ -2,6 +2,7 @@ import { useState } from 'react'; // 👈 Thêm useState
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'; // 👈 Thêm useMutation, useQueryClient
 import api from '../services/api';
 import { useToast } from "@/hooks/use-toast"; // 👈 Thêm toast
+import { useTranslation } from 'react-i18next';
 
 // Import "linh kiện" (như cũ)
 import {
@@ -65,6 +66,8 @@ export default function ManageMenuPage() {
   // --- HOOKS ---
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language;
 
   // --- LOGIC ĐỌC (READ) ---
   const {
@@ -83,15 +86,15 @@ export default function ManageMenuPage() {
   const addMenuMutation = useMutation({
     mutationFn: createMenuItem,
     onSuccess: () => {
-      toast({ title: "Thành công!", description: "Đã thêm món ăn mới." });
+      toast({ title: t('menu_page.success_add_title'), description: t('menu_page.success_add_desc') });
       // "CÂU THẦN CHÚ" LÀM MỚI
       queryClient.invalidateQueries({ queryKey: ['menuItems'] });
       setIsFormOpen(false); // Đóng Modal
     },
     onError: (error) => {
       toast({
-        title: "Lỗi!",
-        description: error.response?.data?.message || "Không thể thêm món.",
+        title: t('menu_page.error_title'),
+        description: error.response?.data?.message || t('menu_page.error_add_desc'),
         variant: "destructive",
       });
     },
@@ -101,15 +104,15 @@ export default function ManageMenuPage() {
   const updateMenuMutation = useMutation({
     mutationFn: updateMenuItem,
     onSuccess: () => {
-      toast({ title: "Thành công!", description: "Đã cập nhật món ăn." });
+      toast({ title: t('menu_page.success_update_title'), description: t('menu_page.success_update_desc') });
       // "CÂU THẦN CHÚ" LÀM MỚI
       queryClient.invalidateQueries({ queryKey: ['menuItems'] });
       setIsFormOpen(false); // Đóng Modal
     },
     onError: (error) => {
       toast({
-        title: "Lỗi!",
-        description: error.response?.data?.message || "Không thể cập nhật.",
+        title: t('menu_page.error_title'),
+        description: error.response?.data?.message || t('menu_page.error_update_desc'),
         variant: "destructive",
       });
     },
@@ -120,15 +123,15 @@ export default function ManageMenuPage() {
   const deleteMenuMutation = useMutation({
     mutationFn: deleteMenuItem,
     onSuccess: () => {
-      toast({ title: "Đã xóa!", description: "Đã xóa món ăn thành công." });
+      toast({ title: t('menu_page.success_delete_title'), description: t('menu_page.success_delete_desc') });
       // "Ảo thuật": Tự làm mới bảng
       queryClient.invalidateQueries({ queryKey: ['menuItems'] });
       setItemToDelete(null); // Đóng Alert Dialog
     },
     onError: (error) => {
       toast({
-        title: "Lỗi!",
-        description: error.response?.data?.message || "Không thể xóa món ăn.",
+        title: t('menu_page.error_title'),
+        description: error.response?.data?.message || t('menu_page.error_delete_desc'),
         variant: "destructive",
       });
       setItemToDelete(null);
@@ -164,8 +167,8 @@ export default function ManageMenuPage() {
   };
 
   // ... (Xử lý Loading/Error như cũ) ...
-  if (isLoading) return <div>Đang tải dữ liệu món ăn...</div>;
-  if (isError) return <div>Lỗi: {error.message}</div>;
+  if (isLoading) return <div>{t('menu_page.loading')}</div>;
+  if (isError) return <div>{t('menu_page.error', { message: error.message })}</div>;
 
   // Hàm lấy 2 chữ cái đầu (cho Avatar Fallback)
   const getInitials = (name) => {
@@ -176,11 +179,11 @@ export default function ManageMenuPage() {
     <div className="flex flex-col gap-4">
       {/* --- TIÊU ĐỀ & NÚT THÊM --- */}
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-foreground">Quản lý Món ăn</h1>
+        <h1 className="text-3xl font-bold text-foreground">{t('menu_page.title')}</h1>
         {/* Nút "Thêm" gọi hàm `handleOpenAddDialog` */}
         <Button onClick={handleOpenAddDialog}>
           <PlusCircle className="mr-2 h-4 w-4" />
-          Thêm món ăn mới
+          {t('menu_page.add_new')}
         </Button>
       </div>
 
@@ -189,10 +192,10 @@ export default function ManageMenuPage() {
         <DialogContent className="max-w-2xl"> {/* Cho Modal rộng hơn */}
           <DialogHeader>
             <DialogTitle>
-              {editingMenuItem ? 'Sửa món ăn' : 'Thêm món ăn mới'}
+              {editingMenuItem ? t('menu_page.edit_title') : t('menu_page.add_title')}
             </DialogTitle>
             <DialogDescription>
-              Điền thông tin chi tiết cho món ăn.
+              {t('menu_page.form_desc')}
             </DialogDescription>
           </DialogHeader>
           
@@ -214,23 +217,23 @@ export default function ManageMenuPage() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Bạn có chắc chắn không?</AlertDialogTitle>
+            <AlertDialogTitle>{t('common.are_you_sure')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Hành động này sẽ xóa vĩnh viễn món ăn:
+              {t('menu_page.delete_desc_1')}
               <strong className="mx-1">
                 {itemToDelete?.name}
               </strong>. 
-              Bạn không thể hoàn tác hành động này.
+              {t('menu_page.delete_desc_2')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Hủy</AlertDialogCancel>
+            <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
             <AlertDialogAction 
               onClick={handleDeleteConfirm}
               disabled={deleteMenuMutation.isLoading}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {deleteMenuMutation.isLoading ? "Đang xóa..." : "Vẫn xóa"}
+              {deleteMenuMutation.isLoading ? t('common.deleting') : t('common.confirm_delete')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -241,17 +244,17 @@ export default function ManageMenuPage() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Ảnh</TableHead>
-              <TableHead>Tên món</TableHead>
-              <TableHead>Giá</TableHead>
-              <TableHead>Danh mục</TableHead>
-              <TableHead>Trạng thái</TableHead>
-              <TableHead className="text-right">Hành động</TableHead>
+              <TableHead>{t('common.image')}</TableHead>
+              <TableHead>{t('menu_page.dish_name')}</TableHead>
+              <TableHead>{t('common.price')}</TableHead>
+              <TableHead>{t('common.category')}</TableHead>
+              <TableHead>{t('common.status')}</TableHead>
+              <TableHead className="text-right">{t('common.action')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {menuItems && menuItems.map((item) => {
-              const { text, variant } = translateMenuStatus(item.status, 'vi');
+              const { text, variant } = translateMenuStatus(item.status, lang);
               return (
                 <TableRow key={item.id}>
                   <TableCell>
@@ -266,12 +269,17 @@ export default function ManageMenuPage() {
                     </Avatar>
                   </TableCell>
                   <TableCell className="font-medium">
-                    {item.name}
+                    {lang === 'jp' ? item.name_jp : item.name}
                   </TableCell>
                   <TableCell>
                     {item.price.toLocaleString('vi-VN')}đ
                   </TableCell>
-                  <TableCell>{item.category?.name || 'N/A'}</TableCell>
+                  <TableCell>
+                    {lang === 'jp' 
+                      ? (item.category?.name_jp || item.category?.name || 'N/A')
+                      : (item.category?.name || 'N/A')
+                    }
+                  </TableCell>
                   <TableCell>
                     <Badge variant={variant}>{text}</Badge>
                   </TableCell>

@@ -49,7 +49,7 @@ router.get('/all', async (req, res) => {
   try {
     // API này lấy tất cả món, bao gồm cả món "Ẩn" (HIDDEN)
     const allItems = await prisma.menuItem.findMany({
-      include: { category: { select: { name: true } } },
+      include: { category: { select: { name: true, name_jp: true } } },
       orderBy: { id: 'asc' },
     });
     res.status(200).json(allItems);
@@ -60,7 +60,7 @@ router.get('/all', async (req, res) => {
 
 // POST /api/menu (Tạo món ăn mới)
 router.post('/', async (req, res) => {
-  const { name, name_jp, description, price, imageUrl, status, categoryId } =
+  const { name, name_jp, description, description_jp, price, imageUrl, status, categoryId } =
     req.body;
 
   if (!name || !price || !categoryId || !imageUrl) {
@@ -82,6 +82,7 @@ router.post('/', async (req, res) => {
         name,
         name_jp,
         description,
+        description_jp,
         price: parseInt(price),
         imageUrl, // Sẽ là URL từ Cloudinary
         status: status || 'AVAILABLE',
@@ -98,7 +99,7 @@ router.post('/', async (req, res) => {
 router.patch('/:id', async (req, res) => {
   const itemId = parseInt(req.params.id);
   // Lấy các trường có thể được cập nhật
-  const { name, name_jp, description, price, imageUrl, status, categoryId } =
+  const { name, name_jp, description, description_jp, price, imageUrl, status, categoryId } =
     req.body;
 
   try {
@@ -108,6 +109,7 @@ router.patch('/:id', async (req, res) => {
         name,
         name_jp,
         description,
+        description_jp,
         price: price ? parseInt(price) : undefined,
         imageUrl,
         status,

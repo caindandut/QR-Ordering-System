@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import api from '../services/api';
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from 'react-i18next';
 
 // Import "linh kiện"
 import { Button } from '@/components/ui/button';
@@ -43,12 +44,15 @@ const uploadImage = async (file) => {
 
 export default function MenuForm({ onSubmit, isLoading, initialData = null }) {
   const { toast } = useToast();
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language;
 
   // --- STATE CỦA FORM ---
   const [name, setName] = useState('');
   const [nameJp, setNameJp] = useState('');
   const [price, setPrice] = useState(0);
   const [description, setDescription] = useState('');
+  const [descriptionJp, setDescriptionJp] = useState('');
   const [status, setStatus] = useState('AVAILABLE');
   const [categoryId, setCategoryId] = useState('');
   const [imageUrl, setImageUrl] = useState(''); // 👈 State quan trọng
@@ -60,6 +64,7 @@ export default function MenuForm({ onSubmit, isLoading, initialData = null }) {
       setNameJp(initialData.name_jp || '');
       setPrice(initialData.price || 0);
       setDescription(initialData.description || '');
+      setDescriptionJp(initialData.description_jp || '');
       setStatus(initialData.status || 'AVAILABLE');
       setCategoryId(initialData.categoryId || '');
       setImageUrl(initialData.imageUrl || ''); // 👈 Sync cả ảnh
@@ -69,6 +74,7 @@ export default function MenuForm({ onSubmit, isLoading, initialData = null }) {
       setNameJp('');
       setPrice(0);
       setDescription('');
+      setDescriptionJp('');
       setStatus('AVAILABLE');
       setCategoryId('');
       setImageUrl('');
@@ -87,12 +93,12 @@ export default function MenuForm({ onSubmit, isLoading, initialData = null }) {
     onSuccess: (data) => {
       // Bước 4c: Khi upload thành công, set URL vào state
       setImageUrl(data.imageUrl);
-      toast({ title: "Upload thành công!", description: "Ảnh đã được tải lên." });
+      toast({ title: t('menu_page.upload_success_title'), description: t('menu_page.upload_success_desc') });
     },
     onError: () => {
       toast({
-        title: "Upload thất bại!",
-        description: "Không thể tải ảnh lên. Vui lòng thử lại.",
+        title: t('menu_page.upload_error_title'),
+        description: t('menu_page.upload_error_desc'),
         variant: "destructive",
       });
     },
@@ -117,6 +123,7 @@ export default function MenuForm({ onSubmit, isLoading, initialData = null }) {
       name_jp: nameJp,
       price: parseInt(price, 10),
       description,
+      description_jp: descriptionJp,
       status,
       categoryId: parseInt(categoryId, 10),
       imageUrl, // 👈 Gửi URL (state) đi
@@ -128,7 +135,7 @@ export default function MenuForm({ onSubmit, isLoading, initialData = null }) {
       
       {/* --- CỘT UPLOAD ẢNH --- */}
       <div className="space-y-2">
-        <Label htmlFor="image">Ảnh món ăn</Label>
+        <Label htmlFor="image">{t('common.image')}</Label>
         <Input
           id="image"
           type="file"
@@ -140,14 +147,14 @@ export default function MenuForm({ onSubmit, isLoading, initialData = null }) {
         {uploadImageMutation.isLoading ? (
           <div className="flex items-center gap-2 text-muted-foreground">
             <Loader2 className="h-4 w-4 animate-spin" />
-            <span>Đang tải ảnh lên...</span>
+            <span>{t('menu_page.uploading')}</span>
           </div>
         ) : (
           imageUrl && (
             <div className="mt-2">
               <img
                 src={imageUrl}
-                alt="Xem trước"
+                alt={t('menu_page.preview')}
                 className="w-32 h-32 object-cover rounded-md"
               />
             </div>
@@ -157,7 +164,7 @@ export default function MenuForm({ onSubmit, isLoading, initialData = null }) {
 
       {/* --- CỘT TÊN (VI) --- */}
       <div className="space-y-2">
-        <Label htmlFor="name">Tên món (Tiếng Việt)</Label>
+        <Label htmlFor="name">{t('common.name_vi')}</Label>
         <Input
           id="name" value={name} onChange={(e) => setName(e.target.value)}
           required
@@ -166,7 +173,7 @@ export default function MenuForm({ onSubmit, isLoading, initialData = null }) {
       
       {/* --- CỘT TÊN (JP) --- */}
       <div className="space-y-2">
-        <Label htmlFor="nameJp">Tên món (Tiếng Nhật)</Label>
+        <Label htmlFor="nameJp">{t('common.name_jp')}</Label>
         <Input
           id="nameJp" value={nameJp} onChange={(e) => setNameJp(e.target.value)}
           required
@@ -175,7 +182,7 @@ export default function MenuForm({ onSubmit, isLoading, initialData = null }) {
 
       {/* --- CỘT GIÁ --- */}
       <div className="space-y-2">
-        <Label htmlFor="price">Giá (VNĐ)</Label>
+        <Label htmlFor="price">{t('common.price')} (VNĐ)</Label>
         <Input
           id="price" type="number" value={price} onChange={(e) => setPrice(e.target.value)}
           required
@@ -184,19 +191,19 @@ export default function MenuForm({ onSubmit, isLoading, initialData = null }) {
 
       {/* --- CỘT DANH MỤC (`useQuery` data) --- */}
       <div className="space-y-2">
-        <Label htmlFor="category">Danh mục</Label>
+        <Label htmlFor="category">{t('common.category')}</Label>
         <Select
           value={categoryId ? String(categoryId) : ''}
           onValueChange={setCategoryId}
           disabled={isLoadingCategories}
         >
           <SelectTrigger>
-            <SelectValue placeholder={isLoadingCategories ? "Đang tải danh mục..." : "Chọn một danh mục"} />
+            <SelectValue placeholder={isLoadingCategories ? t('menu_page.loading_categories') : t('menu_page.select_category')} />
           </SelectTrigger>
           <SelectContent>
             {categories && categories.map((category) => (
               <SelectItem key={category.id} value={String(category.id)}>
-                {category.name}
+                {lang === 'jp' ? (category.name_jp || category.name) : category.name}
               </SelectItem>
             ))}
           </SelectContent>
@@ -205,27 +212,38 @@ export default function MenuForm({ onSubmit, isLoading, initialData = null }) {
       
       {/* --- CỘT TRẠNG THÁI --- */}
       <div className="space-y-2">
-        <Label htmlFor="status">Trạng thái</Label>
+        <Label htmlFor="status">{t('common.status')}</Label>
         <Select value={status} onValueChange={setStatus}>
           <SelectTrigger>
-            <SelectValue placeholder="Chọn trạng thái" />
+            <SelectValue placeholder={t('menu_page.select_status')} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="AVAILABLE">Có sẵn</SelectItem>
-            <SelectItem value="UNAVAILABLE">Hết hàng</SelectItem>
-            <SelectItem value="HIDDEN">Ẩn</SelectItem>
+            <SelectItem value="AVAILABLE">{t('menu_page.status_available')}</SelectItem>
+            <SelectItem value="UNAVAILABLE">{t('menu_page.status_unavailable')}</SelectItem>
+            <SelectItem value="HIDDEN">{t('menu_page.status_hidden')}</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
-      {/* --- CỘT MÔ TẢ --- */}
+      {/* --- CỘT MÔ TẢ (VI) --- */}
       <div className="space-y-2">
-        <Label htmlFor="description">Mô tả</Label>
+        <Label htmlFor="description">{t('menu_page.description_vi')}</Label>
         <Textarea
           id="description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          placeholder="Mô tả ngắn về món ăn..."
+          placeholder={t('menu_page.description_placeholder')}
+        />
+      </div>
+
+      {/* --- CỘT MÔ TẢ (JP) --- */}
+      <div className="space-y-2">
+        <Label htmlFor="descriptionJp">{t('menu_page.description_jp')}</Label>
+        <Textarea
+          id="descriptionJp"
+          value={descriptionJp}
+          onChange={(e) => setDescriptionJp(e.target.value)}
+          placeholder={t('menu_page.description_placeholder_jp')}
         />
       </div>
 
@@ -236,7 +254,7 @@ export default function MenuForm({ onSubmit, isLoading, initialData = null }) {
         disabled={isLoading || uploadImageMutation.isLoading}
         className="w-full"
       >
-        {isLoading ? 'Đang lưu...' : (uploadImageMutation.isLoading ? 'Đang xử lý ảnh...' : 'Lưu món ăn')}
+        {isLoading ? t('common.saving') : (uploadImageMutation.isLoading ? t('menu_page.processing_image') : t('menu_page.save_dish'))}
       </Button>
     </form>
   );

@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 export default function PasswordForm({ onSubmit, isLoading }) {
+  const { t } = useTranslation();
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -18,12 +20,12 @@ export default function PasswordForm({ onSubmit, isLoading }) {
     //    Tại sao? Để tiết kiệm 1 "chuyến" gọi API.
     //    Không có lý do gì gửi 2 mật khẩu không khớp lên server.
     if (newPassword !== confirmPassword) {
-      setError('Mật khẩu mới và xác nhận không khớp.');
+      setError(t('account_page.password_mismatch'));
       return; // Dừng lại
     }
     
     if (newPassword.length < 6) {
-      setError('Mật khẩu mới phải có ít nhất 6 ký tự.');
+      setError(t('account_page.password_min_length'));
       return;
     }
 
@@ -33,7 +35,7 @@ export default function PasswordForm({ onSubmit, isLoading }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="oldPassword">Mật khẩu cũ</Label>
+        <Label htmlFor="oldPassword">{t('account_page.old_password')}</Label>
         <Input
           id="oldPassword" type="password"
           value={oldPassword}
@@ -42,7 +44,7 @@ export default function PasswordForm({ onSubmit, isLoading }) {
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="newPassword">Mật khẩu mới</Label>
+        <Label htmlFor="newPassword">{t('account_page.new_password')}</Label>
         <Input
           id="newPassword" type="password"
           value={newPassword}
@@ -51,7 +53,7 @@ export default function PasswordForm({ onSubmit, isLoading }) {
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="confirmPassword">Xác nhận mật khẩu mới</Label>
+        <Label htmlFor="confirmPassword">{t('account_page.confirm_password')}</Label>
         <Input
           id="confirmPassword" type="password"
           value={confirmPassword}
@@ -63,7 +65,7 @@ export default function PasswordForm({ onSubmit, isLoading }) {
       {error && <p className="text-red-500 text-sm">{error}</p>}
       
       <Button type="submit" disabled={isLoading} className="w-full">
-        {isLoading ? 'Đang lưu...' : 'Đổi mật khẩu'}
+        {isLoading ? t('common.saving') : t('account_page.change_password')}
       </Button>
     </form>
   );

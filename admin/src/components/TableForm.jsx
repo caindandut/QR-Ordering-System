@@ -9,11 +9,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useTranslation } from 'react-i18next';
 
 // `initialData` dùng cho việc "Sửa" (sẽ làm sau)
 // `onSubmit` là hàm mutation của chúng ta
 // `isLoading` là trạng thái của mutation
 export default function TableForm({ onSubmit, isLoading, initialData = {} }) {
+  const { t } = useTranslation();
+  
   // Dùng `?.` (Optional Chaining)
 // Nó có nghĩa là: "Hãy thử đọc 'name'. Nếu 'initialData' là null,
 // đừng báo lỗi, cứ coi như kết quả là 'undefined'."
@@ -53,19 +56,18 @@ const [status, setStatus] = useState(initialData?.status || 'AVAILABLE');
     <form onSubmit={handleSubmit} className="space-y-4">
       {/* --- TÊN BÀN --- */}
       <div className="space-y-2">
-        <Label htmlFor="name">Tên bàn</Label>
+        <Label htmlFor="name">{t('tables_page.table_name')}</Label>
         <Input
           id="name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-        //   placeholder="Ví dụ: Bàn 1, Bàn 2..."
           required
         />
       </div>
       
       {/* --- SỨC CHỨA --- */}
       <div className="space-y-2">
-        <Label htmlFor="capacity">Sức chứa</Label>
+        <Label htmlFor="capacity">{t('tables_page.capacity')}</Label>
         <Input
           id="capacity"
           type="number"
@@ -77,23 +79,23 @@ const [status, setStatus] = useState(initialData?.status || 'AVAILABLE');
       
       {/* --- TRẠNG THÁI --- */}
       <div className="space-y-2">
-        <Label htmlFor="status">Trạng thái</Label>
+        <Label htmlFor="status">{t('common.status')}</Label>
         <Select value={status} onValueChange={setStatus}>
           <SelectTrigger>
-            <SelectValue placeholder="Chọn trạng thái" />
+            <SelectValue placeholder={t('tables_page.select_status')} />
           </SelectTrigger>
           <SelectContent>
             {/* Đây là các "Key" mà chúng ta đã thống nhất */}
-            <SelectItem value="AVAILABLE">Trống</SelectItem>
-            <SelectItem value="OCCUPIED">Đang có khách</SelectItem>
-            <SelectItem value="HIDDEN">Ẩn</SelectItem>
+            <SelectItem value="AVAILABLE">{t('tables_page.status_available')}</SelectItem>
+            <SelectItem value="OCCUPIED">{t('tables_page.status_occupied')}</SelectItem>
+            <SelectItem value="HIDDEN">{t('tables_page.status_hidden')}</SelectItem>
           </SelectContent>
         </Select>
       </div>
       
       {/* --- NÚT SUBMIT --- */}
       <Button type="submit" disabled={isLoading} className="w-full">
-        {isLoading ? 'Đang lưu...' : 'Lưu'}
+        {isLoading ? t('common.saving') : t('common.save')}
       </Button>
     </form>
   );

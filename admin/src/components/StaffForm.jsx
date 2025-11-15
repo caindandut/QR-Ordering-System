@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import api from '../services/api';
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -30,6 +31,7 @@ const uploadImage = async (file) => {
 
 export default function StaffForm({ onSubmit, isLoading, initialData = null }) {
   const { toast } = useToast();
+  const { t } = useTranslation();
   
   const isEditMode = Boolean(initialData);
   
@@ -59,12 +61,12 @@ export default function StaffForm({ onSubmit, isLoading, initialData = null }) {
     mutationFn: uploadImage,
     onSuccess: (data) => {
       setAvatarUrl(data.imageUrl);
-      toast({ title: "Upload ảnh đại diện thành công!" });
+      toast({ title: t('staff_page.upload_success') });
     },
     onError: () => {
       toast({
-        title: "Upload thất bại!",
-        description: "Không thể tải ảnh lên. Vui lòng thử lại.",
+        title: t('staff_page.upload_error_title'),
+        description: t('staff_page.upload_error_desc'),
         variant: "destructive",
       });
     },
@@ -104,7 +106,7 @@ export default function StaffForm({ onSubmit, isLoading, initialData = null }) {
     <form onSubmit={handleSubmit} className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
       
       <div className="space-y-2">
-        <Label htmlFor="avatar">Ảnh đại diện</Label>
+        <Label htmlFor="avatar">{t('staff_page.avatar')}</Label>
         <Input
           id="avatar" type="file" accept="image/*"
           onChange={handleFileChange}
@@ -113,12 +115,12 @@ export default function StaffForm({ onSubmit, isLoading, initialData = null }) {
         {uploadImageMutation.isLoading ? (
           <div className="flex items-center gap-2 text-muted-foreground">
              <Loader2 className="h-4 w-4 animate-spin" />
-             <span>Đang tải ảnh...</span>
+             <span>{t('staff_page.uploading')}</span>
           </div>
         ) : (
           avatarUrl && (
             <Avatar className="h-20 w-20 mt-2">
-              <AvatarImage src={avatarUrl} alt="Ảnh đại diện" />
+              <AvatarImage src={avatarUrl} alt={t('staff_page.avatar')} />
               <AvatarFallback>{name[0]}</AvatarFallback>
             </Avatar>
           )
@@ -126,47 +128,47 @@ export default function StaffForm({ onSubmit, isLoading, initialData = null }) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="name">Họ và Tên</Label>
+        <Label htmlFor="name">{t('staff_page.full_name')}</Label>
         <Input id="name" value={name} onChange={(e) => setName(e.target.value)} required />
       </div>
       
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email">{t('staff_page.email')}</Label>
         <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
       </div>
       
       <div className="space-y-2">
-        <Label htmlFor="password">Mật khẩu</Label>
+        <Label htmlFor="password">{t('staff_page.password')}</Label>
         <Input 
           id="password" 
           type="password" 
           value={password} 
           onChange={(e) => setPassword(e.target.value)} 
-          placeholder={isEditMode ? "Để trống nếu không đổi" : "Nhập mật khẩu..."}
+          placeholder={isEditMode ? t('staff_page.password_placeholder_edit') : t('staff_page.password_placeholder')}
           required={!isEditMode} // 👈 Chỉ bắt buộc khi Thêm Mới
         />
       </div>
       
       <div className="space-y-2">
-        <Label htmlFor="phone">Số điện thoại</Label>
+        <Label htmlFor="phone">{t('staff_page.phone')}</Label>
         <Input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="role">Vai trò</Label>
+        <Label htmlFor="role">{t('staff_page.role')}</Label>
         <Select value={role} onValueChange={setRole} required>
           <SelectTrigger>
-            <SelectValue placeholder="Chọn vai trò" />
+            <SelectValue placeholder={t('staff_page.select_role')} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="STAFF">Nhân viên</SelectItem>
-            <SelectItem value="ADMIN">Quản trị viên</SelectItem>
+            <SelectItem value="STAFF">{t('staff_page.role_staff')}</SelectItem>
+            <SelectItem value="ADMIN">{t('staff_page.role_admin')}</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       <Button type="submit" disabled={isLoading || uploadImageMutation.isLoading} className="w-full">
-        {isLoading ? 'Đang lưu...' : (uploadImageMutation.isLoading ? 'Đang xử lý ảnh...' : 'Lưu Nhân viên')}
+        {isLoading ? t('common.saving') : (uploadImageMutation.isLoading ? t('staff_page.processing_image') : t('staff_page.save_staff'))}
       </Button>
     </form>
   );

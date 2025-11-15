@@ -145,7 +145,9 @@ export default function MenuPage() {
                     <CardTitle>
                       {lang === 'jp' ? item.name_jp : item.name}
                     </CardTitle>
-                    <CardDescription>{item.description}</CardDescription>
+                    <CardDescription>
+                      {lang === 'jp' ? (item.description_jp || item.description) : item.description}
+                    </CardDescription>
                   </CardHeader>
                   <CardContent className="flex-grow">
                     <img 

@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../services/api';
 import { useAuthStore } from '../store/authStore';
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from 'react-i18next';
 import {
   Card,
   CardContent,
@@ -25,6 +26,7 @@ const changePassword = async (data) => {
 export default function AccountPage() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { t } = useTranslation();
   
   // 1. Lấy "hành động" updateUser từ "bộ não"
   const updateUserInStore = useAuthStore((state) => state.updateUser);
@@ -36,7 +38,7 @@ export default function AccountPage() {
     // 3. "ẢO THUẬT" (onSuccess)
     onSuccess: (data) => {
       // `data` là { user: {...} } trả về từ API
-      toast({ title: "Thành công!", description: "Đã cập nhật hồ sơ của bạn." });
+      toast({ title: t('account_page.success_update_title'), description: t('account_page.success_update_desc') });
       
       // 3a. Cập nhật "bộ não" (Zustand)
       //    -> Header sẽ tự động cập nhật tên mới
@@ -48,8 +50,8 @@ export default function AccountPage() {
     },
     onError: (error) => {
       toast({
-        title: "Lỗi!",
-        description: error.response?.data?.message || "Không thể cập nhật.",
+        title: t('account_page.error_title'),
+        description: error.response?.data?.message || t('account_page.error_update_desc'),
         variant: "destructive",
       });
     },
@@ -58,14 +60,14 @@ export default function AccountPage() {
   const changePasswordMutation = useMutation({
     mutationFn: changePassword,
     onSuccess: (data) => {
-      toast({ title: "Thành công!", description: data.message });
+      toast({ title: t('account_page.success_password_title'), description: data.message });
       // (Không cần invalidateQueries vì không ảnh hưởng Bảng)
       // (Chúng ta cần 1 cách để reset form con)
     },
     onError: (error) => {
       toast({
-        title: "Lỗi đổi mật khẩu!",
-        description: error.response?.data?.message || "Không thể đổi mật khẩu.",
+        title: t('account_page.error_password_title'),
+        description: error.response?.data?.message || t('account_page.error_password_desc'),
         variant: "destructive",
       });
     },
@@ -82,15 +84,15 @@ export default function AccountPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-3xl font-bold text-foreground">Tài khoản của tôi</h1>
+      <h1 className="text-3xl font-bold text-foreground">{t('account_page.title')}</h1>
       
       <div className="grid gap-6 md:grid-cols-2">
         {/* --- CARD 1: THÔNG TIN CÁ NHÂN --- */}
         <Card>
           <CardHeader>
-            <CardTitle>Thông tin cá nhân</CardTitle>
+            <CardTitle>{t('account_page.profile_title')}</CardTitle>
             <CardDescription>
-              Cập nhật tên, số điện thoại và ảnh đại diện của bạn.
+              {t('account_page.profile_desc')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -104,9 +106,9 @@ export default function AccountPage() {
 
        <Card>
           <CardHeader>
-            <CardTitle>Đổi mật khẩu</CardTitle>
+            <CardTitle>{t('account_page.password_title')}</CardTitle>
             <CardDescription>
-              Thay đổi mật khẩu đăng nhập của bạn. Yêu cầu mật khẩu cũ.
+              {t('account_page.password_desc')}
             </CardDescription>
           </CardHeader>
           <CardContent>

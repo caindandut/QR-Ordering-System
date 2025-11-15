@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from 'react-i18next';
 
 export default function LoginPage() {
   // 1. Lấy hàm `login` từ "Não"
@@ -15,6 +16,7 @@ export default function LoginPage() {
   const navigate = useNavigate(); // Hook để chuyển trang
 
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const [isLoading, setIsLoading] = useState(false);
   
@@ -43,17 +45,16 @@ export default function LoginPage() {
     if (result.success) {
       // 4. Nếu thành công, chuyển hướng về trang chủ
       toast({
-        title: "Đăng nhập thành công!",
-        description: "Chào mừng bạn đã trở lại.",
-        // variant: "success"
+        title: t('login_page.success_title'),
+        description: t('login_page.success_desc'),
         duration: 3000
       });
       navigate('/'); // (Trang '/' là Dashboard của chúng ta)
     } else {
       // 5. Nếu thất bại, hiển thị lỗi
       toast({
-        title: "Đăng nhập thất bại",
-        description: result.error || "Vui lòng kiểm tra lại thông tin đăng nhập.",
+        title: t('login_page.error_title'),
+        description: result.error || t('login_page.error_desc'),
         variant: "destructive"
       });
       // setError(result.error);
@@ -63,9 +64,9 @@ export default function LoginPage() {
   return (
     <div className="flex items-center justify-center h-screen bg-background">
       <form onSubmit={handleSubmit} className="w-full max-w-sm p-8 space-y-4 border rounded-lg shadow-md bg-card">
-        <h2 className="text-2xl font-bold text-center text-card-foreground">Đăng nhập</h2>
+        <h2 className="text-2xl font-bold text-center text-card-foreground">{t('login_page.title')}</h2>
         <div>
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">{t('login_page.email')}</Label>
           <Input
             id="email"
             type="email"
@@ -76,7 +77,7 @@ export default function LoginPage() {
           />
         </div>
         <div>
-          <Label htmlFor="password">Mật khẩu</Label>
+          <Label htmlFor="password">{t('login_page.password')}</Label>
           <Input
             id="password"
             type="password"
@@ -89,7 +90,7 @@ export default function LoginPage() {
         
         {/* {error && <p className="text-red-500 text-sm">{error}</p>} */}
         <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
+          {isLoading ? t('login_page.submitting') : t('login_page.submit')}
         </Button>
       </form>
     </div>
