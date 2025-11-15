@@ -1,6 +1,5 @@
-// src/components/CustomerHeader.jsx
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom'; // 👈 Thêm Link, useLocation
+import { Link, useLocation } from 'react-router-dom'; 
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -10,7 +9,6 @@ import {
   SheetClose,
   SheetTrigger,
 } from '@/components/ui/sheet';
-// 👇 1. Import "linh kiện" mới
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,22 +22,18 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { LogOut, Menu, BookOpen, ClipboardList, ShoppingCart } from 'lucide-react'; // 👈 Thêm icon Giỏ hàng
-
-// 👇 2. Import "bộ não" Giỏ hàng
 import { useCartStore } from '../store/cartStore';
 
 export default function CustomerHeader() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   
-  // 👇 3. LẤY DỮ LIỆU TỪ HOOKS
-  const location = useLocation(); // Hook để biết URL hiện tại
+  const location = useLocation(); 
   const pathname = location.pathname; // Ví dụ: "/order", "/order/cart"
   
   // Lấy `totalItems` từ "bộ não" Giỏ hàng (dùng selector tối ưu)
   const totalItems = useCartStore((state) => state.getTotalItems());
 
   const handleLogout = () => {
-    // Logic "Xóa Phiên" (không đổi)
     localStorage.removeItem('customer_name');
     localStorage.removeItem('table_id');
     localStorage.removeItem('table_name');
@@ -51,12 +45,10 @@ export default function CustomerHeader() {
     setIsSheetOpen(false);
   };
 
-  // 👇 4. TẠO COMPONENT LINK TÁI SỬ DỤNG
-  //    (Component này tự biết "highlight" khi active)
   const NavLink = ({ to, icon: Icon, children }) => (
     <Link to={to} onClick={handleLinkClick}>
       <Button
-        variant={pathname === to ? 'secondary' : 'ghost'} // 👈 Tự highlight
+        variant={pathname === to ? 'secondary' : 'ghost'} 
         className="w-full justify-start text-lg md:text-sm md:justify-center md:w-auto"
       >
         <Icon className="h-5 w-5 md:mr-2" />
@@ -72,11 +64,7 @@ export default function CustomerHeader() {
   return (
     <header className="flex items-center justify-between p-4 border-b sticky top-0 bg-white z-10">
       
-      {/* --- PHẦN BÊN TRÁI (LEFT) --- */}
       <div className="flex items-center gap-4">
-        
-        {/* 5. GIAO DIỆN MOBILE (SHEET) */}
-        {/* `md:hidden`: Ẩn trên Desktop */}
         <div className="md:hidden">
           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild>
@@ -86,11 +74,11 @@ export default function CustomerHeader() {
             </SheetTrigger>
             <SheetContent side="left" className="w-[300px]">
               <SheetHeader>
-                <SheetTitle className="text-2xl">QR Quán Ăn</SheetTitle>
+                <SheetTitle className="text-2xl text-left">Nhà hàng</SheetTitle>
               </SheetHeader>
               <nav className="flex flex-col gap-2 mt-8">
                 <SheetClose asChild>
-                  <NavLink to="/order" icon={BookOpen}>Thực đơn</NavLink>
+                  <NavLink to="/order" icon={BookOpen}>Menu</NavLink>
                 </SheetClose>
                 <SheetClose asChild>
                   <NavLink to="/order/cart" icon={ShoppingCart}>Giỏ hàng</NavLink>
@@ -102,9 +90,6 @@ export default function CustomerHeader() {
             </SheetContent>
           </Sheet>
         </div>
-
-        {/* 6. GIAO DIỆN DESKTOP (HEADER LINKS) */}
-        {/* `hidden md:flex`: Ẩn trên Mobile, Hiện trên Desktop */}
         <div className="hidden md:flex items-center gap-2">
           <h1 className="text-xl font-bold mr-4">Nhà hàng</h1>
           <NavLink to="/order" icon={BookOpen}>Thực đơn</NavLink>
@@ -112,9 +97,6 @@ export default function CustomerHeader() {
           <NavLink to="/order/status" icon={ClipboardList}>Đơn hàng</NavLink>
         </div>
       </div>
-
-      {/* --- PHẦN BÊN PHẢI (RIGHT) --- */}
-      {/* 7. NÚT "ĐĂNG XUẤT" VỚI CẢNH BÁO (AlertDialog) */}
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <Button 

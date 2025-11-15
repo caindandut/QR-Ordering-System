@@ -11,6 +11,12 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { Loader2 } from 'lucide-react';
@@ -58,6 +64,12 @@ export default function MenuPage() {
   
   }, [menuItems]); // 👈 Chỉ "sắp xếp" lại khi `menuItems` thay đổi
 
+  // Tác dụng: Dùng `useMemo` để tìm tên của danh mục đầu tiên
+  // (ví dụ: "Khai vị") để làm `defaultValue` (giá trị mặc định) cho <Tabs>
+  const firstCategory = useMemo(() => {
+    return Object.keys(groupedMenu)[0];
+  }, [groupedMenu]);
+
   // --- 5. LOGIC KẾT NỐI GIỎ HÀNG (Zustand) ---
   const addItemToCart = useCartStore((state) => state.addItem);
 
@@ -81,52 +93,74 @@ export default function MenuPage() {
   if (isError) return <div className="p-4 text-red-500">Lỗi: Không thể tải thực đơn.</div>;
 
   return (
-    <div className="p-4 md:p-8 pb-24"> {/* Thêm padding-bottom để không bị "Giỏ hàng mini" che */}
-      {/* 6. HIỂN THỊ CÁC NHÓM MÓN ĂN */}
-      {/* Object.keys(groupedMenu) sẽ là: ["Khai vị", "Món chính", "Đồ uống"]
-        Chúng ta lặp qua các "chìa khóa" (key) này
+    <div className="p-4 md:p-8 pb-24">
+      <h1 className="text-4xl font-bold mb-8">Menu</h1>
+    
+      {/* 👇 [MỚI] 4. BỌC MỌI THỨ TRONG <Tabs> */}
+      {/* `defaultValue` nói với <Tabs> rằng:
+        "Khi mới tải, hãy tự động chọn tab 'Khai vị'"
       */}
-      <h1 className="text-4xl font-bold mb-8">Thực Đơn</h1>
-      {Object.keys(groupedMenu).map((categoryName) => (
-        <section key={categoryName} className="mb-8">
+      <Tabs defaultValue={firstCategory} className="w-full">
+        
+        {/* 5. DANH SÁCH CÁC NÚT BẤM (TABS) */}
+        {/* `TabsList` là "thanh" chứa các nút */}
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2 h-auto mb-6">
+          {/* Lặp qua các tên danh mục (ví dụ: "Khai vị", "Món chính") */}
+          {Object.keys(groupedMenu).map((categoryName) => (
+            // `TabsTrigger` là 1 "nút"
+            <TabsTrigger 
+              key={categoryName} 
+              value={categoryName} // 👈 Giá trị (value) phải KHỚP
+              className="py-3 text-base"
+            >
+              {categoryName}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        
+        {/* 6. NỘI DUNG CỦA TỪNG TAB */}
+        {/* Lặp qua các tên danh mục một lần nữa */}
+        {Object.keys(groupedMenu).map((categoryName) => (
           
-          {/* Tên Danh mục (Khai vị, Món chính...) */}
-          <h2 className="text-3xl font-bold mb-4">{categoryName}</h2>
+          // `TabsContent` là "nội dung"
+          <TabsContent 
+            key={categoryName} 
+            value={categoryName} // 👈 Giá trị (value) phải KHỚP
+          >
+            {/*
+              Bên trong, chúng ta đặt LƯỚI (grid) các món ăn
+              (Logic này y hệt code cũ của bạn)
+            */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {groupedMenu[categoryName].map((item) => (
+                <Card key={item.id} className="flex flex-col">
+                  <CardHeader>
+                    <CardTitle>{item.name}</CardTitle>
+                    <CardDescription>{item.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent className="flex-grow">
+                    <img 
+                      src={item.imageUrl} 
+                      alt={item.name} 
+                      className="w-full h-48 object-cover rounded-md"
+                    />
+                  </CardContent>
+                  <CardFooter className="flex justify-between items-center">
+                    <span className="text-lg font-bold">
+                      {item.price.toLocaleString('vi-VN')}đ
+                    </span>
+                    <Button onClick={() => handleAddItem(item)}>
+                      <Plus className="mr-2 h-4 w-4" />
+                      Thêm
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
           
-          {/* Lưới (Grid) các món ăn */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {/* Lặp qua các món ăn BÊN TRONG nhóm đó */}
-            {groupedMenu[categoryName].map((item) => (
-              
-              <Card key={item.id} className="flex flex-col">
-                <CardHeader>
-                  <CardTitle>{item.name}</CardTitle>
-                  <CardDescription>{item.description}</CardDescription>
-                </CardHeader>
-                <CardContent className="flex-grow">
-                  <img 
-                    src={item.imageUrl} 
-                    alt={item.name} 
-                    className="w-full h-80 object-cover rounded-md"
-                  />
-                </CardContent>
-                <CardFooter className="flex justify-between items-center">
-                  <span className="text-lg font-bold">
-                    {item.price.toLocaleString('vi-VN')}đ
-                  </span>
-                  
-                  {/* 7. KẾT NỐI NÚT "THÊM" */}
-                  <Button onClick={() => handleAddItem(item)}>
-                    <Plus className="mr-2 h-4 w-4" />
-                    Thêm
-                  </Button>
-                </CardFooter>
-              </Card>
-
-            ))}
-          </div>
-        </section>
-      ))}
+        ))}
+      </Tabs>
     </div>
   );
 }
