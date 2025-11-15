@@ -82,7 +82,7 @@ export default function AccountPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-3xl font-bold">Tài khoản của tôi</h1>
+      <h1 className="text-3xl font-bold text-foreground">Tài khoản của tôi</h1>
       
       <div className="grid gap-6 md:grid-cols-2">
         {/* --- CARD 1: THÔNG TIN CÁ NHÂN --- */}

@@ -18,6 +18,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import Sidebar from './Sidebar';
+import { ModeToggle } from "./ModeToggle";
 import { useToast } from '@/hooks/use-toast';
 
 export default function Header() {
@@ -59,63 +60,60 @@ export default function Header() {
   };
 
   return (
-    // [SỬA] Bỏ "justify-between" đi, chỉ cần "flex items-center"
-    <header className="flex h-16 items-center border-b bg-white px-6 gap-4">
-      {/* 1. Nút Hamburger (Chỉ hiện trên Mobile) */}
-      <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-        <SheetTrigger asChild>
-          <Button variant="outline" size="icon" className="md:hidden">
-            <Menu className="h-5 w-5" />
-            <span className="sr-only">Toggle navigation menu</span>
-          </Button>
-        </SheetTrigger>
-        
-        {/* [SỬA] Thêm `w-64` để Sheet có chiều rộng đúng,
-            sửa lỗi khoảng trắng. */}
-        <SheetContent side="left" className="p-0 w-64">
+    <header className="flex h-16 items-center border-b border-border bg-background px-4 md:px-6 gap-4">
+      {/* Nút Hamburger (Chỉ hiện trên Mobile) */}
+      <div className="md:hidden">
+        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+          <SheetTrigger asChild>
+            <Button variant="outline" size="icon">
+              <Menu className="h-5 w-5" />
+              <span className="sr-only">Toggle navigation menu</span>
+            </Button>
+          </SheetTrigger>
           
-          {/* [SỬA] Truyền hàm để đóng Sheet khi bấm link */}
-          <Sidebar onLinkClick={() => setIsSheetOpen(false)} isMobileSheet={true} />
-          
-        </SheetContent>
-      </Sheet>
+          <SheetContent side="left" className="p-0 w-64 bg-background">
+            <Sidebar onLinkClick={() => setIsSheetOpen(false)} isMobileSheet={true} />
+          </SheetContent>
+        </Sheet>
+      </div>
 
-      {/* 2. [SỬA] Thêm 1 div "Spacer" (bộ đệm)
-          Class `flex-grow` sẽ "đẩy" tất cả những gì
-          theo sau nó ra phía bên phải.
-          Đây chính là chìa khóa sửa lỗi Avatar bên trái.
-      */}
+      {/* Spacer - Đẩy toggle và avatar sang phải (cả mobile và desktop) */}
       <div className="flex-grow"></div>
-
-      {/* 3. Dropdown Avatar (Luôn ở bên phải) */}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-            <Avatar>
-              <AvatarImage src={user?.avatarUrl} alt={user?.name} />
-              <AvatarFallback>{getInitials(user?.name)}</AvatarFallback>
-            </Avatar>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56" align="end">
-          <DropdownMenuLabel>
-            <p>{user?.name}</p>
-            <p className="text-xs text-gray-500">{user?.email}</p>
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem asChild>
-            <Link to="/account" className="flex items-center">
-              <User className="mr-2 h-4 w-4" />
-              <span>Tài khoản</span>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleLogout} className="text-red-500">
-            <LogOut className="mr-2 h-4 w-4" />
-            <span>Đăng xuất</span>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      
+      {/* Toggle theme và Avatar */}
+      <div className="flex items-center gap-2">
+        <ModeToggle />
+        
+        {/* Dropdown Avatar */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+              <Avatar>
+                <AvatarImage src={user?.avatarUrl} alt={user?.name} />
+                <AvatarFallback>{getInitials(user?.name)}</AvatarFallback>
+              </Avatar>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56" align="end">
+            <DropdownMenuLabel>
+              <p>{user?.name}</p>
+              <p className="text-xs text-muted-foreground">{user?.email}</p>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link to="/account" className="flex items-center">
+                <User className="mr-2 h-4 w-4" />
+                <span>Tài khoản</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleLogout} className="text-red-500 dark:text-red-400 focus:text-red-600 dark:focus:text-red-300">
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Đăng xuất</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </header>
   );
 }

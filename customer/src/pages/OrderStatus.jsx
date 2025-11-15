@@ -87,7 +87,7 @@ export default function OrderStatusPage() {
   };
   // --- RENDER ---
   if (isLoading) return (
-    <div className="flex items-center justify-center h-screen gap-2">
+    <div className="flex items-center justify-center h-screen gap-2 text-foreground">
       <Loader2 className="h-6 w-6 animate-spin" />
       <span>Đang tải các đơn hàng...</span>
     </div>
@@ -95,11 +95,11 @@ export default function OrderStatusPage() {
   if (isError) return <div className="p-4 text-red-500">Lỗi: Không thể tải lịch sử đơn hàng.</div>;
 
   return (
-    <div className="p-4 md:p-8 bg-gray-50 min-h-[calc(100vh-65px)]">
+    <div className="p-4 md:p-8 bg-background min-h-[calc(100vh-65px)]">
       
       {/* 3. [THÊM MỚI] Hiển thị Tên Khách / Bàn */}
       <div className="max-w-2xl mx-auto mb-6">
-         <h1 className="text-3xl font-bold">Tất cả Đơn hàng</h1>
+         <h1 className="text-3xl font-bold text-foreground">Tất cả Đơn hàng</h1>
          <p className="text-lg text-muted-foreground">
            Khách hàng: <span className="font-medium text-primary">{customerName}</span>
          </p>
@@ -113,9 +113,9 @@ export default function OrderStatusPage() {
         {initialOrders && initialOrders.length > 0 ? (
           initialOrders.map((order, orderIndex) => ( // 👈 Thêm `orderIndex`
             <Card key={order.id} className="overflow-hidden shadow-md">
-              <CardHeader className="flex flex-row items-center justify-between bg-white p-4">
+              <CardHeader className="flex flex-row items-center justify-between bg-card p-4">
                 {/* 5. [THÊM MỚI] Thêm Số thứ tự */}
-                <CardTitle className="text-xl">
+                <CardTitle className="text-xl text-card-foreground">
                   Đơn hàng #{orderIndex + 1}
                 </CardTitle>
                 {renderStatusUI(orderStatuses[order.id])}
@@ -135,37 +135,44 @@ export default function OrderStatusPage() {
 
                     {/* Tên & Số lượng */}
                     <div className="flex-grow">
-                      <span className="font-semibold">{detail.menuItem.name}</span>
+                      <span className="font-semibold text-card-foreground">{detail.menuItem.name}</span>
                       <p className="text-sm text-muted-foreground">
                         {detail.quantity} x {detail.priceAtOrder.toLocaleString('vi-VN')}đ
                       </p>
                     </div>
                     
                     {/* Giá (Tổng của line) */}
-                    <span className="font-semibold">
+                    <span className="font-semibold text-card-foreground">
                       {(detail.priceAtOrder * detail.quantity).toLocaleString('vi-VN')}đ
                     </span>
                   </div>
                 ))}
               </CardContent>
-              <CardFooter className="bg-gray-50 p-4 flex justify-between items-center">
+              <CardFooter className="bg-muted p-4 flex justify-between items-center">
                 {/* 7. [THÊM MỚI] Trạng thái Thanh toán */}
                 <div className="text-sm">
                   {orderStatuses[order.id] !== 'PAID' ? (
-                    <span className="font-bold text-red-600">CHƯA THANH TOÁN</span>
+                    <span className="font-bold text-red-600 dark:text-red-400">CHƯA THANH TOÁN</span>
                   ) : (
-                    <span className="font-bold text-green-600">ĐÃ THANH TOÁN</span>
+                    <span className="font-bold text-green-600 dark:text-green-400">ĐÃ THANH TOÁN</span>
                   )}
                 </div>
                 {/* Tổng tiền */}
-                <div className="text-lg font-bold">
+                <div className="text-lg font-bold text-foreground">
                   Tổng: {order.totalAmount.toLocaleString('vi-VN')}đ
                 </div>
               </CardFooter>
             </Card>
           ))
         ) : (
-          <p className="text-center text-muted-foreground">Bạn chưa đặt đơn hàng nào tại bàn này.</p>
+          <Card className="p-8">
+            <p className="text-center text-muted-foreground">Bạn chưa đặt đơn hàng nào tại bàn này.</p>
+            <div className="flex justify-center mt-4">
+              <Button asChild>
+                <Link to="/order">Xem Thực đơn</Link>
+              </Button>
+            </div>
+          </Card>
         )}
       </div>
     </div>

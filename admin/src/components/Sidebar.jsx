@@ -4,15 +4,15 @@ import { cn } from '@/lib/utils';
 import { SheetClose } from '@/components/ui/sheet';
 import { useAuthStore } from '../store/authStore';
 
-// NavItem (không đổi)
+// NavItem (sử dụng theme colors)
 const NavItem = ({ to, icon: Icon, children, onClick }) => (
   <NavLink
     to={to}
     end={to === '/'}
     className={({ isActive }) =>
       cn(
-        'flex items-center gap-2 rounded-lg px-3 py-2 text-gray-400 transition-all hover:text-white hover:bg-gray-700',
-        isActive && 'bg-gray-800 text-white'
+        'flex items-center gap-2 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-foreground hover:bg-accent',
+        isActive && 'bg-secondary text-foreground font-semibold'
       )
     }
     onClick={onClick}
@@ -29,16 +29,16 @@ export default function Sidebar({ onLinkClick, isMobileSheet = false }) {
   //     để tránh lỗi nếu user là null)
   const user = useAuthStore((state) => state.user);
   return (
-    <div className="h-full border-r bg-gray-900 w-64 text-white">
+    <div className="h-full border-r border-border bg-card w-64">
       <div className="flex h-full max-h-screen flex-col gap-2">
         
-        <div className="flex h-16 items-center justify-between border-b border-gray-700 px-6">
-          <h1 className="text-lg font-bold">Nhà hàng</h1>
+        <div className="flex h-16 items-center justify-between border-b border-border px-6">
+          <h1 className="text-lg font-bold text-card-foreground">Nhà hàng</h1>
           
           {/* 👇 2. CHỈ RENDER NÚT "X" KHI isMobileSheet LÀ TRUE */}
           {isMobileSheet && (
             <SheetClose asChild>
-              <button className="text-gray-400 hover:text-white transition-colors">
+              <button className="text-muted-foreground hover:text-foreground transition-colors">
                 <X className="h-6 w-6" />
                 <span className="sr-only">Đóng menu</span>
               </button>

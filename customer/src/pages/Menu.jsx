@@ -84,7 +84,7 @@ export default function MenuPage() {
   // --- RENDER (HIỂN THỊ) ---
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-screen gap-2">
+      <div className="flex items-center justify-center h-screen gap-2 text-foreground">
         <Loader2 className="h-6 w-6 animate-spin" />
         <span>Đang tải thực đơn...</span>
       </div>
@@ -93,8 +93,8 @@ export default function MenuPage() {
   if (isError) return <div className="p-4 text-red-500">Lỗi: Không thể tải thực đơn.</div>;
 
   return (
-    <div className="p-4 md:p-8 pb-24">
-      <h1 className="text-4xl font-bold mb-8">Menu</h1>
+    <div className="p-4 md:p-8 pb-24 bg-background min-h-screen">
+      <h1 className="text-4xl font-bold mb-8 text-foreground">Thực đơn</h1>
     
       {/* 👇 [MỚI] 4. BỌC MỌI THỨ TRONG <Tabs> */}
       {/* `defaultValue` nói với <Tabs> rằng:
@@ -142,11 +142,11 @@ export default function MenuPage() {
                     <img 
                       src={item.imageUrl} 
                       alt={item.name} 
-                      className="w-full h-48 object-cover rounded-md"
+                      className="w-full h-70 object-cover rounded-md"
                     />
                   </CardContent>
                   <CardFooter className="flex justify-between items-center">
-                    <span className="text-lg font-bold">
+                    <span className="text-lg font-bold text-card-foreground">
                       {item.price.toLocaleString('vi-VN')}đ
                     </span>
                     <Button onClick={() => handleAddItem(item)}>

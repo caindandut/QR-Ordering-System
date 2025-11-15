@@ -61,9 +61,9 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen">
-      <form onSubmit={handleSubmit} className="w-full max-w-sm p-8 space-y-4 border rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-center">Đăng nhập</h2>
+    <div className="flex items-center justify-center h-screen bg-background">
+      <form onSubmit={handleSubmit} className="w-full max-w-sm p-8 space-y-4 border rounded-lg shadow-md bg-card">
+        <h2 className="text-2xl font-bold text-center text-card-foreground">Đăng nhập</h2>
         <div>
           <Label htmlFor="email">Email</Label>
           <Input

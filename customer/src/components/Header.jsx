@@ -23,6 +23,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { LogOut, Menu, BookOpen, ClipboardList, ShoppingCart } from 'lucide-react'; // 👈 Thêm icon Giỏ hàng
 import { useCartStore } from '../store/cartStore';
+import { ModeToggle } from "./ModeToggle";
 
 export default function CustomerHeader() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -62,7 +63,7 @@ export default function CustomerHeader() {
   );
 
   return (
-    <header className="flex items-center justify-between p-4 border-b sticky top-0 bg-white z-10">
+    <header className="flex items-center justify-between p-4 border-b border-border sticky top-0 bg-background z-10">
       
       <div className="flex items-center gap-4">
         <div className="md:hidden">
@@ -72,13 +73,13 @@ export default function CustomerHeader() {
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-[300px]">
+            <SheetContent side="left" className="w-[300px] bg-background">
               <SheetHeader>
                 <SheetTitle className="text-2xl text-left">Nhà hàng</SheetTitle>
               </SheetHeader>
               <nav className="flex flex-col gap-2 mt-8">
                 <SheetClose asChild>
-                  <NavLink to="/order" icon={BookOpen}>Menu</NavLink>
+                  <NavLink to="/order" icon={BookOpen}>Thực đơn</NavLink>
                 </SheetClose>
                 <SheetClose asChild>
                   <NavLink to="/order/cart" icon={ShoppingCart}>Giỏ hàng</NavLink>
@@ -97,11 +98,14 @@ export default function CustomerHeader() {
           <NavLink to="/order/status" icon={ClipboardList}>Đơn hàng</NavLink>
         </div>
       </div>
-      <AlertDialog>
+      
+      <div className="flex items-center gap-2">
+        <ModeToggle />
+        <AlertDialog>
         <AlertDialogTrigger asChild>
           <Button 
             variant="ghost" 
-            className="text-red-500 hover:text-red-600"
+            className="text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300"
           >
             Đăng xuất
           </Button>
@@ -124,6 +128,7 @@ export default function CustomerHeader() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      </div>
 
     </header>
   );
