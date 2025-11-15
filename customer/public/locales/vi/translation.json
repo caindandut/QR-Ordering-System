@@ -1,0 +1,33 @@
+{
+    "header": {
+        "menu": "Thực đơn",
+        "cart": "Giỏ hàng",
+        "orders": "Đơn hàng",
+        "logout": "Đăng xuất",
+        "logout_confirm_title": "Bạn có chắc chắn muốn đăng xuất?",
+        "logout_confirm_desc": "Toàn bộ giỏ hàng và dữ liệu phiên làm việc sẽ bị mất.",
+        "logout_cancel": "Hủy",
+        "logout_confirm": "Vẫn Đăng xuất"
+    },
+    "menu_page": {
+        "title": "Thực Đơn",
+        "add_to_cart": "Thêm"
+    },
+    "cart_page": {
+        "title": "Giỏ hàng của bạn",
+        "add_more_items": "Thêm món",
+        "empty_message": "Giỏ hàng của bạn đang trống",
+        "back_to_menu": "Quay lại Thực đơn",
+        "order_details": "Chi tiết đơn hàng",
+        "total": "Tổng cộng:",
+        "place_order": "Xác nhận Đặt món",
+        "placing_order": "Đang gửi bếp..."
+    },
+    "status_page": {
+        "title": "Tất cả Đơn hàng",
+        "customer": "Khách hàng",
+        "table": "Bàn",
+        "order_id": "Đơn hàng",
+        "total": "Tổng"
+    }
+}

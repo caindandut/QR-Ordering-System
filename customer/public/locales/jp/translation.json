@@ -1,0 +1,33 @@
+{
+    "header": {
+        "menu": "メニュー",
+        "cart": "カート",
+        "orders": "注文",
+        "logout": "ログアウト",
+        "logout_confirm_title": "本当にログアウトしますか？",
+        "logout_confirm_desc": "カートとセッションデータがすべて失われます。",
+        "logout_cancel": "キャンセル",
+        "logout_confirm": "ログアウト"
+    },
+    "menu_page": {
+        "title": "メニュー",
+        "add_to_cart": "追加"
+    },
+    "cart_page": {
+        "title": "あなたのカート",
+        "add_more_items": "もっと見る",
+        "empty_message": "カートは空です",
+        "back_to_menu": "メニューに戻る",
+        "order_details": "注文詳細",
+        "total": "合計:",
+        "place_order": "注文を確定",
+        "placing_order": "送信中..."
+    },
+    "status_page": {
+        "title": "すべての注文",
+        "customer": "お客様",
+        "table": "テーブル",
+        "order_id": "注文",
+        "total": "合計"
+    }
+}
