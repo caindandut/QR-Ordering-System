@@ -9,6 +9,7 @@ import categoryRoutes from './routes/categoryRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 import staffRoutes from './routes/staffRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
+import adminOrderRoutes from './routes/adminOrderRoutes.js';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 // --- Khởi tạo ---
@@ -36,6 +37,7 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/staff', staffRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/admin/orders', adminOrderRoutes);
 
 const httpServer = createServer(app);
 

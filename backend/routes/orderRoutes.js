@@ -80,4 +80,32 @@ router.post('/', async (req, res) => {
   }
 });
 
+// API CÔNG KHAI
+// GET /api/orders/:id
+// Lấy chi tiết 1 đơn hàng (để Khách xem status)
+router.get('/:id', async (req, res) => {
+  try {
+    const orderId = parseInt(req.params.id);
+    const order = await prisma.order.findUnique({
+      where: { id: orderId },
+      include: {
+        details: { // Kèm theo chi tiết món
+          include: {
+            menuItem: { // Kèm theo tên món
+              select: { name: true, imageUrl: true }
+            }
+          }
+        },
+        table: { // Kèm theo tên bàn
+          select: { name: true }
+        }
+      }
+    });
+    if (!order) return res.status(404).json({ message: "Không tìm thấy đơn hàng" });
+    res.status(200).json(order);
+  } catch (error) {
+    res.status(500).json({ message: 'Lỗi server', error: error.message });
+  }
+});
+
 export default router;
