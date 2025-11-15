@@ -25,7 +25,12 @@ i18n
       useSuspense: true, // 👈 BẮT BUỘC: Dùng Suspense
     },
     
-    // 7. (Tùy chọn) Tắt tính năng "phát hiện" ngôn ngữ
+    // 7. Hỗ trợ interpolation (để dùng {{name}} trong translation)
+    interpolation: {
+      escapeValue: false, // React đã escape mặc định
+    },
+    
+    // 8. (Tùy chọn) Tắt tính năng "phát hiện" ngôn ngữ
     //    (Chúng ta sẽ tự quản lý bằng Nút bấm)
     detection: {
       order: ['localStorage', 'navigator'],

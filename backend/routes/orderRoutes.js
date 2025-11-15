@@ -92,7 +92,7 @@ router.get('/:id', async (req, res) => {
         details: { // Kèm theo chi tiết món
           include: {
             menuItem: { // Kèm theo tên món
-              select: { name: true, imageUrl: true }
+              select: { name: true, name_jp: true, imageUrl: true }
             }
           }
         },
@@ -125,7 +125,7 @@ router.get('/', async (req, res) => {
       include: { // Vẫn lấy chi tiết
         details: {
           include: {
-            menuItem: { select: { name: true, imageUrl: true } }
+            menuItem: { select: { name: true, name_jp: true, imageUrl: true } }
           }
         },
         table: { select: { name: true } }

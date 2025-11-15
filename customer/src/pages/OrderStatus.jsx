@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { translateOrderStatus } from '@/lib/translation';
+import { useTranslation } from 'react-i18next';
 
 // --- HÀM GỌI API MỚI ---
 const fetchMyOrders = async (tableId, customerName) => {
@@ -24,6 +25,9 @@ const fetchMyOrders = async (tableId, customerName) => {
 const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
 export default function OrderStatusPage() {
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language;
+  
   // 👇 [SỬA] ĐỌC TỪ localStorage, KHÔNG DÙNG useParams
   const tableId = localStorage.getItem('table_id');
   const customerName = localStorage.getItem('customer_name');
@@ -82,29 +86,29 @@ export default function OrderStatusPage() {
   }, [initialOrders]); // 👈 [SỬA] Dùng `initialOrders` (số nhiều)
 
  const renderStatusUI = (status) => {
-    const { text, variant } = translateOrderStatus(status, 'vi');
+    const { text, variant } = translateOrderStatus(status, lang);
     return <Badge variant={variant}>{text}</Badge>;
   };
   // --- RENDER ---
   if (isLoading) return (
     <div className="flex items-center justify-center h-screen gap-2 text-foreground">
       <Loader2 className="h-6 w-6 animate-spin" />
-      <span>Đang tải các đơn hàng...</span>
+      <span>{t('status_page.loading')}</span>
     </div>
   );
-  if (isError) return <div className="p-4 text-red-500">Lỗi: Không thể tải lịch sử đơn hàng.</div>;
+  if (isError) return <div className="p-4 text-red-500">{t('status_page.error')}</div>;
 
   return (
     <div className="p-4 md:p-8 bg-background min-h-[calc(100vh-65px)]">
       
       {/* 3. [THÊM MỚI] Hiển thị Tên Khách / Bàn */}
       <div className="max-w-2xl mx-auto mb-6">
-         <h1 className="text-3xl font-bold text-foreground">Tất cả Đơn hàng</h1>
+         <h1 className="text-3xl font-bold text-foreground">{t('status_page.title')}</h1>
          <p className="text-lg text-muted-foreground">
-           Khách hàng: <span className="font-medium text-primary">{customerName}</span>
+           {t('status_page.customer')} <span className="font-medium text-primary">{customerName}</span>
          </p>
          <p className="text-lg text-muted-foreground">
-           Bàn: <span className="font-medium text-primary">{tableName}</span>
+           {t('status_page.table')} <span className="font-medium text-primary">{tableName}</span>
          </p>
       </div>
       
@@ -116,7 +120,7 @@ export default function OrderStatusPage() {
               <CardHeader className="flex flex-row items-center justify-between bg-card p-4">
                 {/* 5. [THÊM MỚI] Thêm Số thứ tự */}
                 <CardTitle className="text-xl text-card-foreground">
-                  Đơn hàng #{orderIndex + 1}
+                  {t('status_page.order_number')}{orderIndex + 1}
                 </CardTitle>
                 {renderStatusUI(orderStatuses[order.id])}
               </CardHeader>
@@ -135,7 +139,9 @@ export default function OrderStatusPage() {
 
                     {/* Tên & Số lượng */}
                     <div className="flex-grow">
-                      <span className="font-semibold text-card-foreground">{detail.menuItem.name}</span>
+                      <span className="font-semibold text-card-foreground">
+                        {lang === 'jp' ? detail.menuItem.name_jp : detail.menuItem.name}
+                      </span>
                       <p className="text-sm text-muted-foreground">
                         {detail.quantity} x {detail.priceAtOrder.toLocaleString('vi-VN')}đ
                       </p>
@@ -152,24 +158,24 @@ export default function OrderStatusPage() {
                 {/* 7. [THÊM MỚI] Trạng thái Thanh toán */}
                 <div className="text-sm">
                   {orderStatuses[order.id] !== 'PAID' ? (
-                    <span className="font-bold text-red-600 dark:text-red-400">CHƯA THANH TOÁN</span>
+                    <span className="font-bold text-red-600 dark:text-red-400">{t('status_page.payment_not_paid')}</span>
                   ) : (
-                    <span className="font-bold text-green-600 dark:text-green-400">ĐÃ THANH TOÁN</span>
+                    <span className="font-bold text-green-600 dark:text-green-400">{t('status_page.payment_paid')}</span>
                   )}
                 </div>
                 {/* Tổng tiền */}
                 <div className="text-lg font-bold text-foreground">
-                  Tổng: {order.totalAmount.toLocaleString('vi-VN')}đ
+                  {t('status_page.total')} {order.totalAmount.toLocaleString('vi-VN')}đ
                 </div>
               </CardFooter>
             </Card>
           ))
         ) : (
           <Card className="p-8">
-            <p className="text-center text-muted-foreground">Bạn chưa đặt đơn hàng nào tại bàn này.</p>
+            <p className="text-center text-muted-foreground">{t('status_page.no_orders')}</p>
             <div className="flex justify-center mt-4">
               <Button asChild>
-                <Link to="/order">Xem Thực đơn</Link>
+                <Link to="/order">{t('status_page.view_menu')}</Link>
               </Button>
             </div>
           </Card>

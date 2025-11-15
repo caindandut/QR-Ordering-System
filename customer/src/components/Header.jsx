@@ -20,16 +20,19 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { useTranslation } from 'react-i18next';
 import { Badge } from '@/components/ui/badge';
-import { LogOut, Menu, BookOpen, ClipboardList, ShoppingCart } from 'lucide-react'; // 👈 Thêm icon Giỏ hàng
+import { LogOut, Menu, BookOpen, ClipboardList, ShoppingCart } from 'lucide-react'; 
 import { useCartStore } from '../store/cartStore';
 import { ModeToggle } from "./ModeToggle";
+import { LanguageToggle } from "./LanguageToggle";
 
 export default function CustomerHeader() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   
   const location = useLocation(); 
   const pathname = location.pathname; // Ví dụ: "/order", "/order/cart"
+  const { t } = useTranslation();
   
   // Lấy `totalItems` từ "bộ não" Giỏ hàng (dùng selector tối ưu)
   const totalItems = useCartStore((state) => state.getTotalItems());
@@ -75,31 +78,32 @@ export default function CustomerHeader() {
             </SheetTrigger>
             <SheetContent side="left" className="w-[300px] bg-background">
               <SheetHeader>
-                <SheetTitle className="text-2xl text-left">Nhà hàng</SheetTitle>
+                <SheetTitle className="text-2xl text-left">{t('header.restaurant_name')}</SheetTitle>
               </SheetHeader>
               <nav className="flex flex-col gap-2 mt-8">
                 <SheetClose asChild>
-                  <NavLink to="/order" icon={BookOpen}>Thực đơn</NavLink>
+                  <NavLink to="/order" icon={BookOpen}>{t('header.menu')}</NavLink>
                 </SheetClose>
                 <SheetClose asChild>
-                  <NavLink to="/order/cart" icon={ShoppingCart}>Giỏ hàng</NavLink>
+                  <NavLink to="/order/cart" icon={ShoppingCart}>{t('header.cart')}</NavLink>
                 </SheetClose>
                 <SheetClose asChild>
-                  <NavLink to="/order/status" icon={ClipboardList}>Đơn hàng</NavLink>
+                  <NavLink to="/order/status" icon={ClipboardList}>{t('header.orders')}</NavLink>
                 </SheetClose>
               </nav>
             </SheetContent>
           </Sheet>
         </div>
         <div className="hidden md:flex items-center gap-2">
-          <h1 className="text-xl font-bold mr-4">Nhà hàng</h1>
-          <NavLink to="/order" icon={BookOpen}>Thực đơn</NavLink>
-          <NavLink to="/order/cart" icon={ShoppingCart}>Giỏ hàng</NavLink>
-          <NavLink to="/order/status" icon={ClipboardList}>Đơn hàng</NavLink>
+          <h1 className="text-xl font-bold mr-4">{t('header.restaurant_name')}</h1>
+          <NavLink to="/order" icon={BookOpen}>{t('header.menu')}</NavLink>
+          <NavLink to="/order/cart" icon={ShoppingCart}>{t('header.cart')}</NavLink>
+          <NavLink to="/order/status" icon={ClipboardList}>{t('header.orders')}</NavLink>
         </div>
       </div>
       
       <div className="flex items-center gap-2">
+        <LanguageToggle />
         <ModeToggle />
         <AlertDialog>
         <AlertDialogTrigger asChild>
@@ -107,23 +111,23 @@ export default function CustomerHeader() {
             variant="ghost" 
             className="text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300"
           >
-            Đăng xuất
+            {t('header.logout')}
           </Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Bạn có chắc chắn muốn đăng xuất?</AlertDialogTitle>
+            <AlertDialogTitle>{t('header.logout_confirm_title')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Nếu bạn đăng xuất, toàn bộ giỏ hàng và dữ liệu của bạn sẽ bị mất.
+              {t('header.logout_confirm_desc')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Hủy</AlertDialogCancel>
+            <AlertDialogCancel>{t('header.logout_cancel')}</AlertDialogCancel>
             <AlertDialogAction 
               onClick={handleLogout}
               className="bg-destructive hover:bg-destructive/90"
             >
-              Vẫn Đăng xuất
+              {t('header.logout_confirm')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Minus, Trash2, ArrowLeft, Loader2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 
 const placeOrder = async (orderData) => {
@@ -16,6 +17,8 @@ const placeOrder = async (orderData) => {
 // ---
 
 export default function CartPage() {
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language;
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -42,21 +45,20 @@ export default function CartPage() {
     // 6. "ẢO THUẬT" KHI THÀNH CÔNG (onSuccess)
     onSuccess: () => { // `data` là `newOrder` trả về từ API 
       toast({
-        title: "Đặt món thành công!",
-        description: "Đơn hàng của bạn đã được gửi đến bếp.",
+        title: t('cart_page.order_success_title'),
+        description: t('cart_page.order_success_desc'),
       });
       
       // 6a. XÓA SẠCH giỏ hàng
       clearCart();
       
       // 6b. CHUYỂN HƯỚNG sang trang Theo dõi Đơn hàng
-      //    (Chúng ta sẽ tạo trang /order/status ở Giai đoạn 3.5)
       navigate(`/order/status/`); 
     },
     onError: (error) => {
       toast({
-        title: "Đặt món thất bại!",
-        description: error.message || "Vui lòng thử lại.",
+        title: t('cart_page.order_failed_title'),
+        description: error.message || t('cart_page.order_failed_desc'),
         variant: "destructive",
       });
     },
@@ -86,9 +88,9 @@ export default function CartPage() {
   if (items.length === 0) {
     return (
       <div className="p-4 text-center">
-        <h1 className="text-2xl font-bold text-foreground">Giỏ hàng của bạn đang trống</h1>
+        <h1 className="text-2xl font-bold text-foreground">{t('cart_page.empty_message')}</h1>
         <Button onClick={() => navigate('/order')} className="mt-4">
-          Quay lại Thực đơn
+          {t('cart_page.back_to_menu')}
         </Button>
       </div>
     );
@@ -98,20 +100,20 @@ export default function CartPage() {
   return (
     <div className="p-4 md:p-8 bg-background">
       <div className="flex justify-between items-center mb-8">
-        <h3 className="text-4xl font-bold text-foreground">Giỏ hàng của bạn</h3>
+        <h3 className="text-4xl font-bold text-foreground">{t('cart_page.title')}</h3>
         
         {/* Nút "Thêm món" (Quay lại Menu) */}
         <Button asChild variant="outline">
           <Link to="/order">
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Thêm món
+            {t('cart_page.add_more_items')}
           </Link>
         </Button>
       </div>
       
       <Card>
         <CardHeader>
-          <CardTitle>Chi tiết đơn hàng</CardTitle>
+          <CardTitle>{t('cart_page.order_details')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* 8. LẶP (MAP) QUA CÁC MÓN TRONG "BỘ NÃO" */}
@@ -125,7 +127,9 @@ export default function CartPage() {
                   className="w-16 h-16 object-cover rounded-md"
                 />
                 <div>
-                  <h3 className="font-semibold text-card-foreground">{item.name}</h3>
+                  <h3 className="font-semibold text-card-foreground">
+                    {lang === 'jp' ? item.name_jp : item.name}
+                  </h3>
                   <p className="text-sm text-muted-foreground">
                     {item.price.toLocaleString('vi-VN')}đ
                   </p>
@@ -151,7 +155,7 @@ export default function CartPage() {
         </CardContent>
         <CardFooter className="flex flex-col items-end gap-4">
           <div className="text-2xl font-bold text-card-foreground">
-            Tổng cộng: {totalPrice.toLocaleString('vi-VN')}đ
+            {t('cart_page.total')} {totalPrice.toLocaleString('vi-VN')}đ
           </div>
           <Button 
             size="lg" 
@@ -161,7 +165,7 @@ export default function CartPage() {
             {placeOrderMutation.isLoading ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : null}
-            {placeOrderMutation.isLoading ? 'Đang gửi bếp...' : 'Xác nhận Đặt món'}
+            {placeOrderMutation.isLoading ? t('cart_page.placing_order') : t('cart_page.place_order')}
           </Button>
         </CardFooter>
       </Card>

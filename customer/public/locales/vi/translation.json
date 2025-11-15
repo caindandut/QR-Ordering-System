@@ -1,17 +1,22 @@
 {
     "header": {
+        "restaurant_name": "Nhà hàng",
         "menu": "Thực đơn",
         "cart": "Giỏ hàng",
         "orders": "Đơn hàng",
         "logout": "Đăng xuất",
         "logout_confirm_title": "Bạn có chắc chắn muốn đăng xuất?",
-        "logout_confirm_desc": "Toàn bộ giỏ hàng và dữ liệu phiên làm việc sẽ bị mất.",
+        "logout_confirm_desc": "Nếu bạn đăng xuất, toàn bộ giỏ hàng và dữ liệu của bạn sẽ bị mất.",
         "logout_cancel": "Hủy",
         "logout_confirm": "Vẫn Đăng xuất"
     },
     "menu_page": {
-        "title": "Thực Đơn",
-        "add_to_cart": "Thêm"
+        "title": "Menu",
+        "loading": "Đang tải thực đơn...",
+        "error": "Lỗi: Không thể tải thực đơn.",
+        "add_to_cart": "Thêm",
+        "added_to_cart_title": "Đã thêm vào giỏ!",
+        "added_to_cart_desc": "Đã thêm {{name}} vào giỏ hàng của bạn."
     },
     "cart_page": {
         "title": "Giỏ hàng của bạn",
@@ -21,13 +26,47 @@
         "order_details": "Chi tiết đơn hàng",
         "total": "Tổng cộng:",
         "place_order": "Xác nhận Đặt món",
-        "placing_order": "Đang gửi bếp..."
+        "placing_order": "Đang gửi bếp...",
+        "order_success_title": "Đặt món thành công!",
+        "order_success_desc": "Đơn hàng của bạn đã được gửi đến bếp.",
+        "order_failed_title": "Đặt món thất bại!",
+        "order_failed_desc": "Vui lòng thử lại."
     },
     "status_page": {
         "title": "Tất cả Đơn hàng",
-        "customer": "Khách hàng",
-        "table": "Bàn",
-        "order_id": "Đơn hàng",
-        "total": "Tổng"
+        "customer": "Khách hàng:",
+        "table": "Bàn:",
+        "order_number": "Đơn hàng #",
+        "total": "Tổng:",
+        "loading": "Đang tải các đơn hàng...",
+        "error": "Lỗi: Không thể tải lịch sử đơn hàng.",
+        "no_orders": "Bạn chưa đặt đơn hàng nào tại bàn này.",
+        "view_menu": "Xem Thực đơn",
+        "payment_not_paid": "CHƯA THANH TOÁN",
+        "payment_paid": "ĐÃ THANH TOÁN",
+        "order_status": {
+            "PENDING": "Chờ xử lý",
+            "CONFIRMED": "Đã xác nhận",
+            "PREPARING": "Đang nấu",
+            "READY": "Sẵn sàng",
+            "SERVED": "Đã phục vụ",
+            "PAID": "Đã thanh toán",
+            "CANCELLED": "Đã hủy"
+        }
+    },
+    "gateway": {
+        "welcome": "Chào mừng đến nhà hàng",
+        "table_info": "Bạn đang ở",
+        "name_label": "Tên của bạn",
+        "start_ordering": "Bắt đầu gọi món",
+        "loading_table": "Đang tải thông tin bàn...",
+        "error_scan_qr": "Lỗi: Vui lòng quét lại mã QR của bàn.",
+        "error_invalid_qr": "Lỗi: Mã QR không hợp lệ. Bàn không tồn tại."
+    },
+    "theme": {
+        "toggle": "Chuyển đổi theme",
+        "light": "Sáng",
+        "dark": "Tối",
+        "system": "Hệ thống"
     }
 }

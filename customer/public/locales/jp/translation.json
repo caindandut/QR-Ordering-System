@@ -1,33 +1,72 @@
 {
     "header": {
+        "restaurant_name": "レストラン",
         "menu": "メニュー",
         "cart": "カート",
         "orders": "注文",
         "logout": "ログアウト",
         "logout_confirm_title": "本当にログアウトしますか？",
-        "logout_confirm_desc": "カートとセッションデータがすべて失われます。",
+        "logout_confirm_desc": "ログアウトすると、カートとデータがすべて失われます。",
         "logout_cancel": "キャンセル",
         "logout_confirm": "ログアウト"
     },
     "menu_page": {
         "title": "メニュー",
-        "add_to_cart": "追加"
+        "loading": "メニューを読み込んでいます...",
+        "error": "エラー：メニューを読み込めませんでした。",
+        "add_to_cart": "追加",
+        "added_to_cart_title": "カートに追加しました！",
+        "added_to_cart_desc": "{{name}}をカートに追加しました。"
     },
     "cart_page": {
         "title": "あなたのカート",
-        "add_more_items": "もっと見る",
+        "add_more_items": "商品を追加",
         "empty_message": "カートは空です",
         "back_to_menu": "メニューに戻る",
         "order_details": "注文詳細",
         "total": "合計:",
         "place_order": "注文を確定",
-        "placing_order": "送信中..."
+        "placing_order": "送信中...",
+        "order_success_title": "注文が完了しました！",
+        "order_success_desc": "ご注文がキッチンに送信されました。",
+        "order_failed_title": "注文に失敗しました！",
+        "order_failed_desc": "もう一度お試しください。"
     },
     "status_page": {
         "title": "すべての注文",
-        "customer": "お客様",
-        "table": "テーブル",
-        "order_id": "注文",
-        "total": "合計"
+        "customer": "お客様:",
+        "table": "テーブル:",
+        "order_number": "注文 #",
+        "total": "合計:",
+        "loading": "注文を読み込んでいます...",
+        "error": "エラー：注文履歴を読み込めませんでした。",
+        "no_orders": "このテーブルでの注文はまだありません。",
+        "view_menu": "メニューを見る",
+        "payment_not_paid": "未払い",
+        "payment_paid": "支払い済み",
+        "order_status": {
+            "PENDING": "保留中",
+            "CONFIRMED": "確認済み",
+            "PREPARING": "調理中",
+            "READY": "準備完了",
+            "SERVED": "提供済み",
+            "PAID": "支払い済み",
+            "CANCELLED": "キャンセル"
+        }
+    },
+    "gateway": {
+        "welcome": "レストランへようこそ",
+        "table_info": "現在のテーブル",
+        "name_label": "お名前",
+        "start_ordering": "注文を開始",
+        "loading_table": "テーブル情報を読み込んでいます...",
+        "error_scan_qr": "エラー：QRコードを再スキャンしてください。",
+        "error_invalid_qr": "エラー：QRコードが無効です。テーブルが存在しません。"
+    },
+    "theme": {
+        "toggle": "テーマを切り替える",
+        "light": "ライト",
+        "dark": "ダーク",
+        "system": "システム"
     }
 }

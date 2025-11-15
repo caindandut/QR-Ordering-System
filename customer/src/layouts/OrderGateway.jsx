@@ -6,7 +6,8 @@ import api from '../services/api';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react'; 
+import { Loader2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next'; 
 
 
 const fetchTableDetails = async (tableId) => {
@@ -15,6 +16,7 @@ const fetchTableDetails = async (tableId) => {
 };
 
 export default function OrderGateway() {
+  const { t } = useTranslation();
 
   const [searchParams] = useSearchParams();
   const urlTableId = searchParams.get('table_id');
@@ -60,39 +62,39 @@ export default function OrderGateway() {
 
 
   if (!tableId) {
-    return <div className="p-4 text-red-500">Lỗi: Vui lòng quét lại mã QR của bàn.</div>;
+    return <div className="p-4 text-red-500">{t('gateway.error_scan_qr')}</div>;
   }
   
   if (isLoadingTable) {
     return (
       <div className="flex items-center justify-center h-screen gap-2">
         <Loader2 className="h-6 w-6 animate-spin" />
-        <span>Đang tải thông tin bàn...</span>
+        <span>{t('gateway.loading_table')}</span>
       </div>
     );
   }
   
 
   if (isTableError) {
-    return <div className="p-4 text-red-500">Lỗi: Mã QR không hợp lệ. Bàn không tồn tại.</div>;
+    return <div className="p-4 text-red-500">{t('gateway.error_invalid_qr')}</div>;
   }
 
   if (!customerName) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50 p-4">
-        <div className="w-full max-w-md p-8 bg-white shadow-lg rounded-lg">
+      <div className="flex items-center justify-center min-h-screen bg-background p-4">
+        <div className="w-full max-w-md p-8 bg-card shadow-lg rounded-lg border border-border">
           
           {/* Lời chào đã được cập nhật */}
-          <h1 className="text-2xl font-bold text-center mb-2">
-            Chào mừng đến nhà hàng
+          <h1 className="text-2xl font-bold text-center mb-2 text-card-foreground">
+            {t('gateway.welcome')}
           </h1>
-          <p className="text-xl text-center text-gray-700 mb-6">
-            Bạn đang ở <span className="font-bold text-blue-600">{tableData?.name}</span>
+          <p className="text-xl text-center text-muted-foreground mb-6">
+            {t('gateway.table_info')} <span className="font-bold text-primary">{tableData?.name}</span>
           </p>
           {/* Form này y hệt form trong <Dialog> cũ */}
           <form onSubmit={handleNameSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Tên của bạn</Label>
+              <Label htmlFor="name">{t('gateway.name_label')}</Label>
               <Input
                 id="name"
                 value={tempName}
@@ -101,7 +103,7 @@ export default function OrderGateway() {
               />
             </div>
             <Button type="submit" className="w-full">
-              Bắt đầu gọi món
+              {t('gateway.start_ordering')}
             </Button>
           </form>
         </div>
