@@ -70,15 +70,9 @@ const router = createBrowserRouter([
                 element: <AdminRoute />,
                 children: [
                   {
-                    path : '/',
-                    element: <SocketProvider><AdminLayout /></SocketProvider>,
-                    children: [ 
-                      {
-                        path: 'staff',
-                        element: <ManageStaffPage />,
-                      }
-                    ]
-                  },
+                    path: 'staff',
+                    element: <ManageStaffPage />,
+                  }
                 ],
               },
             ],
