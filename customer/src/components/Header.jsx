@@ -26,6 +26,7 @@ import { LogOut, Menu, BookOpen, ClipboardList, ShoppingCart } from 'lucide-reac
 import { useCartStore } from '../store/cartStore';
 import { ModeToggle } from "./ModeToggle";
 import { LanguageToggle } from "./LanguageToggle";
+import api from '../services/api';
 
 export default function CustomerHeader() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -36,12 +37,29 @@ export default function CustomerHeader() {
   
   // Lấy `totalItems` từ "bộ não" Giỏ hàng (dùng selector tối ưu)
   const totalItems = useCartStore((state) => state.getTotalItems());
+  const clearCart = useCartStore((state) => state.clearCart);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    const tableId = localStorage.getItem('table_id');
+    const customerName = localStorage.getItem('customer_name');
+
+    // Gọi API để hủy tất cả đơn hàng chưa thanh toán
+    try {
+      if (tableId && customerName) {
+        await api.delete('/api/orders/clear-session', {
+          data: { table_id: tableId, customer_name: customerName }
+        });
+      }
+    } catch (error) {
+      console.error('Lỗi khi hủy phiên:', error);
+    }
+
+    // Xóa localStorage và reload
     localStorage.removeItem('customer_name');
     localStorage.removeItem('table_id');
     localStorage.removeItem('table_name');
     localStorage.removeItem('cart-storage');
+    clearCart();
     window.location.reload();
   };
 

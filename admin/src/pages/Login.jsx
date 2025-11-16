@@ -52,9 +52,19 @@ export default function LoginPage() {
       navigate('/'); // (Trang '/' là Dashboard của chúng ta)
     } else {
       // 5. Nếu thất bại, hiển thị lỗi
+      // Map error code sang translation key
+      let errorMessage = t('login_page.error_desc'); // Default message
+      if (result.errorCode === 'MISSING_CREDENTIALS') {
+        errorMessage = t('login_page.error_missing_credentials');
+      } else if (result.errorCode === 'EMAIL_NOT_FOUND') {
+        errorMessage = t('login_page.error_email_not_found');
+      } else if (result.errorCode === 'INVALID_PASSWORD') {
+        errorMessage = t('login_page.error_invalid_password');
+      }
+      
       toast({
         title: t('login_page.error_title'),
-        description: result.error || t('login_page.error_desc'),
+        description: errorMessage,
         variant: "destructive"
       });
       // setError(result.error);

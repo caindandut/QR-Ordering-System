@@ -67,7 +67,7 @@ router.post('/login', async (req, res) => {
     if (!email || !password) {
       return res
         .status(400)
-        .json({ message: 'Vui lòng cung cấp email và mật khẩu.' });
+        .json({ message: 'Vui lòng cung cấp email và mật khẩu.', code: 'MISSING_CREDENTIALS' });
     }
 
     // 2. Tìm người dùng trong DB
@@ -76,7 +76,7 @@ router.post('/login', async (req, res) => {
     });
 
     if (!user) {
-      return res.status(404).json({ message: 'Email không tồn tại.' }); // 404 = Not Found
+      return res.status(404).json({ message: 'Email không tồn tại.', code: 'EMAIL_NOT_FOUND' }); // 404 = Not Found
     }
 
     // 3. So sánh mật khẩu
@@ -85,7 +85,7 @@ router.post('/login', async (req, res) => {
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
     if (!isPasswordCorrect) {
-      return res.status(401).json({ message: 'Mật khẩu không đúng' }); // 401 = Unauthorized
+      return res.status(401).json({ message: 'Mật khẩu không đúng', code: 'INVALID_PASSWORD' }); // 401 = Unauthorized
     }
 
     // 4. TẠO TOKENS (Phần quan trọng)

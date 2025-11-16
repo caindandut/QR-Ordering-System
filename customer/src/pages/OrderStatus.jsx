@@ -1,4 +1,3 @@
-// src/pages/OrderStatus.jsx
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom'; 
 import { useQuery } from '@tanstack/react-query';
@@ -19,7 +18,9 @@ const fetchMyOrders = async (tableId, customerName) => {
       customer_name: customerName,
     }
   });
-  return response.data; // Trả về MẢNG
+  // Lọc ra các đơn hàng không bị hủy
+  const activeOrders = response.data.filter(order => order.status !== 'CANCELLED');
+  return activeOrders; // Trả về MẢNG
 };
 
 const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';

@@ -182,7 +182,10 @@
         "success_title": "ログイン成功！",
         "success_desc": "おかえりなさい。",
         "error_title": "ログイン失敗",
-        "error_desc": "ログイン情報を確認してください。"
+        "error_desc": "ログイン情報を確認してください。",
+        "error_missing_credentials": "メールアドレスとパスワードを入力してください。",
+        "error_email_not_found": "このメールアドレスは登録されていません。",
+        "error_invalid_password": "パスワードが正しくありません。"
     },
     "account_page": {
         "title": "マイアカウント",

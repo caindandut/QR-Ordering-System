@@ -42,7 +42,11 @@ export const useAuthStore = create(
           
           return { success: true };
         } catch (error) {
-          return { success: false, error: error.response?.data?.message || "Lỗi đăng nhập" };
+          return { 
+            success: false, 
+            errorCode: error.response?.data?.code,
+            errorMessage: error.response?.data?.message
+          };
         }
       },
 

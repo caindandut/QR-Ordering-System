@@ -182,7 +182,10 @@
         "success_title": "Đăng nhập thành công!",
         "success_desc": "Chào mừng bạn đã trở lại.",
         "error_title": "Đăng nhập thất bại",
-        "error_desc": "Vui lòng kiểm tra lại thông tin đăng nhập."
+        "error_desc": "Vui lòng kiểm tra lại thông tin đăng nhập.",
+        "error_missing_credentials": "Vui lòng nhập đầy đủ email và mật khẩu.",
+        "error_email_not_found": "Email không tồn tại trong hệ thống.",
+        "error_invalid_password": "Mật khẩu không chính xác."
     },
     "account_page": {
         "title": "Tài khoản của tôi",

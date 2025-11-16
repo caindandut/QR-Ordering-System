@@ -7,7 +7,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
-import { useTranslation } from 'react-i18next'; 
+import { useTranslation } from 'react-i18next';
+import { LanguageToggle } from '@/components/LanguageToggle';
+import { ModeToggle } from '@/components/ModeToggle'; 
 
 
 const fetchTableDetails = async (tableId) => {
@@ -21,29 +23,39 @@ export default function OrderGateway() {
   const [searchParams] = useSearchParams();
   const urlTableId = searchParams.get('table_id');
 
-  // const localTableId = localStorage.getItem('table_id');
-  // const tableId = urlTableId || localTableId;
+  const tableId = urlTableId || localStorage.getItem('table_id');
+  
   const initializeSession = () => {
-    const localTableId = localStorage.getItem('table_id');
-    const localCustomerName = localStorage.getItem('customer_name');
+    const storedTableId = localStorage.getItem('table_id');
+    const storedCustomerName = localStorage.getItem('customer_name');
 
-    // 2a. KIỂM TRA: ID bàn trên URL có khớp với ID bàn trong bộ nhớ không?
-    if (urlTableId && urlTableId === localTableId) {
-      // TRƯỜNG HỢP 1: TRÙNG KHỚP (Ví dụ: F5, quay lại trang)
+    // 2a. Nếu KHÔNG CÓ table_id trên URL (reload trang con như /order/cart)
+    if (!urlTableId) {
+      // TRƯỜNG HỢP 1: Người dùng đang trong phiên hợp lệ và reload trang
+      // -> Kiểm tra xem có session trong localStorage không
+      if (storedTableId && storedCustomerName) {
+        // Giữ lại phiên hiện tại
+        return storedCustomerName;
+      }
+      // Nếu không có session -> yêu cầu đăng nhập (không nên xảy ra)
+      return null;
+    }
+
+    // 2b. KIỂM TRA: ID bàn trên URL có khớp với ID bàn trong bộ nhớ không?
+    if (urlTableId === storedTableId) {
+      // TRƯỜNG HỢP 2: TRÙNG KHỚP (Ví dụ: quét lại QR cùng bàn)
       // -> Đây là phiên HỢP LỆ, giữ lại tên khách hàng.
-      return localCustomerName; 
+      return storedCustomerName; 
     }
     
-    // 2b. KHÔNG KHỚP (Ví dụ: Quét bàn mới, hoặc `urlTableId` là `null`)
+    // 2c. KHÔNG KHỚP (Ví dụ: Quét bàn mới)
     // -> Đây là phiên KHÔNG HỢP LỆ. HỦY PHIÊN CŨ.
     localStorage.removeItem('customer_name');
     localStorage.removeItem('table_name');
     localStorage.removeItem('cart-storage'); // Xóa cả giỏ hàng cũ
 
-    // 2c. Nếu là 1 bàn mới, cập nhật ID bàn
-    if (urlTableId) {
-      localStorage.setItem('table_id', urlTableId);
-    }
+    // 2d. Cập nhật ID bàn mới
+    localStorage.setItem('table_id', urlTableId);
     
     return null; // Buộc người dùng nhập tên mới
   };
@@ -56,17 +68,23 @@ export default function OrderGateway() {
     isLoading: isLoadingTable,
     isError: isTableError,
   } = useQuery({
-    queryKey: ['table', urlTableId], 
-    queryFn: () => fetchTableDetails(urlTableId),
-    enabled: !!urlTableId,
+    queryKey: ['table', tableId], 
+    queryFn: () => fetchTableDetails(tableId),
+    enabled: !!tableId,
   });
 
 
-  useEffect(() => {
+ useEffect(() => {
+    // CHỈ "GHI" (Write) vào Bộ nhớ NẾU nó đến từ URL
+    if (urlTableId) { 
+      localStorage.setItem('table_id', urlTableId);
+    }
+    
+    // Luôn "Sync" tên bàn khi `tableData` thay đổi
     if (tableData) {
       localStorage.setItem('table_name', tableData.name);
     }
-  }, [tableData]);
+  }, [urlTableId, tableData]); // 👈 Chỉ "theo dõi" 2 biến này
 
   const handleNameSubmit = (e) => {
     e.preventDefault();
@@ -77,7 +95,7 @@ export default function OrderGateway() {
   };
 
 
-  if (!urlTableId) {
+  if (!tableId) {
     return <div className="p-4 text-red-500">{t('gateway.error_scan_qr')}</div>;
   }
   
@@ -97,7 +115,13 @@ export default function OrderGateway() {
 
   if (!customerName) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-background p-4">
+      <div className="flex items-center justify-center min-h-screen bg-background p-4 relative">
+        {/* Nút toggle ngôn ngữ và dark mode ở góc trên bên phải */}
+        <div className="absolute top-4 right-4 flex items-center gap-2">
+          <LanguageToggle />
+          <ModeToggle />
+        </div>
+        
         <div className="w-full max-w-md p-8 bg-card shadow-lg rounded-lg border border-border">
           
           {/* Lời chào đã được cập nhật */}

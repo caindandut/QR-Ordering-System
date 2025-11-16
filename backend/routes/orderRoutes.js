@@ -142,4 +142,35 @@ router.get('/', async (req, res) => {
   }
 });
 
+// DELETE /api/orders/clear-session
+// Hủy tất cả đơn hàng chưa thanh toán của khách hàng khi logout
+router.delete('/clear-session', async (req, res) => {
+  const { table_id, customer_name } = req.body;
+
+  if (!table_id || !customer_name) {
+    return res.status(400).json({ message: 'Thiếu thông tin bàn hoặc tên khách hàng.' });
+  }
+
+  try {
+    // Chỉ hủy các đơn hàng đang chờ xử lý (PENDING)
+    const result = await prisma.order.updateMany({
+      where: {
+        tableId: parseInt(table_id, 10),
+        customerName: customer_name,
+        status: 'PENDING' // Chỉ hủy đơn hàng PENDING
+      },
+      data: {
+        status: 'CANCELLED'
+      }
+    });
+
+    res.status(200).json({ 
+      message: 'Đã hủy phiên thành công',
+      cancelledOrders: result.count 
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Lỗi server', error: error.message });
+  }
+});
+
 export default router;
