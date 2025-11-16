@@ -10,6 +10,7 @@ import {
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from "next-themes";
 import { AdminRoute } from './components/AdminRoute';
+import { SocketProvider } from './context/SocketProvider.jsx';
 import RootLayout from './layouts/RootLayout';
 import AdminLayout from './layouts/AdminLayout';
 import LoginPage from './pages/Login';
@@ -39,7 +40,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: '/',
-            element: <AdminLayout />,
+            element: <SocketProvider><AdminLayout /></SocketProvider>,
             children: [
               {
                 index: true,
@@ -69,8 +70,14 @@ const router = createBrowserRouter([
                 element: <AdminRoute />,
                 children: [
                   {
-                    path: 'staff',
-                    element: <ManageStaffPage />,
+                    path : '/',
+                    element: <SocketProvider><AdminLayout /></SocketProvider>,
+                    children: [ 
+                      {
+                        path: 'staff',
+                        element: <ManageStaffPage />,
+                      }
+                    ]
                   },
                 ],
               },
