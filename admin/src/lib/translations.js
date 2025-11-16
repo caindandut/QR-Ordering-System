@@ -66,3 +66,42 @@ export const translateMenuStatus = (statusKey, lang = 'vi') => {
   // Default fallback
   return { text: statusKey, variant: 'outline' };
 };
+
+export const translateOrderStatus = (statusKey, lang = 'vi') => {
+  if (lang === 'vi') {
+    switch (statusKey) {
+      case 'PENDING':
+        return { text: 'Chờ xác nhận', variant: 'default' };
+      case 'COOKING':
+        return { text: 'Đang nấu', variant: 'secondary' };
+      case 'SERVED':
+        return { text: 'Đã phục vụ', variant: 'default' };
+      case 'PAID':
+        return { text: 'Đã thanh toán', variant: 'default' };
+      case 'CANCELLED':
+        return { text: 'Đã hủy', variant: 'destructive' };
+      default:
+        return { text: statusKey, variant: 'outline' };
+    }
+  }
+  
+  if (lang === 'jp') {
+    switch (statusKey) {
+      case 'PENDING':
+        return { text: '確認待ち', variant: 'default' }; // (Kakunin-machi - Chờ xác nhận)
+      case 'COOKING':
+        return { text: '調理中', variant: 'secondary' }; // (Chōri-chū - Đang nấu)
+      case 'SERVED':
+        return { text: '提供済み', variant: 'default' }; // (Teikyō-zumi - Đã phục vụ)
+      case 'PAID':
+        return { text: '支払い済み', variant: 'default' }; // (Shiharai-zumi - Đã thanh toán)
+      case 'CANCELLED':
+        return { text: 'キャンセル', variant: 'destructive' }; // (Kyanseru - Đã hủy)
+      default:
+        return { text: statusKey, variant: 'outline' };
+    }
+  }
+  
+  // Default fallback
+  return { text: statusKey, variant: 'outline' };
+};
