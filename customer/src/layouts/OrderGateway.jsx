@@ -21,37 +21,53 @@ export default function OrderGateway() {
   const [searchParams] = useSearchParams();
   const urlTableId = searchParams.get('table_id');
 
-  const localTableId = localStorage.getItem('table_id');
-  const tableId = urlTableId || localTableId;
+  // const localTableId = localStorage.getItem('table_id');
+  // const tableId = urlTableId || localTableId;
+  const initializeSession = () => {
+    const localTableId = localStorage.getItem('table_id');
+    const localCustomerName = localStorage.getItem('customer_name');
 
-  const [customerName, setCustomerName] = useState(
-    () => localStorage.getItem('customer_name') || null
-  );
-  
+    // 2a. KIỂM TRA: ID bàn trên URL có khớp với ID bàn trong bộ nhớ không?
+    if (urlTableId && urlTableId === localTableId) {
+      // TRƯỜNG HỢP 1: TRÙNG KHỚP (Ví dụ: F5, quay lại trang)
+      // -> Đây là phiên HỢP LỆ, giữ lại tên khách hàng.
+      return localCustomerName; 
+    }
+    
+    // 2b. KHÔNG KHỚP (Ví dụ: Quét bàn mới, hoặc `urlTableId` là `null`)
+    // -> Đây là phiên KHÔNG HỢP LỆ. HỦY PHIÊN CŨ.
+    localStorage.removeItem('customer_name');
+    localStorage.removeItem('table_name');
+    localStorage.removeItem('cart-storage'); // Xóa cả giỏ hàng cũ
+
+    // 2c. Nếu là 1 bàn mới, cập nhật ID bàn
+    if (urlTableId) {
+      localStorage.setItem('table_id', urlTableId);
+    }
+    
+    return null; // Buộc người dùng nhập tên mới
+  };
+
+  const [customerName, setCustomerName] = useState(initializeSession);
   const [tempName, setTempName] = useState('');
-
+  
   const {
     data: tableData,
     isLoading: isLoadingTable,
     isError: isTableError,
   } = useQuery({
-    queryKey: ['table', tableId], 
-    queryFn: () => fetchTableDetails(tableId),
-    enabled: !!tableId, 
+    queryKey: ['table', urlTableId], 
+    queryFn: () => fetchTableDetails(urlTableId),
+    enabled: !!urlTableId,
   });
 
 
   useEffect(() => {
-    if (urlTableId) {
-      localStorage.setItem('table_id', urlTableId);
-      
-      if (tableData) {
-        localStorage.setItem('table_name', tableData.name);
-      }
+    if (tableData) {
+      localStorage.setItem('table_name', tableData.name);
     }
-  }, [urlTableId, tableData]); 
+  }, [tableData]);
 
-  // 5. Hàm Submit Form (như cũ)
   const handleNameSubmit = (e) => {
     e.preventDefault();
     if (tempName) {
@@ -61,7 +77,7 @@ export default function OrderGateway() {
   };
 
 
-  if (!tableId) {
+  if (!urlTableId) {
     return <div className="p-4 text-red-500">{t('gateway.error_scan_qr')}</div>;
   }
   
