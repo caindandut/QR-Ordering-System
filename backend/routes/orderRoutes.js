@@ -1,5 +1,5 @@
 import express from 'express';
-import { prisma } from '../index.js';
+import { prisma, io } from '../index.js';
 
 const router = express.Router();
 
@@ -68,6 +68,8 @@ router.post('/', async (req, res) => {
 
       return order; // Trả về Hóa đơn chính
     });
+
+    io.emit('new_order_received', newOrder);
 
     // 5. TODO (Giai đoạn 3.5): Gửi tín hiệu Real-time
     // (Sau này chúng ta sẽ thêm code Socket.IO ở đây)
