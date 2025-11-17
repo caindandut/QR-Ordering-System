@@ -23,16 +23,16 @@ export default function OrderGateway() {
   const [searchParams] = useSearchParams();
   const urlTableId = searchParams.get('table_id');
 
-  const tableId = urlTableId || localStorage.getItem('table_id');
+  const tableId = urlTableId || sessionStorage.getItem('table_id');
   
   const initializeSession = () => {
-    const storedTableId = localStorage.getItem('table_id');
-    const storedCustomerName = localStorage.getItem('customer_name');
+    const storedTableId = sessionStorage.getItem('table_id');
+    const storedCustomerName = sessionStorage.getItem('customer_name');
 
     // 2a. Nếu KHÔNG CÓ table_id trên URL (reload trang con như /order/cart)
     if (!urlTableId) {
       // TRƯỜNG HỢP 1: Người dùng đang trong phiên hợp lệ và reload trang
-      // -> Kiểm tra xem có session trong localStorage không
+      // -> Kiểm tra xem có session trong sessionStorage không
       if (storedTableId && storedCustomerName) {
         // Giữ lại phiên hiện tại
         return storedCustomerName;
@@ -50,12 +50,12 @@ export default function OrderGateway() {
     
     // 2c. KHÔNG KHỚP (Ví dụ: Quét bàn mới)
     // -> Đây là phiên KHÔNG HỢP LỆ. HỦY PHIÊN CŨ.
-    localStorage.removeItem('customer_name');
-    localStorage.removeItem('table_name');
-    localStorage.removeItem('cart-storage'); // Xóa cả giỏ hàng cũ
+    sessionStorage.removeItem('customer_name');
+    sessionStorage.removeItem('table_name');
+    localStorage.removeItem('cart-storage'); // Xóa giỏ hàng cũ (vẫn dùng localStorage cho giỏ hàng)
 
     // 2d. Cập nhật ID bàn mới
-    localStorage.setItem('table_id', urlTableId);
+    sessionStorage.setItem('table_id', urlTableId);
     
     return null; // Buộc người dùng nhập tên mới
   };
@@ -77,19 +77,19 @@ export default function OrderGateway() {
  useEffect(() => {
     // CHỈ "GHI" (Write) vào Bộ nhớ NẾU nó đến từ URL
     if (urlTableId) { 
-      localStorage.setItem('table_id', urlTableId);
+      sessionStorage.setItem('table_id', urlTableId);
     }
     
     // Luôn "Sync" tên bàn khi `tableData` thay đổi
     if (tableData) {
-      localStorage.setItem('table_name', tableData.name);
+      sessionStorage.setItem('table_name', tableData.name);
     }
   }, [urlTableId, tableData]); // 👈 Chỉ "theo dõi" 2 biến này
 
   const handleNameSubmit = (e) => {
     e.preventDefault();
     if (tempName) {
-      localStorage.setItem('customer_name', tempName);
+      sessionStorage.setItem('customer_name', tempName);
       setCustomerName(tempName);
     }
   };

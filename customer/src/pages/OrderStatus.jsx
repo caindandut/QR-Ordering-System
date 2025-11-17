@@ -31,10 +31,10 @@ export default function OrderStatusPage() {
   const lang = i18n.language;
   const { toast } = useToast();
   
-  // 👇 [SỬA] ĐỌC TỪ localStorage, KHÔNG DÙNG useParams
-  const tableId = localStorage.getItem('table_id');
-  const customerName = localStorage.getItem('customer_name');
-  const tableName = localStorage.getItem('table_name');
+  // ĐỌC TỪ sessionStorage - mỗi tab có session riêng
+  const tableId = sessionStorage.getItem('table_id');
+  const customerName = sessionStorage.getItem('customer_name');
+  const tableName = sessionStorage.getItem('table_name');
 
   // State "sống" (như cũ)
   const [orderStatuses, setOrderStatuses] = useState({});

@@ -66,9 +66,9 @@ export default function CartPage() {
 
   // 7. HÀM SUBMIT
   const handlePlaceOrder = () => {
-    // 7a. Lấy dữ liệu từ "bộ não" (Zustand) và localStorage
-    const table_id = localStorage.getItem('table_id');
-    const customer_name = localStorage.getItem('customer_name');
+    // 7a. Lấy dữ liệu từ "bộ não" (Zustand) và sessionStorage
+    const table_id = sessionStorage.getItem('table_id');
+    const customer_name = sessionStorage.getItem('customer_name');
     
     // 7b. Định dạng lại dữ liệu `items` cho API
     const formattedItems = items.map(item => ({

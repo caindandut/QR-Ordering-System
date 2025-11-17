@@ -40,8 +40,8 @@ export default function CustomerHeader() {
   const clearCart = useCartStore((state) => state.clearCart);
 
   const handleLogout = async () => {
-    const tableId = localStorage.getItem('table_id');
-    const customerName = localStorage.getItem('customer_name');
+    const tableId = sessionStorage.getItem('table_id');
+    const customerName = sessionStorage.getItem('customer_name');
 
     // Gọi API để hủy tất cả đơn hàng chưa thanh toán
     try {
@@ -54,10 +54,10 @@ export default function CustomerHeader() {
       console.error('Lỗi khi hủy phiên:', error);
     }
 
-    // Xóa localStorage và reload
-    localStorage.removeItem('customer_name');
-    localStorage.removeItem('table_id');
-    localStorage.removeItem('table_name');
+    // Xóa sessionStorage và localStorage (giỏ hàng), sau đó reload
+    sessionStorage.removeItem('customer_name');
+    sessionStorage.removeItem('table_id');
+    sessionStorage.removeItem('table_name');
     localStorage.removeItem('cart-storage');
     clearCart();
     window.location.reload();
