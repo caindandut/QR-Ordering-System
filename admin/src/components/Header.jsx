@@ -174,7 +174,7 @@ export default function Header() {
                       <span className="font-semibold text-sm">
                         Thanh toán #{request.orderId}
                       </span>
-                      <Badge variant="destructive" className="ml-2 text-xs">Urgent</Badge>
+                      <Badge variant="destructive" className="ml-2 text-xs">Khẩn cấp</Badge>
                     </div>
                     <div className="text-xs text-muted-foreground space-y-0.5">
                       <div>

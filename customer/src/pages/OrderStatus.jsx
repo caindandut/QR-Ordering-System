@@ -115,34 +115,30 @@ export default function OrderStatusPage() {
         [orderId]: newStatus,
       }));
       
-      // Tìm đơn hàng để lấy thông tin hiển thị trong toast
-      const order = initialOrders?.find(o => o.id === orderId);
-      const orderInfo = order ? `Đơn hàng #${orderId}` : `Đơn hàng #${orderId}`;
-      
-      // Hiển thị toast notification dựa trên trạng thái mới
+      // Hiển thị toast notification từ góc nhìn khách hàng
       let toastTitle = '';
       let toastDescription = '';
       
       switch (newStatus) {
         case 'COOKING':
-          toastTitle = '✅ Đơn hàng đã được xác nhận';
-          toastDescription = `${orderInfo} đã được xác nhận và đang được chế biến.`;
+          toastTitle = '✅ Đơn hàng của bạn đã được xác nhận';
+          toastDescription = 'Đơn hàng của bạn đã được xác nhận và đang được chế biến.';
           break;
         case 'SERVED':
-          toastTitle = '🍽️ Đơn hàng đã được phục vụ';
-          toastDescription = `${orderInfo} đã được phục vụ. Vui lòng kiểm tra và thanh toán.`;
+          toastTitle = '🍽️ Đơn hàng của bạn đã được phục vụ';
+          toastDescription = 'Đơn hàng của bạn đã được phục vụ. Vui lòng kiểm tra và thanh toán.';
           break;
         case 'PAID':
-          toastTitle = '💰 Đơn hàng đã được thanh toán';
-          toastDescription = `${orderInfo} đã được thanh toán thành công. Cảm ơn bạn!`;
+          toastTitle = '💰 Đơn hàng của bạn đã được thanh toán';
+          toastDescription = 'Đơn hàng của bạn đã được thanh toán thành công. Cảm ơn bạn!';
           break;
         case 'CANCELLED':
-          toastTitle = '❌ Đơn hàng đã bị hủy';
-          toastDescription = `${orderInfo} đã bị hủy. Vui lòng liên hệ nhân viên nếu cần hỗ trợ.`;
+          toastTitle = '❌ Đơn hàng của bạn đã bị hủy';
+          toastDescription = 'Đơn hàng của bạn đã bị hủy. Vui lòng liên hệ nhân viên nếu cần hỗ trợ.';
           break;
         default:
           toastTitle = 'Cập nhật trạng thái đơn hàng';
-          toastDescription = `${orderInfo} đã được cập nhật trạng thái.`;
+          toastDescription = 'Đơn hàng của bạn đã được cập nhật trạng thái.';
       }
       
       toast({
@@ -161,8 +157,8 @@ export default function OrderStatusPage() {
       setShowBillDialog(true);
       
       toast({
-        title: '🧾 Nhận hóa đơn',
-        description: `Hóa đơn cho đơn hàng #${orderId}: ${totalAmount?.toLocaleString('vi-VN')}đ. Vui lòng kiểm tra.`,
+        title: '🧾 Hóa đơn của bạn',
+        description: `Tổng tiền: ${totalAmount?.toLocaleString('vi-VN')}đ. Vui lòng kiểm tra và thanh toán.`,
         duration: 5000,
       });
     };

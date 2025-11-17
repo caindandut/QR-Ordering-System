@@ -1,4 +1,3 @@
-// src/pages/ManageOrdersPage.jsx
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
@@ -255,7 +254,8 @@ export default function ManageOrdersPage() {
       
       // Hiển thị toast notification dựa trên trạng thái mới
       const order = context?.currentOrder;
-      const orderInfo = order ? `Đơn #${order.id} - Bàn ${order.table?.name || 'N/A'}` : `Đơn #${variables.orderId}`;
+      const customerInfo = order?.customerName || 'N/A';
+      const tableInfo = order?.table?.name || 'N/A';
       
       let toastTitle = '';
       let toastDescription = '';
@@ -263,23 +263,23 @@ export default function ManageOrdersPage() {
       switch (variables.status) {
         case 'COOKING':
           toastTitle = '✅ Đã xác nhận đơn hàng';
-          toastDescription = `${orderInfo} đã được xác nhận và đang được chế biến.`;
+          toastDescription = `Đơn hàng của khách hàng ${customerInfo} - ${tableInfo} đã được xác nhận và đang được chế biến.`;
           break;
         case 'SERVED':
           toastTitle = '🍽️ Đã phục vụ';
-          toastDescription = `${orderInfo} đã được phục vụ.`;
+          toastDescription = `Đơn hàng của khách hàng ${customerInfo} - ${tableInfo} đã được phục vụ.`;
           break;
         case 'PAID':
           toastTitle = '💰 Đã thanh toán';
-          toastDescription = `${orderInfo} đã được thanh toán thành công.`;
+          toastDescription = `Đơn hàng của khách hàng ${customerInfo} - ${tableInfo} đã được thanh toán thành công.`;
           break;
         case 'CANCELLED':
           toastTitle = '❌ Đã hủy đơn hàng';
-          toastDescription = `${orderInfo} đã được hủy.`;
+          toastDescription = `Đơn hàng của khách hàng ${customerInfo} - ${tableInfo} đã được hủy.`;
           break;
         default:
           toastTitle = 'Cập nhật trạng thái';
-          toastDescription = `${orderInfo} đã được cập nhật.`;
+          toastDescription = `Đơn hàng của khách hàng ${customerInfo} - ${tableInfo} đã được cập nhật.`;
       }
       
       toast({
@@ -928,22 +928,18 @@ const OrderRow = ({ order, onStatusChange, isLoading, i18n, isHighlighted }) => 
                   {order.status === 'SERVED' && (
                     <>
                       <DropdownMenuItem onClick={handlePrint}>
-                        <Printer className="mr-2 h-4 w-4" />
                         In hóa đơn
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={handleSendBillToCustomer} disabled={isSendingBill}>
                         {isSendingBill ? (
-                          <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Đang gửi...
-                          </>
+                          'Đang gửi...'
                         ) : (
                           'Gửi hóa đơn cho khách'
                         )}
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => onStatusChange('PAID')}>
-                        ✓ Thanh toán xong
+                        Thanh toán xong
                       </DropdownMenuItem>
                     </>
                   )}
