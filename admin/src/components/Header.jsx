@@ -33,7 +33,7 @@ export default function Header() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const { toast } = useToast();
   const { t } = useTranslation();
-  const { newOrders, unreadCount, removeNotification } = useNotification();
+  const { newOrders, unreadCount, removeNotification, paymentRequests, paymentRequestCount, removePaymentRequest } = useNotification();
 
   const handleLogout = async () => {
     try {
@@ -96,12 +96,12 @@ export default function Header() {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="relative">
               <Bell className="h-5 w-5" />
-              {unreadCount > 0 && (
+              {(unreadCount + paymentRequestCount) > 0 && (
                 <Badge 
                   variant="destructive" 
                   className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
                 >
-                  {unreadCount > 99 ? '99+' : unreadCount}
+                  {(unreadCount + paymentRequestCount) > 99 ? '99+' : (unreadCount + paymentRequestCount)}
                 </Badge>
               )}
               <span className="sr-only">Thông báo</span>
@@ -109,7 +109,7 @@ export default function Header() {
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-80 max-h-96 overflow-y-auto" align="end">
             <DropdownMenuLabel className="flex items-center justify-between">
-              <span>Đơn hàng mới</span>
+              <span>Thông báo</span>
               {unreadCount > 0 && (
                 <Badge variant="secondary">{unreadCount}</Badge>
               )}
@@ -117,7 +117,7 @@ export default function Header() {
             <DropdownMenuSeparator />
             {newOrders.length === 0 ? (
               <div className="p-4 text-center text-sm text-muted-foreground">
-                Không có thông báo mới
+                Không có đơn hàng mới
               </div>
             ) : (
               newOrders.map((order) => (
@@ -150,7 +150,50 @@ export default function Header() {
                 </DropdownMenuItem>
               ))
             )}
-            {newOrders.length > 0 && (
+            
+            {/* Yêu cầu thanh toán */}
+            {paymentRequests.length > 0 && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuLabel className="flex items-center justify-between">
+                  <span className="text-orange-600 dark:text-orange-400">💰 Yêu cầu thanh toán</span>
+                  {paymentRequestCount > 0 && (
+                    <Badge variant="destructive">{paymentRequestCount}</Badge>
+                  )}
+                </DropdownMenuLabel>
+                {paymentRequests.map((request) => (
+                  <DropdownMenuItem 
+                    key={request.orderId}
+                    className="flex flex-col items-start p-3 cursor-pointer bg-orange-50 dark:bg-orange-950/20"
+                    onClick={() => {
+                      navigate(`/orders?highlightOrder=${request.orderId}`);
+                      removePaymentRequest(request.orderId);
+                    }}
+                  >
+                    <div className="flex items-start justify-between w-full mb-1">
+                      <span className="font-semibold text-sm">
+                        Thanh toán #{request.orderId}
+                      </span>
+                      <Badge variant="destructive" className="ml-2 text-xs">Urgent</Badge>
+                    </div>
+                    <div className="text-xs text-muted-foreground space-y-0.5">
+                      <div>
+                        <span className="font-medium">Bàn:</span> {request.tableName || 'N/A'}
+                      </div>
+                      <div>
+                        <span className="font-medium">Khách:</span> {request.customerName || 'N/A'}
+                      </div>
+                      <div>
+                        <span className="font-medium">Tổng tiền:</span>{' '}
+                        <span className="font-bold text-primary">{request.totalAmount?.toLocaleString('vi-VN')}đ</span>
+                      </div>
+                    </div>
+                  </DropdownMenuItem>
+                ))}
+              </>
+            )}
+            
+            {(newOrders.length > 0 || paymentRequests.length > 0) && (
               <>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>

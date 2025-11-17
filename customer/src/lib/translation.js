@@ -3,6 +3,7 @@ export const translateOrderStatus = (statusKey, lang = 'vi') => {
     vi: {
       PENDING: { text: 'Chờ xử lý', variant: 'secondary' },
       CONFIRMED: { text: 'Đã xác nhận', variant: 'default' },
+      COOKING: { text: 'Đang nấu', variant: 'default' },
       PREPARING: { text: 'Đang nấu', variant: 'default' },
       READY: { text: 'Sẵn sàng', variant: 'success' },
       SERVED: { text: 'Đã phục vụ', variant: 'success' },
@@ -12,6 +13,7 @@ export const translateOrderStatus = (statusKey, lang = 'vi') => {
     jp: {
       PENDING: { text: '保留中', variant: 'secondary' },
       CONFIRMED: { text: '確認済み', variant: 'default' },
+      COOKING: { text: '調理中', variant: 'default' },
       PREPARING: { text: '調理中', variant: 'default' },
       READY: { text: '準備完了', variant: 'success' },
       SERVED: { text: '提供済み', variant: 'success' },

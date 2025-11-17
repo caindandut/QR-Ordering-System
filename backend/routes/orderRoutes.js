@@ -155,6 +155,55 @@ router.get('/', async (req, res) => {
   }
 });
 
+// POST /api/orders/:id/request-payment
+// Khách hàng yêu cầu thanh toán
+router.post('/:id/request-payment', async (req, res) => {
+  const orderId = parseInt(req.params.id);
+
+  try {
+    // Lấy thông tin đơn hàng
+    const order = await prisma.order.findUnique({
+      where: { id: orderId },
+      include: {
+        table: { select: { id: true, name: true } },
+        details: {
+          include: {
+            menuItem: { select: { name: true, imageUrl: true } }
+          }
+        }
+      }
+    });
+
+    if (!order) {
+      return res.status(404).json({ message: 'Không tìm thấy đơn hàng.' });
+    }
+
+    // Kiểm tra trạng thái đơn hàng phải là SERVED
+    if (order.status !== 'SERVED') {
+      return res.status(400).json({ 
+        message: 'Chỉ có thể yêu cầu thanh toán cho đơn hàng đã được phục vụ.' 
+      });
+    }
+
+    // Emit socket event đến admin
+    io.emit('payment_requested', {
+      orderId: order.id,
+      tableId: order.table.id,
+      tableName: order.table.name,
+      customerName: order.customerName,
+      totalAmount: order.totalAmount,
+      createdAt: order.createdAt,
+    });
+
+    res.status(200).json({ 
+      message: 'Yêu cầu thanh toán đã được gửi đến nhân viên.',
+      orderId: order.id
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Lỗi server', error: error.message });
+  }
+});
+
 // DELETE /api/orders/clear-session
 // Hủy tất cả đơn hàng chưa thanh toán của khách hàng khi logout
 router.delete('/clear-session', async (req, res) => {

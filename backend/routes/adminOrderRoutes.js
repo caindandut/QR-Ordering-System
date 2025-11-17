@@ -80,6 +80,55 @@ router.patch('/:id/status', async (req, res) => {
   }
 });
 
+// POST /api/admin/orders/:id/send-bill
+// Gửi hóa đơn cho khách hàng
+router.post('/:id/send-bill', async (req, res) => {
+  const orderId = parseInt(req.params.id);
+
+  try {
+    // Lấy thông tin đơn hàng đầy đủ
+    const order = await prisma.order.findUnique({
+      where: { id: orderId },
+      include: {
+        table: { select: { id: true, name: true } },
+        details: {
+          include: {
+            menuItem: { select: { name: true, name_jp: true, imageUrl: true } }
+          }
+        }
+      }
+    });
+
+    if (!order) {
+      return res.status(404).json({ message: 'Không tìm thấy đơn hàng.' });
+    }
+
+    // Kiểm tra trạng thái đơn hàng phải là SERVED
+    if (order.status !== 'SERVED') {
+      return res.status(400).json({ 
+        message: 'Chỉ có thể gửi hóa đơn cho đơn hàng đã được phục vụ.' 
+      });
+    }
+
+    // Emit socket event gửi hóa đơn đến khách hàng
+    io.to(`order_${orderId}`).emit('bill_received', {
+      orderId: order.id,
+      tableName: order.table.name,
+      customerName: order.customerName,
+      totalAmount: order.totalAmount,
+      details: order.details,
+      createdAt: order.createdAt,
+    });
+
+    res.status(200).json({ 
+      message: 'Hóa đơn đã được gửi đến khách hàng.',
+      orderId: order.id
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Lỗi server', error: error.message });
+  }
+});
+
 // POST /api/admin/orders/create
 // Tạo đơn hàng thủ công (cho admin/nhân viên)
 router.post('/create', async (req, res) => {

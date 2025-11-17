@@ -1,6 +1,7 @@
 // src/pages/ManageOrdersPage.jsx
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useSearchParams } from 'react-router-dom';
 import api from '../services/api';
 import { useSocket } from '../hooks/useSocket.js';
 import { useNotification } from '../context/NotificationContext';
@@ -77,10 +78,13 @@ export default function ManageOrdersPage() {
   const socket = useSocket();
   const { toast } = useToast();
   const { clearNotifications } = useNotification();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const highlightOrderId = searchParams.get('highlightOrder');
   
-  // State cho filters
-  const [statusFilter, setStatusFilter] = useState("PENDING");
+  // State cho filters  
+  const [statusFilter, setStatusFilter] = useState(highlightOrderId ? "SERVED" : "PENDING");
   const [tableFilter, setTableFilter] = useState("ALL");
+  const [highlightedOrder, setHighlightedOrder] = useState(null);
   
   // State cho tạo đơn thủ công
   const [isCreateOrderOpen, setIsCreateOrderOpen] = useState(false);
@@ -110,6 +114,32 @@ export default function ManageOrdersPage() {
   useEffect(() => {
     clearNotifications();
   }, []); // Chỉ chạy một lần khi component mount
+
+  // Highlight order khi có highlightOrderId từ URL
+  useEffect(() => {
+    if (highlightOrderId && allOrders) {
+      const order = allOrders.find(o => o.id === parseInt(highlightOrderId));
+      if (order) {
+        // Set filter to show the order
+        setStatusFilter(order.status);
+        setHighlightedOrder(parseInt(highlightOrderId));
+        
+        // Scroll to order after a short delay
+        setTimeout(() => {
+          const element = document.getElementById(`order-${highlightOrderId}`);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 300);
+        
+        // Clear highlight after 5 seconds
+        setTimeout(() => {
+          setHighlightedOrder(null);
+          setSearchParams({});
+        }, 5000);
+      }
+    }
+  }, [highlightOrderId, allOrders, setSearchParams]);
 
   // --- LOGIC "NGHE" (SOCKET.IO) ---
   useEffect(() => {
@@ -630,6 +660,7 @@ export default function ManageOrdersPage() {
                         onStatusChange={(newStatus) => updateStatusMutation.mutate({ orderId: order.id, status: newStatus })}
                         isLoading={updateStatusMutation.isLoading}
                         i18n={i18n}
+                        isHighlighted={highlightedOrder === order.id}
                       />
                     ))}
                   </React.Fragment>
@@ -644,15 +675,52 @@ export default function ManageOrdersPage() {
 }
 
 // --- COMPONENT CON: HÀNG ĐƠN HÀNG ---
-const OrderRow = ({ order, onStatusChange, isLoading, i18n }) => {
+const OrderRow = ({ order, onStatusChange, isLoading, i18n, isHighlighted }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showDetailsDialog, setShowDetailsDialog] = useState(false);
+  const [showPrintDialog, setShowPrintDialog] = useState(false);
+  const [isSendingBill, setIsSendingBill] = useState(false);
   const printRef = useRef(null);
+  const { toast } = useToast();
 
-  // Logic In
-  const handlePrint = useReactToPrint({
-    content: () => printRef.current,
+  // Logic In - mở dialog preview
+  const handlePrint = () => {
+    setShowPrintDialog(true);
+  };
+
+  const reactToPrintFn = useReactToPrint({
+    contentRef: printRef,
+    documentTitle: `Hoa-don-${order.id}`,
+    onAfterPrint: () => {
+      toast({
+        title: "✅ In hóa đơn thành công",
+        description: `Đã in hóa đơn cho đơn #${order.id}`,
+        duration: 3000,
+      });
+      setShowPrintDialog(false);
+    },
   });
+
+  // Gửi hóa đơn cho khách hàng
+  const handleSendBillToCustomer = async () => {
+    setIsSendingBill(true);
+    try {
+      await api.post(`/api/admin/orders/${order.id}/send-bill`);
+      toast({
+        title: "✅ Đã gửi hóa đơn",
+        description: `Hóa đơn đã được gửi đến khách hàng tại ${order.table?.name}`,
+        duration: 3000,
+      });
+    } catch (error) {
+      toast({
+        title: "❌ Lỗi",
+        description: error.response?.data?.message || "Không thể gửi hóa đơn",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSendingBill(false);
+    }
+  };
 
 
   // Hàm lấy màu badge
@@ -679,7 +747,13 @@ const OrderRow = ({ order, onStatusChange, isLoading, i18n }) => {
     <Collapsible asChild open={isOpen} onOpenChange={setIsOpen}>
       <>
         {/* HÀNG CHÍNH: THÔNG TIN ĐƠN HÀNG */}
-        <TableRow className={cn("cursor-pointer hover:bg-muted/50")}>
+        <TableRow 
+          id={`order-${order.id}`}
+          className={cn(
+            "cursor-pointer hover:bg-muted/50 transition-all",
+            isHighlighted && "bg-yellow-100 dark:bg-yellow-900/30 animate-pulse"
+          )}
+        >
           <TableCell>
             <CollapsibleTrigger asChild>
               <Button variant="ghost" size="icon">
@@ -853,13 +927,23 @@ const OrderRow = ({ order, onStatusChange, isLoading, i18n }) => {
                   )}
                   {order.status === 'SERVED' && (
                     <>
-                      <DropdownMenuItem onClick={() => onStatusChange('PAID')}>
-                        Thanh toán
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={handlePrint}>
                         <Printer className="mr-2 h-4 w-4" />
                         In hóa đơn
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={handleSendBillToCustomer} disabled={isSendingBill}>
+                        {isSendingBill ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Đang gửi...
+                          </>
+                        ) : (
+                          'Gửi hóa đơn cho khách'
+                        )}
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => onStatusChange('PAID')}>
+                        ✓ Thanh toán xong
                       </DropdownMenuItem>
                     </>
                   )}
@@ -875,18 +959,45 @@ const OrderRow = ({ order, onStatusChange, isLoading, i18n }) => {
           </TableCell>
         </TableRow>
 
+        {/* Dialog để in hóa đơn */}
+        <Dialog open={showPrintDialog} onOpenChange={setShowPrintDialog}>
+          <DialogContent className="max-w-2xl max-h-[95vh] overflow-y-auto print:overflow-visible">
+            <DialogHeader className="print:hidden">
+              <DialogTitle className="text-center text-xl font-bold">Xem trước hóa đơn</DialogTitle>
+            </DialogHeader>
+            
+            {/* Preview hóa đơn với border đẹp */}
+            <div className="flex justify-center my-4 print:my-0">
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 print:border-none print:p-0">
+                <div ref={printRef}>
+                  <BillReceipt order={order} />
+                </div>
+              </div>
+            </div>
+            
+            {/* Nút hành động */}
+            <div className="flex gap-3 justify-center pt-4 border-t print:hidden">
+              <Button onClick={reactToPrintFn} size="lg" className="flex-1 max-w-xs">
+                <Printer className="mr-2 h-5 w-5" />
+                In hóa đơn
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => setShowPrintDialog(false)}
+                size="lg"
+                className="flex-1 max-w-xs"
+              >
+                Đóng
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
         {/* HÀNG CON: CHI TIẾT MÓN (Collapsible) */}
         <CollapsibleContent asChild>
           <TableRow className="bg-muted/30 hover:bg-muted/30">
             <TableCell colSpan={9} className="p-0">
               <div className="p-4 space-y-2">
-                {/* Ẩn div này để component <BillReceipt> in */}
-                <div className="hidden">
-                  <div ref={printRef}>
-                    {/* <BillReceipt orderData={order} /> */}
-                    In Hóa đơn ở đây...
-                  </div>
-        </div>
         
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                   {order.details?.map((detail, index) => (
@@ -914,5 +1025,71 @@ const OrderRow = ({ order, onStatusChange, isLoading, i18n }) => {
         </CollapsibleContent>
       </>
     </Collapsible>
+  );
+};
+
+// --- COMPONENT HÓA ĐƠN ĐỂ IN ---
+const BillReceipt = ({ order }) => {
+  return (
+    <div style={{ padding: '30px', fontFamily: 'monospace', maxWidth: '80mm', margin: '0 auto' }}>
+      <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+        <h1 style={{ fontSize: '24px', margin: '0' }}>HÓA ĐƠN</h1>
+        <h2 style={{ fontSize: '20px', margin: '5px 0' }}>NHÀ HÀNG</h2>
+        <p style={{ margin: '5px 0' }}>Địa chỉ: 123 Đường ABC, TP.HCM</p>
+        <p style={{ margin: '5px 0' }}>SĐT: 0123-456-789</p>
+        <hr style={{ border: '1px dashed #000' }} />
+      </div>
+
+      <div style={{ marginBottom: '15px' }}>
+        <p style={{ margin: '5px 0' }}><strong>Hóa đơn #:</strong> {order.id}</p>
+        <p style={{ margin: '5px 0' }}><strong>Bàn:</strong> {order.table?.name || 'N/A'}</p>
+        <p style={{ margin: '5px 0' }}><strong>Khách hàng:</strong> {order.customerName}</p>
+        <p style={{ margin: '5px 0' }}><strong>Thời gian:</strong> {format(new Date(order.createdAt), 'HH:mm dd/MM/yyyy')}</p>
+        {order.staff && (
+          <p style={{ margin: '5px 0' }}><strong>Nhân viên:</strong> {order.staff.name}</p>
+        )}
+        <hr style={{ border: '1px dashed #000' }} />
+      </div>
+
+      <div style={{ marginBottom: '15px' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <thead>
+            <tr style={{ borderBottom: '1px solid #000' }}>
+              <th style={{ textAlign: 'left', padding: '5px' }}>Món</th>
+              <th style={{ textAlign: 'center', padding: '5px' }}>SL</th>
+              <th style={{ textAlign: 'right', padding: '5px' }}>Giá</th>
+              <th style={{ textAlign: 'right', padding: '5px' }}>Thành tiền</th>
+            </tr>
+          </thead>
+          <tbody>
+            {order.details?.map((detail) => (
+              <tr key={detail.id} style={{ borderBottom: '1px dotted #ccc' }}>
+                <td style={{ padding: '8px 5px' }}>{detail.menuItem?.name}</td>
+                <td style={{ textAlign: 'center', padding: '8px 5px' }}>{detail.quantity}</td>
+                <td style={{ textAlign: 'right', padding: '8px 5px' }}>
+                  {detail.priceAtOrder?.toLocaleString('vi-VN')}đ
+                </td>
+                <td style={{ textAlign: 'right', padding: '8px 5px' }}>
+                  {(detail.priceAtOrder * detail.quantity).toLocaleString('vi-VN')}đ
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <hr style={{ border: '1px dashed #000' }} />
+      </div>
+
+      <div style={{ marginBottom: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '18px', fontWeight: 'bold' }}>
+          <span>TỔNG CỘNG:</span>
+          <span>{order.totalAmount?.toLocaleString('vi-VN')}đ</span>
+        </div>
+      </div>
+
+      <div style={{ textAlign: 'center', marginTop: '30px' }}>
+        <p style={{ margin: '5px 0' }}>Cảm ơn quý khách!</p>
+        <p style={{ margin: '5px 0' }}>Hẹn gặp lại!</p>
+      </div>
+    </div>
   );
 };

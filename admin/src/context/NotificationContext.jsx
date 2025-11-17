@@ -16,6 +16,8 @@ export const NotificationProvider = ({ children }) => {
   // State lưu danh sách đơn hàng mới chưa xem
   const [newOrders, setNewOrders] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [paymentRequests, setPaymentRequests] = useState([]); // Yêu cầu thanh toán
+  const [paymentRequestCount, setPaymentRequestCount] = useState(0);
   const socket = useSocket();
 
   // Lắng nghe socket events
@@ -40,10 +42,29 @@ export const NotificationProvider = ({ children }) => {
       setUnreadCount((prev) => prev + 1);
     };
 
+    const handlePaymentRequest = (paymentRequest) => {
+      if (!paymentRequest || !paymentRequest.orderId) {
+        console.error('Yêu cầu thanh toán không hợp lệ:', paymentRequest);
+        return;
+      }
+
+      // Thêm yêu cầu thanh toán vào danh sách
+      setPaymentRequests((prev) => {
+        const exists = prev.some(req => req.orderId === paymentRequest.orderId);
+        if (exists) return prev;
+        return [paymentRequest, ...prev];
+      });
+
+      // Tăng số lượng yêu cầu thanh toán
+      setPaymentRequestCount((prev) => prev + 1);
+    };
+
     socket.on('new_order_received', handleNewOrder);
+    socket.on('payment_requested', handlePaymentRequest);
 
     return () => {
       socket.off('new_order_received', handleNewOrder);
+      socket.off('payment_requested', handlePaymentRequest);
     };
   }, [socket]);
 
@@ -59,11 +80,27 @@ export const NotificationProvider = ({ children }) => {
     setUnreadCount((prev) => Math.max(0, prev - 1));
   };
 
+  // Hàm xóa yêu cầu thanh toán
+  const removePaymentRequest = (orderId) => {
+    setPaymentRequests((prev) => prev.filter(req => req.orderId !== orderId));
+    setPaymentRequestCount((prev) => Math.max(0, prev - 1));
+  };
+
+  // Hàm xóa tất cả yêu cầu thanh toán
+  const clearPaymentRequests = () => {
+    setPaymentRequests([]);
+    setPaymentRequestCount(0);
+  };
+
   const value = {
     newOrders,
     unreadCount,
     clearNotifications,
     removeNotification,
+    paymentRequests,
+    paymentRequestCount,
+    removePaymentRequest,
+    clearPaymentRequests,
   };
 
   return (
