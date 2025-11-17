@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useRef } from 'react';
+import React, { createContext, useEffect, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
 
 
@@ -10,9 +10,8 @@ export const SocketContext = createContext();
 
 // 3. Tạo "Nhà cung cấp" (Provider - Cái "ăng-ten" thật)
 export const SocketProvider = ({ children }) => {
-  // 5. Dùng `useRef` để giữ kết nối socket
-  //    TẠI SAO? `useRef` sẽ *không* thay đổi giữa các
-  //    lần render, đảm bảo chúng ta CHỈ KẾT NỐI 1 LẦN.
+  // Dùng state để trigger re-render khi socket được tạo
+  const [socket, setSocket] = useState(null);
   const socketRef = useRef(null);
 
   // 6. Kết nối khi "Provider" được render
@@ -20,36 +19,40 @@ export const SocketProvider = ({ children }) => {
     // 6a. Chỉ kết nối nếu chưa có
     if (!socketRef.current) {
       // 6b. Tạo kết nối (Socket.IO client)
-      socketRef.current = io(SOCKET_URL);
-
-      // (Tùy chọn) Lắng nghe các sự kiện kết nối/lỗi
-      socketRef.current.on('connect', () => {
-        console.log('Socket.IO đã kết nối (Admin)');
+      const newSocket = io(SOCKET_URL, {
+        transports: ['websocket', 'polling'],
+        reconnection: true,
+        reconnectionDelay: 1000,
+        reconnectionAttempts: 5,
       });
 
-      socketRef.current.on('connect_error', (err) => {
+      socketRef.current = newSocket;
+      setSocket(newSocket); // Trigger re-render để các component con có thể sử dụng socket
+
+      // Lắng nghe các sự kiện kết nối/lỗi
+      newSocket.on('connect_error', (err) => {
         console.error('Lỗi kết nối Socket.IO (Admin):', err.message);
       });
     }
 
-    const socket = socketRef.current; // Lấy socket hiện tại
+    const currentSocket = socketRef.current; // Lấy socket hiện tại
 
     // 7. 🧠 KHÁI NIỆM: "Dọn dẹp" (Cleanup)
     //    TẠI SAO? Khi người dùng "Đăng xuất" (ProtectedRoute
     //    unmounts), chúng ta phải "ngắt kết nối" thủ công.
     //    Nếu không, kết nối sẽ "lơ lửng" (zombie connection).
     return () => {
-      if (socket) {
-        socket.disconnect();
+      if (currentSocket) {
+        currentSocket.disconnect();
         socketRef.current = null;
-        console.log('Socket.IO đã ngắt kết nối (Admin)');
+        setSocket(null);
       }
     };
   }, []); // 👈 Mảng rỗng `[]` = Chỉ chạy 1 LẦN DUY NHẤT khi mount
 
   // 8. "Phát sóng" (Provide) kết nối cho các "con"
   return (
-    <SocketContext.Provider value={socketRef.current}>
+    <SocketContext.Provider value={socket}>
       {children}
     </SocketContext.Provider>
   );

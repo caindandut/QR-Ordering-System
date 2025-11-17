@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
+import { useNotification } from '../context/NotificationContext';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { User, LogOut, Menu } from 'lucide-react';
+import { User, LogOut, Menu, Bell } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
@@ -22,6 +24,7 @@ import { ModeToggle } from "./ModeToggle";
 import { LanguageToggle } from "./LanguageToggle";
 import { useToast } from '@/hooks/use-toast';
 import { useTranslation } from 'react-i18next';
+import { format } from 'date-fns';
 
 export default function Header() {
   const user = useAuthStore((state) => state.user);
@@ -30,6 +33,7 @@ export default function Header() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { newOrders, unreadCount, removeNotification } = useNotification();
 
   const handleLogout = async () => {
     try {
@@ -82,10 +86,85 @@ export default function Header() {
       {/* Spacer - Đẩy toggle và avatar sang phải (cả mobile và desktop) */}
       <div className="flex-grow"></div>
       
-      {/* Toggle theme, language và Avatar */}
+      {/* Toggle theme, language, notification bell và Avatar */}
       <div className="flex items-center gap-2">
         <LanguageToggle />
         <ModeToggle />
+        
+        {/* Notification Bell Dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="relative">
+              <Bell className="h-5 w-5" />
+              {unreadCount > 0 && (
+                <Badge 
+                  variant="destructive" 
+                  className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                >
+                  {unreadCount > 99 ? '99+' : unreadCount}
+                </Badge>
+              )}
+              <span className="sr-only">Thông báo</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-80 max-h-96 overflow-y-auto" align="end">
+            <DropdownMenuLabel className="flex items-center justify-between">
+              <span>Đơn hàng mới</span>
+              {unreadCount > 0 && (
+                <Badge variant="secondary">{unreadCount}</Badge>
+              )}
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {newOrders.length === 0 ? (
+              <div className="p-4 text-center text-sm text-muted-foreground">
+                Không có thông báo mới
+              </div>
+            ) : (
+              newOrders.map((order) => (
+                <DropdownMenuItem 
+                  key={order.id}
+                  className="flex flex-col items-start p-3 cursor-pointer"
+                  onClick={() => {
+                    navigate('/orders');
+                    removeNotification(order.id);
+                  }}
+                >
+                  <div className="flex items-start justify-between w-full mb-1">
+                    <span className="font-semibold text-sm">
+                      Đơn hàng mới #{order.id}
+                    </span>
+                    <Badge variant="outline" className="ml-2 text-xs">Mới</Badge>
+                  </div>
+                  <div className="text-xs text-muted-foreground space-y-0.5">
+                    <div>
+                      <span className="font-medium">Bàn:</span> {order.table?.name || 'N/A'}
+                    </div>
+                    <div>
+                      <span className="font-medium">Khách:</span> {order.customerName || 'N/A'}
+                    </div>
+                    <div>
+                      <span className="font-medium">Thời gian:</span>{' '}
+                      {order.createdAt ? format(new Date(order.createdAt), 'HH:mm dd/MM/yyyy') : 'N/A'}
+                    </div>
+                  </div>
+                </DropdownMenuItem>
+              ))
+            )}
+            {newOrders.length > 0 && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link 
+                    to="/orders" 
+                    className="w-full text-center justify-center font-medium text-primary"
+                  >
+                    Xem tất cả đơn hàng
+                  </Link>
+                </DropdownMenuItem>
+              </>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
         
         {/* Dropdown Avatar */}
         <DropdownMenu>

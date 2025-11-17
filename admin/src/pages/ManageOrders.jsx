@@ -3,6 +3,7 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../services/api';
 import { useSocket } from '../hooks/useSocket.js';
+import { useNotification } from '../context/NotificationContext';
 import { useToast } from "@/hooks/use-toast";
 import { useReactToPrint } from 'react-to-print';
 import { format } from 'date-fns';
@@ -75,6 +76,7 @@ export default function ManageOrdersPage() {
   const queryClient = useQueryClient();
   const socket = useSocket();
   const { toast } = useToast();
+  const { clearNotifications } = useNotification();
   
   // State cho filters
   const [statusFilter, setStatusFilter] = useState("PENDING");
@@ -85,7 +87,7 @@ export default function ManageOrdersPage() {
   const [selectedTableId, setSelectedTableId] = useState('');
   const [customerName, setCustomerName] = useState('');
   const [selectedItems, setSelectedItems] = useState([]); // [{item_id, quantity}]
-
+  
   // --- LOGIC ĐỌC (READ) ---
   const { data: allOrders, isLoading, isError } = useQuery({
     queryKey: ['admin_orders'],
@@ -104,18 +106,63 @@ export default function ManageOrdersPage() {
     queryFn: fetchMenuItems,
   });
 
+  // Clear notifications khi vào trang này
+  useEffect(() => {
+    clearNotifications();
+  }, []); // Chỉ chạy một lần khi component mount
+
   // --- LOGIC "NGHE" (SOCKET.IO) ---
   useEffect(() => {
     if (!socket) return; 
-    const handleNewOrder = () => {
-      toast({ title: "Có đơn hàng mới!" });
-      queryClient.invalidateQueries({ queryKey: ['admin_orders'] });
+
+    const handleNewOrder = (newOrder) => {
+      if (!newOrder || !newOrder.id) {
+        console.error('Đơn hàng không hợp lệ:', newOrder);
+        return;
+      }
+      
+      // Cập nhật cache ngay lập tức với đơn hàng mới
+      queryClient.setQueryData(['admin_orders'], (oldOrders) => {
+        if (!oldOrders) return [newOrder];
+        // Kiểm tra xem đơn đã tồn tại chưa (tránh duplicate)
+        const exists = oldOrders.some(order => order.id === newOrder.id);
+        if (exists) {
+          // Nếu đã tồn tại, cập nhật
+          return oldOrders.map(order => 
+            order.id === newOrder.id ? newOrder : order
+          );
+        }
+        // Nếu chưa tồn tại, thêm vào đầu danh sách
+        return [newOrder, ...oldOrders];
+      });
+      
+      // Hiển thị toast notification
+      toast({
+        title: "Có đơn hàng mới!",
+        description: `Bàn ${newOrder.table?.name || 'N/A'} - ${newOrder.customerName || 'N/A'}`,
+        duration: 5000,
+      });
     };
-    const handleUpdateOrder = () => {
-      queryClient.invalidateQueries({ queryKey: ['admin_orders'] });
+    
+    const handleUpdateOrder = (updatedOrder) => {
+      if (!updatedOrder || !updatedOrder.id) {
+        console.error('Đơn hàng cập nhật không hợp lệ:', updatedOrder);
+        return;
+      }
+      
+      // Cập nhật cache với đơn hàng đã được cập nhật
+      queryClient.setQueryData(['admin_orders'], (oldOrders) => {
+        if (!oldOrders) return oldOrders;
+        return oldOrders.map(order => 
+          order.id === updatedOrder.id ? updatedOrder : order
+        );
+      });
     };
+    
+    // Đăng ký listeners
     socket.on('new_order_received', handleNewOrder);
     socket.on('order_updated_for_admin', handleUpdateOrder);
+
     return () => {
       socket.off('new_order_received', handleNewOrder);
       socket.off('order_updated_for_admin', handleUpdateOrder);
@@ -220,7 +267,7 @@ export default function ManageOrdersPage() {
       return acc;
     }, {});
     
-    return { 
+    return {
       filteredAndGroupedOrders: grouped, 
       tableList: tables.sort(),
       orderCounts: counts
@@ -285,7 +332,7 @@ export default function ManageOrdersPage() {
       return total;
     }, 0);
   }, [selectedItems, menuItems]);
-
+  
   if (isLoading) return <div className="flex justify-center p-8"><Loader2 className="h-8 w-8 animate-spin" /></div>;
   if (isError) return <div className="p-4 text-red-500">Lỗi: Không thể tải đơn hàng.</div>;
 
@@ -699,23 +746,23 @@ const OrderRow = ({ order, onStatusChange, isLoading, i18n }) => {
                           <p className="font-medium text-muted-foreground">Chưa có</p>
                         )}
                       </div>
-                      <div>
+        <div>
                         <p className="text-sm text-muted-foreground">Trạng thái</p>
                         <Badge variant={getStatusBadgeVariant(order.status)}>
                           {statusTranslation.text}
                         </Badge>
                       </div>
-                    </div>
+        </div>
                     <div className="border-t pt-4">
                       <p className="text-sm font-semibold mb-2">Danh sách món:</p>
                       <div className="space-y-2">
                         {order.details?.map((detail, index) => (
                           <div key={detail.id} className="flex items-center gap-3 p-2 rounded-md bg-muted/50">
                             <span className="text-sm text-muted-foreground w-6">{index + 1}.</span>
-                            <Avatar className="h-10 w-10 rounded-md">
-                              <AvatarImage src={detail.menuItem?.imageUrl} alt={detail.menuItem?.name} />
+            <Avatar className="h-10 w-10 rounded-md">
+              <AvatarImage src={detail.menuItem?.imageUrl} alt={detail.menuItem?.name} />
                               <AvatarFallback>{getInitials(detail.menuItem?.name)}</AvatarFallback>
-                            </Avatar>
+            </Avatar>
                             <div className="flex-grow">
                               <span className="font-semibold">{detail.menuItem?.name}</span>
                               <p className="text-sm text-muted-foreground">
@@ -725,8 +772,8 @@ const OrderRow = ({ order, onStatusChange, isLoading, i18n }) => {
                             <span className="font-medium">
                               {(detail.priceAtOrder * detail.quantity).toLocaleString('vi-VN')}đ
                             </span>
-                          </div>
-                        ))}
+          </div>
+        ))}
                       </div>
                     </div>
                     <div className="border-t pt-4 flex justify-between items-center">
@@ -801,8 +848,8 @@ const OrderRow = ({ order, onStatusChange, isLoading, i18n }) => {
                     {/* <BillReceipt orderData={order} /> */}
                     In Hóa đơn ở đây...
                   </div>
-                </div>
-                
+        </div>
+        
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                   {order.details?.map((detail, index) => (
                     <div key={detail.id} className="flex items-center gap-3 p-3 rounded-md bg-background border">

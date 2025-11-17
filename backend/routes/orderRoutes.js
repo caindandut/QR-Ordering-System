@@ -69,11 +69,22 @@ router.post('/', async (req, res) => {
       return order; // Trả về Hóa đơn chính
     });
 
-    io.emit('new_order_received', newOrder);
+    // Lấy đơn hàng đầy đủ với relations để emit
+    const orderWithDetails = await prisma.order.findUnique({
+      where: { id: newOrder.id },
+      include: {
+        table: { select: { name: true } },
+        staff: { select: { id: true, name: true, avatarUrl: true } },
+        details: {
+          include: {
+            menuItem: { select: { name: true, imageUrl: true } }
+          }
+        }
+      }
+    });
 
-    // 5. TODO (Giai đoạn 3.5): Gửi tín hiệu Real-time
-    // (Sau này chúng ta sẽ thêm code Socket.IO ở đây)
-    // io.to('kitchen_staff').emit('new_order_received', newOrder);
+    // Emit socket event
+    io.emit('new_order_received', orderWithDetails);
 
     res.status(201).json(newOrder);
 
