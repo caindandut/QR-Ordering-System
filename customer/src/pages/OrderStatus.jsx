@@ -48,8 +48,9 @@ export default function OrderStatusPage() {
   // State "sống" (như cũ)
   const [orderStatuses, setOrderStatuses] = useState({});
   const [requestedPayments, setRequestedPayments] = useState({}); // Track yêu cầu thanh toán
-  const [billData, setBillData] = useState(null); // Lưu dữ liệu hóa đơn
+  const [billData, setBillData] = useState(null); // Lưu dữ liệu hóa đơn hiện tại đang xem
   const [showBillDialog, setShowBillDialog] = useState(false); // Hiển thị dialog hóa đơn
+  const [orderBills, setOrderBills] = useState({}); // Lưu dữ liệu hóa đơn cho từng đơn hàng
 
   // 👇 [SỬA] Đảm bảo tên biến là `initialOrders` (số nhiều)
   const { 
@@ -67,6 +68,21 @@ export default function OrderStatusPage() {
     mutationFn: requestPayment,
     onSuccess: (data, orderId) => {
       setRequestedPayments(prev => ({...prev, [orderId]: true}));
+      
+      // Lưu dữ liệu hóa đơn cho đơn hàng này
+      const order = initialOrders?.find(o => o.id === orderId);
+      if (order) {
+        const billDataForOrder = {
+          orderId: order.id,
+          tableName: tableName,
+          customerName: customerName,
+          createdAt: order.createdAt,
+          details: order.details,
+          totalAmount: order.totalAmount,
+        };
+        setOrderBills(prev => ({...prev, [orderId]: billDataForOrder}));
+      }
+      
       toast({
         title: '✅ Yêu cầu thanh toán đã gửi',
         description: 'Nhân viên sẽ đến thanh toán cho bạn trong giây lát.',
@@ -148,34 +164,26 @@ export default function OrderStatusPage() {
       });
     };
 
-    // 5e. Nhận hóa đơn từ admin
-    const handleBillReceived = (receivedBillData) => {
-      const { orderId, totalAmount } = receivedBillData;
-      
-      // Lưu dữ liệu hóa đơn và hiển thị dialog
-      setBillData(receivedBillData);
-      setShowBillDialog(true);
-      
-      toast({
-        title: '🧾 Hóa đơn của bạn',
-        description: `Tổng tiền: ${totalAmount?.toLocaleString('vi-VN')}đ. Vui lòng kiểm tra và thanh toán.`,
-        duration: 5000,
-      });
-    };
-
     socket.on('order_status_updated', handleOrderStatusUpdate);
-    socket.on('bill_received', handleBillReceived);
 
     // 6. Dọn dẹp
     return () => {
       socket.off('order_status_updated', handleOrderStatusUpdate);
-      socket.off('bill_received', handleBillReceived);
       socket.disconnect();
     };
     
   }, [initialOrders, toast]); // Thêm toast vào dependency array
 
- const renderStatusUI = (status) => {
+  // Hàm xem biên lai
+  const handleViewBill = (orderId) => {
+    const bill = orderBills[orderId];
+    if (bill) {
+      setBillData(bill);
+      setShowBillDialog(true);
+    }
+  };
+
+  const renderStatusUI = (status) => {
     const { text, variant } = translateOrderStatus(status, lang);
     return <Badge variant={variant}>{text}</Badge>;
   };
@@ -194,71 +202,75 @@ export default function OrderStatusPage() {
       <Dialog open={showBillDialog} onOpenChange={setShowBillDialog}>
         <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-center">🧾 HÓA ĐƠN THANH TOÁN</DialogTitle>
+            <DialogTitle className="text-center">🧾 Biên Lai Thanh Toán</DialogTitle>
           </DialogHeader>
           {billData && (
-            <div className="space-y-4">
-              <div className="border-b pb-3">
-                <h3 className="text-lg font-bold text-center">NHÀ HÀNG</h3>
-                <p className="text-sm text-center text-muted-foreground">Địa chỉ: 123 Đường ABC, TP.HCM</p>
-                <p className="text-sm text-center text-muted-foreground">SĐT: 0123-456-789</p>
+            <div>
+              {/* Nội dung biên lai giống admin */}
+              <div style={{ padding: '20px', fontFamily: 'monospace' }}>
+                <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+                  <h1 style={{ fontSize: '24px', margin: '0' }}>HÓA ĐƠN</h1>
+                  <h2 style={{ fontSize: '20px', margin: '5px 0' }}>NHÀ HÀNG</h2>
+                  <p style={{ margin: '5px 0' }}>Địa chỉ: 123 Đường ABC, TP.HCM</p>
+                  <p style={{ margin: '5px 0' }}>SĐT: 0123-456-789</p>
+                  <hr style={{ border: '1px dashed #000' }} />
+                </div>
+
+                <div style={{ marginBottom: '15px' }}>
+                  <p style={{ margin: '5px 0' }}><strong>Hóa đơn #:</strong> {billData.orderId}</p>
+                  <p style={{ margin: '5px 0' }}><strong>Bàn:</strong> {billData.tableName}</p>
+                  <p style={{ margin: '5px 0' }}><strong>Khách hàng:</strong> {billData.customerName}</p>
+                  <p style={{ margin: '5px 0' }}><strong>Thời gian:</strong> {billData.createdAt ? format(new Date(billData.createdAt), 'HH:mm dd/MM/yyyy') : 'N/A'}</p>
+                  <hr style={{ border: '1px dashed #000' }} />
+                </div>
+
+                <div style={{ marginBottom: '15px' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <thead>
+                      <tr style={{ borderBottom: '1px solid #000' }}>
+                        <th style={{ textAlign: 'left', padding: '5px' }}>Món</th>
+                        <th style={{ textAlign: 'center', padding: '5px' }}>SL</th>
+                        <th style={{ textAlign: 'right', padding: '5px' }}>Giá</th>
+                        <th style={{ textAlign: 'right', padding: '5px' }}>Thành tiền</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {billData.details?.map((detail, index) => (
+                        <tr key={index} style={{ borderBottom: '1px dotted #ccc' }}>
+                          <td style={{ padding: '8px 5px' }}>{detail.menuItem?.name}</td>
+                          <td style={{ textAlign: 'center', padding: '8px 5px' }}>{detail.quantity}</td>
+                          <td style={{ textAlign: 'right', padding: '8px 5px' }}>
+                            {detail.priceAtOrder?.toLocaleString('vi-VN')}đ
+                          </td>
+                          <td style={{ textAlign: 'right', padding: '8px 5px' }}>
+                            {(detail.priceAtOrder * detail.quantity).toLocaleString('vi-VN')}đ
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <hr style={{ border: '1px dashed #000' }} />
+                </div>
+
+                <div style={{ marginBottom: '20px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '18px', fontWeight: 'bold' }}>
+                    <span>TỔNG CỘNG:</span>
+                    <span>{billData.totalAmount?.toLocaleString('vi-VN')}đ</span>
+                  </div>
+                </div>
+
+                <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                  <p style={{ margin: '5px 0' }}>Cảm ơn quý khách!</p>
+                  <p style={{ margin: '5px 0' }}>Hẹn gặp lại!</p>
+                </div>
               </div>
 
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Hóa đơn #:</span>
-                  <span className="font-medium">{billData.orderId}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Bàn:</span>
-                  <span className="font-medium">{billData.tableName}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Khách hàng:</span>
-                  <span className="font-medium">{billData.customerName}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Thời gian:</span>
-                  <span className="font-medium">
-                    {billData.createdAt ? format(new Date(billData.createdAt), 'HH:mm dd/MM/yyyy') : 'N/A'}
-                  </span>
-                </div>
+              {/* Nút đóng */}
+              <div className="px-4 pb-4">
+                <Button onClick={() => setShowBillDialog(false)} className="w-full" size="lg">
+                  Đóng
+                </Button>
               </div>
-
-              <div className="border-t pt-3">
-                <h4 className="font-semibold mb-2">Chi tiết đơn hàng:</h4>
-                <div className="space-y-2">
-                  {billData.details?.map((detail, index) => (
-                    <div key={index} className="flex justify-between items-start text-sm">
-                      <div className="flex-1">
-                        <span className="font-medium">{detail.menuItem?.name}</span>
-                        <span className="text-muted-foreground ml-2">x{detail.quantity}</span>
-                      </div>
-                      <span className="font-medium">
-                        {(detail.priceAtOrder * detail.quantity).toLocaleString('vi-VN')}đ
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="border-t pt-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-lg font-bold">TỔNG CỘNG:</span>
-                  <span className="text-2xl font-bold text-primary">
-                    {billData.totalAmount?.toLocaleString('vi-VN')}đ
-                  </span>
-                </div>
-              </div>
-
-              <div className="text-center text-sm text-muted-foreground pt-3 border-t">
-                <p>Vui lòng kiểm tra hóa đơn</p>
-                <p>Nhân viên sẽ đến thu tiền</p>
-              </div>
-
-              <Button onClick={() => setShowBillDialog(false)} className="w-full" size="lg">
-                Đã kiểm tra, OK
-              </Button>
             </div>
           )}
         </DialogContent>
@@ -356,10 +368,20 @@ export default function OrderStatusPage() {
                     </Button>
                   )}
                   
-                  {/* Hiển thị trạng thái đã yêu cầu */}
+                  {/* Hiển thị nút xem biên lai khi đã yêu cầu thanh toán */}
                   {requestedPayments[order.id] && orderStatuses[order.id] === 'SERVED' && (
-                    <div className="text-center text-sm text-primary font-medium p-2 bg-primary/10 rounded-md">
-                      ✓ Đã gửi yêu cầu thanh toán. Vui lòng đợi nhân viên.
+                    <div className="space-y-2">
+                      <div className="text-center text-sm text-primary font-medium p-2 bg-primary/10 rounded-md">
+                        ✓ Đã gửi yêu cầu thanh toán. Vui lòng đợi nhân viên.
+                      </div>
+                      <Button 
+                        onClick={() => handleViewBill(order.id)}
+                        variant="outline"
+                        className="w-full"
+                        size="lg"
+                      >
+                        🧾 Xem biên lai
+                      </Button>
                     </div>
                   )}
                 </div>

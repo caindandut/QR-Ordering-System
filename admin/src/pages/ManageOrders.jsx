@@ -679,7 +679,6 @@ const OrderRow = ({ order, onStatusChange, isLoading, i18n, isHighlighted }) => 
   const [isOpen, setIsOpen] = useState(false);
   const [showDetailsDialog, setShowDetailsDialog] = useState(false);
   const [showPrintDialog, setShowPrintDialog] = useState(false);
-  const [isSendingBill, setIsSendingBill] = useState(false);
   const printRef = useRef(null);
   const { toast } = useToast();
 
@@ -700,27 +699,6 @@ const OrderRow = ({ order, onStatusChange, isLoading, i18n, isHighlighted }) => 
       setShowPrintDialog(false);
     },
   });
-
-  // Gửi hóa đơn cho khách hàng
-  const handleSendBillToCustomer = async () => {
-    setIsSendingBill(true);
-    try {
-      await api.post(`/api/admin/orders/${order.id}/send-bill`);
-      toast({
-        title: "✅ Đã gửi hóa đơn",
-        description: `Hóa đơn đã được gửi đến khách hàng tại ${order.table?.name}`,
-        duration: 3000,
-      });
-    } catch (error) {
-      toast({
-        title: "❌ Lỗi",
-        description: error.response?.data?.message || "Không thể gửi hóa đơn",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSendingBill(false);
-    }
-  };
 
 
   // Hàm lấy màu badge
@@ -929,13 +907,6 @@ const OrderRow = ({ order, onStatusChange, isLoading, i18n, isHighlighted }) => 
                     <>
                       <DropdownMenuItem onClick={handlePrint}>
                         In hóa đơn
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={handleSendBillToCustomer} disabled={isSendingBill}>
-                        {isSendingBill ? (
-                          'Đang gửi...'
-                        ) : (
-                          'Gửi hóa đơn cho khách'
-                        )}
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => onStatusChange('PAID')}>
