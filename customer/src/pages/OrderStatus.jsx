@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { translateOrderStatus } from '@/lib/translation';
 import { useTranslation } from 'react-i18next';
+import { useToast } from '@/hooks/use-toast';
 
 // --- HÀM GỌI API MỚI ---
 const fetchMyOrders = async (tableId, customerName) => {
@@ -28,6 +29,7 @@ const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 export default function OrderStatusPage() {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
+  const { toast } = useToast();
   
   // 👇 [SỬA] ĐỌC TỪ localStorage, KHÔNG DÙNG useParams
   const tableId = localStorage.getItem('table_id');
@@ -71,20 +73,62 @@ export default function OrderStatusPage() {
       });
     }
     
-    // 5d. "Lắng nghe" sự kiện (như cũ)
-    socket.on('order_status_updated', (data) => {
+    // 5d. "Lắng nghe" sự kiện và hiển thị toast notification
+    const handleOrderStatusUpdate = (data) => {
+      const { orderId, newStatus } = data;
+      
+      // Cập nhật state
       setOrderStatuses(prevStatuses => ({
         ...prevStatuses,
-        [data.orderId]: data.newStatus,
+        [orderId]: newStatus,
       }));
-    });
+      
+      // Tìm đơn hàng để lấy thông tin hiển thị trong toast
+      const order = initialOrders?.find(o => o.id === orderId);
+      const orderInfo = order ? `Đơn hàng #${orderId}` : `Đơn hàng #${orderId}`;
+      
+      // Hiển thị toast notification dựa trên trạng thái mới
+      let toastTitle = '';
+      let toastDescription = '';
+      
+      switch (newStatus) {
+        case 'COOKING':
+          toastTitle = '✅ Đơn hàng đã được xác nhận';
+          toastDescription = `${orderInfo} đã được xác nhận và đang được chế biến.`;
+          break;
+        case 'SERVED':
+          toastTitle = '🍽️ Đơn hàng đã được phục vụ';
+          toastDescription = `${orderInfo} đã được phục vụ. Vui lòng kiểm tra và thanh toán.`;
+          break;
+        case 'PAID':
+          toastTitle = '💰 Đơn hàng đã được thanh toán';
+          toastDescription = `${orderInfo} đã được thanh toán thành công. Cảm ơn bạn!`;
+          break;
+        case 'CANCELLED':
+          toastTitle = '❌ Đơn hàng đã bị hủy';
+          toastDescription = `${orderInfo} đã bị hủy. Vui lòng liên hệ nhân viên nếu cần hỗ trợ.`;
+          break;
+        default:
+          toastTitle = 'Cập nhật trạng thái đơn hàng';
+          toastDescription = `${orderInfo} đã được cập nhật trạng thái.`;
+      }
+      
+      toast({
+        title: toastTitle,
+        description: toastDescription,
+        duration: 5000,
+      });
+    };
+
+    socket.on('order_status_updated', handleOrderStatusUpdate);
 
     // 6. Dọn dẹp
     return () => {
+      socket.off('order_status_updated', handleOrderStatusUpdate);
       socket.disconnect();
     };
     
-  }, [initialOrders]); // 👈 [SỬA] Dùng `initialOrders` (số nhiều)
+  }, [initialOrders, toast]); // Thêm toast vào dependency array
 
  const renderStatusUI = (status) => {
     const { text, variant } = translateOrderStatus(status, lang);

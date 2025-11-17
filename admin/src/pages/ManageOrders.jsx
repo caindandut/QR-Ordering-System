@@ -204,6 +204,9 @@ export default function ManageOrdersPage() {
       // Lưu snapshot của data hiện tại để rollback nếu lỗi
       const previousOrders = queryClient.getQueryData(['admin_orders']);
       
+      // Lấy thông tin đơn hàng để hiển thị trong toast
+      const currentOrder = previousOrders?.find(order => order.id === orderId);
+      
       // Optimistic update: Cập nhật status ngay lập tức
       queryClient.setQueryData(['admin_orders'], (old) => {
         if (!old) return old;
@@ -214,11 +217,46 @@ export default function ManageOrdersPage() {
         );
       });
       
-      return { previousOrders };
+      return { previousOrders, currentOrder };
     },
-    onSuccess: () => {
+    onSuccess: (data, variables, context) => {
       // Invalidate queries để đảm bảo data đồng bộ với server
       queryClient.invalidateQueries({ queryKey: ['admin_orders'] });
+      
+      // Hiển thị toast notification dựa trên trạng thái mới
+      const order = context?.currentOrder;
+      const orderInfo = order ? `Đơn #${order.id} - Bàn ${order.table?.name || 'N/A'}` : `Đơn #${variables.orderId}`;
+      
+      let toastTitle = '';
+      let toastDescription = '';
+      
+      switch (variables.status) {
+        case 'COOKING':
+          toastTitle = '✅ Đã xác nhận đơn hàng';
+          toastDescription = `${orderInfo} đã được xác nhận và đang được chế biến.`;
+          break;
+        case 'SERVED':
+          toastTitle = '🍽️ Đã phục vụ';
+          toastDescription = `${orderInfo} đã được phục vụ.`;
+          break;
+        case 'PAID':
+          toastTitle = '💰 Đã thanh toán';
+          toastDescription = `${orderInfo} đã được thanh toán thành công.`;
+          break;
+        case 'CANCELLED':
+          toastTitle = '❌ Đã hủy đơn hàng';
+          toastDescription = `${orderInfo} đã được hủy.`;
+          break;
+        default:
+          toastTitle = 'Cập nhật trạng thái';
+          toastDescription = `${orderInfo} đã được cập nhật.`;
+      }
+      
+      toast({
+        title: toastTitle,
+        description: toastDescription,
+        duration: 5000,
+      });
     },
     onError: (err, variables, context) => {
       // Rollback nếu có lỗi
