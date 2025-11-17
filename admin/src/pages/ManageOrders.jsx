@@ -33,7 +33,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { translateOrderStatus } from '@/lib/translations';
 import { cn } from '@/lib/utils';
-import { Loader2, MoreHorizontal, ChevronDown, Printer, Eye, Clock, Plus } from 'lucide-react';
+import { Loader2, MoreHorizontal, ChevronDown, Printer, Eye, Clock, Plus, Search } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -83,6 +83,7 @@ export default function ManageOrdersPage() {
   // State cho filters  
   const [statusFilter, setStatusFilter] = useState(highlightOrderId ? "SERVED" : "PENDING");
   const [tableFilter, setTableFilter] = useState("ALL");
+  const [customerNameSearch, setCustomerNameSearch] = useState("");
   const [highlightedOrder, setHighlightedOrder] = useState(null);
   
   // State cho tạo đơn thủ công
@@ -313,6 +314,14 @@ export default function ManageOrdersPage() {
       filtered = filtered.filter(order => order.table?.name === tableFilter);
     }
     
+    // Lọc theo tên khách hàng nếu có
+    if (customerNameSearch.trim() !== "") {
+      const searchTerm = customerNameSearch.trim().toLowerCase();
+      filtered = filtered.filter(order => 
+        order.customerName?.toLowerCase().includes(searchTerm)
+      );
+    }
+    
     // Sắp xếp theo thời gian tạo (mới nhất trước)
     filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     
@@ -340,7 +349,7 @@ export default function ManageOrdersPage() {
       tableList: tables.sort(),
       orderCounts: counts
     };
-  }, [allOrders, statusFilter, tableFilter]);
+  }, [allOrders, statusFilter, tableFilter, customerNameSearch]);
 
   // --- HÀM XỬ LÝ TẠO ĐƠN HÀNG ---
   const handleAddItem = (itemId) => {
@@ -412,6 +421,53 @@ export default function ManageOrdersPage() {
         <h1 className="text-3xl font-bold">Quản lý Đơn hàng</h1>
         
         <div className="flex flex-wrap items-center gap-3">
+          {/* Tìm kiếm theo tên khách hàng */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium">Tìm kiếm:</span>
+            <div className="relative">
+              <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Nhập tên khách hàng..."
+                value={customerNameSearch}
+                onChange={(e) => setCustomerNameSearch(e.target.value)}
+                className="w-[200px] pl-8"
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium">Bàn:</span>
+            <Select value={tableFilter} onValueChange={setTableFilter}>
+              <SelectTrigger className="w-[150px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ALL">Tất cả</SelectItem>
+                {tableList.map(tableName => (
+                  <SelectItem key={tableName} value={tableName}>
+                    {tableName} ({orderCounts[tableName] || 0})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium">Trạng thái:</span>
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="PENDING">Chờ xác nhận</SelectItem>
+                <SelectItem value="COOKING">Đang nấu</SelectItem>
+                <SelectItem value="SERVED">Đã phục vụ</SelectItem>
+                <SelectItem value="PAID">Đã thanh toán</SelectItem>
+                <SelectItem value="CANCELLED">Đã hủy</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           {/* Nút tạo đơn thủ công */}
           <Dialog 
             open={isCreateOrderOpen} 
@@ -576,39 +632,6 @@ export default function ManageOrdersPage() {
               </form>
             </DialogContent>
           </Dialog>
-
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium">Bàn:</span>
-            <Select value={tableFilter} onValueChange={setTableFilter}>
-              <SelectTrigger className="w-[150px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="ALL">Tất cả</SelectItem>
-                {tableList.map(tableName => (
-                  <SelectItem key={tableName} value={tableName}>
-                    {tableName} ({orderCounts[tableName] || 0})
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium">Trạng thái:</span>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="PENDING">Chờ xác nhận</SelectItem>
-                <SelectItem value="COOKING">Đang nấu</SelectItem>
-                <SelectItem value="SERVED">Đã phục vụ</SelectItem>
-                <SelectItem value="PAID">Đã thanh toán</SelectItem>
-                <SelectItem value="CANCELLED">Đã hủy</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
         </div>
       </div>
 
@@ -876,52 +899,54 @@ const OrderRow = ({ order, onStatusChange, isLoading, i18n, isHighlighted }) => 
                 </DialogContent>
               </Dialog>
 
-              {/* Dropdown menu hành động */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                  <Button variant="ghost" size="icon">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  {order.status === 'PENDING' && (
-                    <>
-                      <DropdownMenuItem onClick={() => onStatusChange('COOKING')}>
-                        Xác nhận
+              {/* Dropdown menu hành động - Ẩn khi đơn đã hủy */}
+              {order.status !== 'CANCELLED' && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                    <Button variant="ghost" size="icon">
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    {order.status === 'PENDING' && (
+                      <>
+                        <DropdownMenuItem onClick={() => onStatusChange('COOKING')}>
+                          Xác nhận
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem 
+                          onClick={() => onStatusChange('CANCELLED')} 
+                          className="text-red-500"
+                        >
+                          Hủy đơn
+                        </DropdownMenuItem>
+                      </>
+                    )}
+                    {order.status === 'COOKING' && (
+                      <DropdownMenuItem onClick={() => onStatusChange('SERVED')}>
+                        Đã phục vụ
                       </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem 
-                        onClick={() => onStatusChange('CANCELLED')} 
-                        className="text-red-500"
-                      >
-                        Hủy đơn
-                      </DropdownMenuItem>
-                    </>
-                  )}
-                  {order.status === 'COOKING' && (
-                    <DropdownMenuItem onClick={() => onStatusChange('SERVED')}>
-                      Đã phục vụ
-                    </DropdownMenuItem>
-                  )}
-                  {order.status === 'SERVED' && (
-                    <>
+                    )}
+                    {order.status === 'SERVED' && (
+                      <>
+                        <DropdownMenuItem onClick={handlePrint}>
+                          In hóa đơn
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => onStatusChange('PAID')}>
+                          Thanh toán xong
+                        </DropdownMenuItem>
+                      </>
+                    )}
+                    {order.status === 'PAID' && (
                       <DropdownMenuItem onClick={handlePrint}>
+                        <Printer className="mr-2 h-4 w-4" />
                         In hóa đơn
                       </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => onStatusChange('PAID')}>
-                        Thanh toán xong
-                      </DropdownMenuItem>
-                    </>
-                  )}
-                  {order.status === 'PAID' && (
-                    <DropdownMenuItem onClick={handlePrint}>
-                      <Printer className="mr-2 h-4 w-4" />
-                      In hóa đơn
-                    </DropdownMenuItem>
-                  )}
-                </DropdownMenuContent>
-              </DropdownMenu>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
             </div>
           </TableCell>
         </TableRow>
