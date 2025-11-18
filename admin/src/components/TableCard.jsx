@@ -60,7 +60,7 @@ export default function TableCard({ table, orders = [], onClick }) {
       return <Badge variant="secondary" className="text-xs">Đã ẩn</Badge>;
     }
     if (activeOrders.length > 0) {
-      return <Badge variant="destructive" className="text-xs">Đang dùng</Badge>;
+      return <Badge variant="destructive" className="text-xs">Đang có khách</Badge>;
     }
     return <Badge variant="default" className="text-xs bg-green-600">Trống</Badge>;
   };

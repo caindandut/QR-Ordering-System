@@ -25,6 +25,40 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// API kiểm tra bàn có đơn hàng đang hoạt động không
+router.get('/:id/check-occupied', async (req, res) => {
+  try {
+    const tableId = parseInt(req.params.id);
+    
+    // Tìm các đơn hàng đang hoạt động của bàn này
+    const activeOrders = await prisma.order.findMany({
+      where: {
+        tableId: tableId,
+        status: {
+          in: ['PENDING', 'COOKING', 'SERVED']
+        }
+      },
+      select: {
+        id: true,
+        customerName: true,
+        status: true,
+        createdAt: true,
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+
+    res.status(200).json({
+      isOccupied: activeOrders.length > 0,
+      orders: activeOrders,
+      count: activeOrders.length
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Lỗi server', error: error.message });
+  }
+});
+
 // TẠI SAO DÙNG router.use(authenticateToken)?
 // Tác dụng: Áp dụng "trạm gác" cho TẤT CẢ các API bên dưới.
 // Điều này có nghĩa là mọi API trong file này (tạo, sửa, xóa bàn)

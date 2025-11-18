@@ -17,6 +17,12 @@ const fetchTableDetails = async (tableId) => {
   return response.data; 
 };
 
+// Hàm kiểm tra bàn có đơn hàng đang hoạt động không
+const checkTableOccupied = async (tableId) => {
+  const response = await api.get(`/api/tables/${tableId}/check-occupied`);
+  return response.data;
+};
+
 export default function OrderGateway() {
   const { t } = useTranslation();
 
@@ -73,6 +79,16 @@ export default function OrderGateway() {
     enabled: !!tableId,
   });
 
+  // Kiểm tra bàn có đang được sử dụng không
+  const {
+    data: occupiedData,
+    isLoading: isLoadingOccupied,
+  } = useQuery({
+    queryKey: ['tableOccupied', tableId],
+    queryFn: () => checkTableOccupied(tableId),
+    enabled: !!tableId,
+  });
+
 
  useEffect(() => {
     // CHỈ "GHI" (Write) vào Bộ nhớ NẾU nó đến từ URL
@@ -99,7 +115,7 @@ export default function OrderGateway() {
     return <div className="p-4 text-red-500">{t('gateway.error_scan_qr')}</div>;
   }
   
-  if (isLoadingTable) {
+  if (isLoadingTable || isLoadingOccupied) {
     return (
       <div className="flex items-center justify-center h-screen gap-2">
         <Loader2 className="h-6 w-6 animate-spin" />
@@ -111,6 +127,37 @@ export default function OrderGateway() {
 
   if (isTableError) {
     return <div className="p-4 text-red-500">{t('gateway.error_invalid_qr')}</div>;
+  }
+
+  // Kiểm tra xem bàn có đang được sử dụng bởi khách khác không
+  // Chỉ chặn nếu CHƯA có session (chưa nhập tên)
+  if (!customerName && occupiedData?.isOccupied) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-background p-4 relative">
+        {/* Nút toggle ngôn ngữ và dark mode ở góc trên bên phải */}
+        <div className="absolute top-4 right-4 flex items-center gap-2">
+          <LanguageToggle />
+          <ModeToggle />
+        </div>
+        
+        <div className="w-full max-w-md p-8 bg-card shadow-lg rounded-lg border border-border">
+          <div className="text-center space-y-4">
+            <div className="text-6xl">⚠️</div>
+            <h1 className="text-2xl font-bold text-red-600 dark:text-red-400">
+              Bàn đang có khách
+            </h1>
+            <p className="text-lg text-muted-foreground">
+              <span className="font-bold text-primary">{tableData?.name}</span> hiện đang có khách hàng khác sử dụng.
+            </p>
+            <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mt-4">
+              <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                💡 Vui lòng chọn bàn khác hoặc liên hệ nhân viên để được hỗ trợ.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (!customerName) {
