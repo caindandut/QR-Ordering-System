@@ -18,14 +18,14 @@ export default function WelcomePage() {
         {/* Tiêu đề chào mừng */}
         <div className="space-y-2">
           <h1 className="text-2xl font-bold text-card-foreground">
-            Chào mừng quý khách đến với nhà hàng
+            {t('welcome_page.title')}
           </h1>
         </div>
 
         {/* Hướng dẫn */}
         <div className="space-y-4">
           <p className="text-muted-foreground leading-relaxed">
-            Quý khách vui lòng truy cập ứng dụng camera trên điện thoại hoặc Zalo để quét mã QR đặt món ăn.
+            {t('welcome_page.description')}
           </p>
 
           {/* Hướng dẫn chi tiết */}
@@ -35,9 +35,9 @@ export default function WelcomePage() {
                 <Camera className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="font-semibold text-sm">Sử dụng Camera điện thoại</p>
+                <p className="font-semibold text-sm">{t('welcome_page.camera.title')}</p>
                 <p className="text-xs text-muted-foreground">
-                  Mở ứng dụng Camera và quét mã QR trên bàn
+                  {t('welcome_page.camera.desc')}
                 </p>
               </div>
             </div>
@@ -47,9 +47,9 @@ export default function WelcomePage() {
                 <Smartphone className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="font-semibold text-sm">Sử dụng Zalo</p>
+                <p className="font-semibold text-sm">{t('welcome_page.zalo.title')}</p>
                 <p className="text-xs text-muted-foreground">
-                  Mở Zalo, chọn "Quét mã QR" và quét mã trên bàn
+                  {t('welcome_page.zalo.desc')}
                 </p>
               </div>
             </div>
@@ -59,7 +59,7 @@ export default function WelcomePage() {
         {/* Lưu ý */}
         <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
           <p className="text-sm text-blue-800 dark:text-blue-200">
-            💡 Mã QR được đặt trên mỗi bàn ăn. Vui lòng quét mã để bắt đầu đặt món.
+            {t('welcome_page.note')}
           </p>
         </div>
       </div>

@@ -144,14 +144,14 @@ export default function OrderGateway() {
           <div className="text-center space-y-4">
             <div className="text-6xl">⚠️</div>
             <h1 className="text-2xl font-bold text-red-600 dark:text-red-400">
-              Bàn đang có khách
+              {t('gateway.occupied.title')}
             </h1>
             <p className="text-lg text-muted-foreground">
-              <span className="font-bold text-primary">{tableData?.name}</span> hiện đang có khách hàng khác sử dụng.
+              {t('gateway.occupied.subtitle', { tableName: tableData?.name })}
             </p>
             <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mt-4">
               <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                💡 Vui lòng chọn bàn khác hoặc liên hệ nhân viên để được hỗ trợ.
+                {t('gateway.occupied.hint')}
               </p>
             </div>
           </div>

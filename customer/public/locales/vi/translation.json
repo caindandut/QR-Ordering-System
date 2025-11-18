@@ -10,6 +10,19 @@
         "logout_cancel": "Hủy",
         "logout_confirm": "Vẫn Đăng xuất"
     },
+    "welcome_page": {
+        "title": "Chào mừng quý khách đến với nhà hàng",
+        "description": "Vui lòng mở ứng dụng Camera trên điện thoại hoặc Zalo để quét mã QR đặt món ăn.",
+        "camera": {
+            "title": "Sử dụng Camera điện thoại",
+            "desc": "Mở ứng dụng Camera và quét mã QR trên bàn."
+        },
+        "zalo": {
+            "title": "Sử dụng Zalo",
+            "desc": "Mở Zalo, chọn \"Quét mã QR\" và quét mã trên bàn."
+        },
+        "note": "💡 Mã QR được đặt trên mỗi bàn ăn. Vui lòng quét mã để bắt đầu đặt món."
+    },
     "menu_page": {
         "title": "Menu",
         "loading": "Đang tải thực đơn...",
@@ -113,7 +126,12 @@
         "start_ordering": "Bắt đầu gọi món",
         "loading_table": "Đang tải thông tin bàn...",
         "error_scan_qr": "Lỗi: Vui lòng quét lại mã QR của bàn.",
-        "error_invalid_qr": "Lỗi: Mã QR không hợp lệ. Bàn không tồn tại."
+        "error_invalid_qr": "Lỗi: Mã QR không hợp lệ. Bàn không tồn tại.",
+        "occupied": {
+            "title": "Bàn đang có khách",
+            "subtitle": "{{tableName}} hiện đang có khách hàng khác sử dụng.",
+            "hint": "💡 Vui lòng chọn bàn khác hoặc liên hệ nhân viên để được hỗ trợ."
+        }
     },
     "theme": {
         "toggle": "Chuyển đổi theme",
