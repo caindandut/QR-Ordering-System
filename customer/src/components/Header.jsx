@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom'; 
+import { Link, useLocation, useNavigate } from 'react-router-dom'; 
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -30,6 +30,7 @@ import api from '../services/api';
 
 export default function CustomerHeader() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const navigate = useNavigate();
   
   const location = useLocation(); 
   const pathname = location.pathname; // Ví dụ: "/order", "/order/cart"
@@ -54,13 +55,15 @@ export default function CustomerHeader() {
       console.error('Lỗi khi hủy phiên:', error);
     }
 
-    // Xóa sessionStorage và localStorage (giỏ hàng), sau đó reload
+    // Xóa sessionStorage và localStorage (giỏ hàng)
     sessionStorage.removeItem('customer_name');
     sessionStorage.removeItem('table_id');
     sessionStorage.removeItem('table_name');
     localStorage.removeItem('cart-storage');
     clearCart();
-    window.location.reload();
+    
+    // Đưa về trang welcome thay vì reload
+    navigate('/');
   };
 
   const handleLinkClick = () => {

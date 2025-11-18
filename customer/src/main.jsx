@@ -12,6 +12,7 @@ import MenuPage from './pages/Menu';
 import ErrorPage from './pages/ErrorPage';
 import CartPage from './pages/Cart';
 import OrderStatusPage from './pages/OrderStatus';
+import WelcomePage from './pages/WelcomePage';
 import './i18n';
 
 const queryClient = new QueryClient();
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
     element: <RootLayout />,
     errorElement: <ErrorPage />,
     children: [
+      {
+        index: true,
+        element: <WelcomePage />,
+      },
       {
         path: 'order',
         element: <OrderGateway />, 
