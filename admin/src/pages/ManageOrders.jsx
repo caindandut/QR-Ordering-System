@@ -85,6 +85,8 @@ export default function ManageOrdersPage() {
   const [tableFilter, setTableFilter] = useState("ALL");
   const [customerNameSearch, setCustomerNameSearch] = useState("");
   const [highlightedOrder, setHighlightedOrder] = useState(null);
+  const currentLang = i18n.language === 'ja' ? 'jp' : i18n.language;
+  const statusOptions = ['PENDING', 'COOKING', 'SERVED', 'PAID', 'CANCELLED'];
   
   // State cho tạo đơn thủ công
   const [isCreateOrderOpen, setIsCreateOrderOpen] = useState(false);
@@ -168,8 +170,11 @@ export default function ManageOrdersPage() {
       
       // Hiển thị toast notification
       toast({
-        title: "Có đơn hàng mới!",
-        description: `Bàn ${newOrder.table?.name || 'N/A'} - ${newOrder.customerName || 'N/A'}`,
+        title: t('orders_page.toasts.new_order_title'),
+        description: t('orders_page.toasts.new_order_desc', {
+          table: newOrder.table?.name || t('orders_page.na'),
+          customer: newOrder.customerName || t('orders_page.na'),
+        }),
         duration: 5000,
       });
     };
@@ -204,8 +209,8 @@ export default function ManageOrdersPage() {
     mutationFn: createOrder,
     onSuccess: () => {
       toast({
-        title: "Thành công!",
-        description: "Đã tạo đơn hàng thành công.",
+        title: t('orders_page.toasts.create_success_title'),
+        description: t('orders_page.toasts.create_success_desc'),
       });
       queryClient.invalidateQueries({ queryKey: ['admin_orders'] });
       setIsCreateOrderOpen(false);
@@ -216,8 +221,8 @@ export default function ManageOrdersPage() {
     },
     onError: (err) => {
       toast({
-        title: "Lỗi!",
-        description: err.response?.data?.message || "Không thể tạo đơn hàng.",
+        title: t('orders_page.toasts.error_title'),
+        description: err.response?.data?.message || t('orders_page.toasts.create_error_desc'),
         variant: "destructive",
       });
     },
@@ -255,34 +260,23 @@ export default function ManageOrdersPage() {
       
       // Hiển thị toast notification dựa trên trạng thái mới
       const order = context?.currentOrder;
-      const customerInfo = order?.customerName || 'N/A';
-      const tableInfo = order?.table?.name || 'N/A';
+      const fallbackValue = t('orders_page.na');
+      const customerInfo = order?.customerName || fallbackValue;
+      const tableInfo = order?.table?.name || fallbackValue;
       
-      let toastTitle = '';
-      let toastDescription = '';
-      
-      switch (variables.status) {
-        case 'COOKING':
-          toastTitle = '✅ Đã xác nhận đơn hàng';
-          toastDescription = `Đơn hàng của khách hàng ${customerInfo} - ${tableInfo} đã được xác nhận và đang được chế biến.`;
-          break;
-        case 'SERVED':
-          toastTitle = '🍽️ Đã phục vụ';
-          toastDescription = `Đơn hàng của khách hàng ${customerInfo} - ${tableInfo} đã được phục vụ.`;
-          break;
-        case 'PAID':
-          toastTitle = '💰 Đã thanh toán';
-          toastDescription = `Đơn hàng của khách hàng ${customerInfo} - ${tableInfo} đã được thanh toán thành công.`;
-          break;
-        case 'CANCELLED':
-          toastTitle = '❌ Đã hủy đơn hàng';
-          toastDescription = `Đơn hàng của khách hàng ${customerInfo} - ${tableInfo} đã được hủy.`;
-          break;
-        default:
-          toastTitle = 'Cập nhật trạng thái';
-          toastDescription = `Đơn hàng của khách hàng ${customerInfo} - ${tableInfo} đã được cập nhật.`;
-      }
-      
+      const statusKey = variables.status?.toLowerCase();
+      const toastTitle = t(`orders_page.toasts.status.${statusKey}.title`, {
+        defaultValue: t('orders_page.toasts.status.default.title'),
+      });
+      const toastDescription = t(`orders_page.toasts.status.${statusKey}.desc`, {
+        defaultValue: t('orders_page.toasts.status.default.desc', {
+          customer: customerInfo,
+          table: tableInfo,
+        }),
+        customer: customerInfo,
+        table: tableInfo,
+      });
+
       toast({
         title: toastTitle,
         description: toastDescription,
@@ -295,8 +289,8 @@ export default function ManageOrdersPage() {
         queryClient.setQueryData(['admin_orders'], context.previousOrders);
       }
       toast({
-        title: "Lỗi!",
-        description: err.response?.data?.message || "Không thể cập nhật trạng thái.",
+        title: t('orders_page.toasts.error_title'),
+        description: err.response?.data?.message || t('orders_page.toasts.update_error_desc'),
         variant: "destructive",
       });
     },
@@ -327,7 +321,7 @@ export default function ManageOrdersPage() {
     
     // Nhóm theo Bàn
     const grouped = filtered.reduce((acc, order) => {
-      const tableName = order.table?.name || 'Bàn không xác định';
+      const tableName = order.table?.name || t('orders_page.unknown_table');
       if (!acc[tableName]) {
         acc[tableName] = [];
       }
@@ -349,7 +343,7 @@ export default function ManageOrdersPage() {
       tableList: tables.sort(),
       orderCounts: counts
     };
-  }, [allOrders, statusFilter, tableFilter, customerNameSearch]);
+  }, [allOrders, statusFilter, tableFilter, customerNameSearch, i18n.language, t]);
 
   // --- HÀM XỬ LÝ TẠO ĐƠN HÀNG ---
   const handleAddItem = (itemId) => {
@@ -385,8 +379,8 @@ export default function ManageOrdersPage() {
     e.preventDefault();
     if (!selectedTableId || !customerName || selectedItems.length === 0) {
       toast({
-        title: "Lỗi!",
-        description: "Vui lòng điền đầy đủ thông tin: bàn, tên khách hàng và chọn ít nhất 1 món.",
+        title: t('orders_page.toasts.error_title'),
+        description: t('orders_page.form.validation_error'),
         variant: "destructive",
       });
       return;
@@ -411,23 +405,23 @@ export default function ManageOrdersPage() {
   }, [selectedItems, menuItems]);
   
   if (isLoading) return <div className="flex justify-center p-8"><Loader2 className="h-8 w-8 animate-spin" /></div>;
-  if (isError) return <div className="p-4 text-red-500">Lỗi: Không thể tải đơn hàng.</div>;
+  if (isError) return <div className="p-4 text-red-500">{t('orders_page.loading_error')}</div>;
 
   // --- RENDER ---
   return (
     <div className="p-4 md:p-8">
       {/* FILTER BAR */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-        <h1 className="text-3xl font-bold">Quản lý Đơn hàng</h1>
+        <h1 className="text-3xl font-bold">{t('orders_page.title')}</h1>
         
         <div className="flex flex-wrap items-center gap-3">
           {/* Tìm kiếm theo tên khách hàng */}
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium">Tìm kiếm:</span>
+            <span className="text-sm font-medium">{t('orders_page.search_label')}</span>
             <div className="relative">
               <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Nhập tên khách hàng..."
+                placeholder={t('orders_page.search_placeholder')}
                 value={customerNameSearch}
                 onChange={(e) => setCustomerNameSearch(e.target.value)}
                 className="w-[200px] pl-8"
@@ -436,13 +430,13 @@ export default function ManageOrdersPage() {
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium">Bàn:</span>
+            <span className="text-sm font-medium">{t('orders_page.table_label')}</span>
             <Select value={tableFilter} onValueChange={setTableFilter}>
               <SelectTrigger className="w-[150px]">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="ALL">Tất cả</SelectItem>
+                <SelectItem value="ALL">{t('orders_page.all_tables')}</SelectItem>
                 {tableList.map(tableName => (
                   <SelectItem key={tableName} value={tableName}>
                     {tableName} ({orderCounts[tableName] || 0})
@@ -453,17 +447,17 @@ export default function ManageOrdersPage() {
           </div>
           
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium">Trạng thái:</span>
+            <span className="text-sm font-medium">{t('orders_page.status_label')}</span>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="PENDING">Chờ xác nhận</SelectItem>
-                <SelectItem value="COOKING">Đang nấu</SelectItem>
-                <SelectItem value="SERVED">Đã phục vụ</SelectItem>
-                <SelectItem value="PAID">Đã thanh toán</SelectItem>
-                <SelectItem value="CANCELLED">Đã hủy</SelectItem>
+                {statusOptions.map((status) => (
+                  <SelectItem key={status} value={status}>
+                    {translateOrderStatus(status, currentLang).text}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -484,25 +478,25 @@ export default function ManageOrdersPage() {
             <DialogTrigger asChild>
               <Button>
                 <Plus className="mr-2 h-4 w-4" />
-                Tạo đơn thủ công
+                {t('orders_page.manual_button')}
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>Tạo đơn hàng thủ công</DialogTitle>
+                <DialogTitle>{t('orders_page.manual_dialog_title')}</DialogTitle>
               </DialogHeader>
               <form onSubmit={handleSubmitOrder} className="space-y-4 mt-4">
                 {/* Chọn bàn */}
                 <div className="space-y-2">
-                  <Label htmlFor="table">Bàn *</Label>
+                  <Label htmlFor="table">{t('orders_page.form.table')}</Label>
                   <Select value={selectedTableId} onValueChange={setSelectedTableId} required>
                     <SelectTrigger>
-                      <SelectValue placeholder="Chọn bàn" />
+                      <SelectValue placeholder={t('orders_page.form.table_placeholder')} />
                     </SelectTrigger>
                     <SelectContent>
                       {tables.filter(table => table.status !== 'HIDDEN').map(table => (
                         <SelectItem key={table.id} value={table.id.toString()}>
-                          {table.name} (Sức chứa: {table.capacity})
+                          {table.name} ({t('orders_page.form.table_capacity', { capacity: table.capacity })})
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -511,23 +505,23 @@ export default function ManageOrdersPage() {
 
                 {/* Tên khách hàng */}
                 <div className="space-y-2">
-                  <Label htmlFor="customerName">Tên khách hàng *</Label>
+                  <Label htmlFor="customerName">{t('orders_page.form.customer')}</Label>
                   <Input
                     id="customerName"
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
-                    placeholder="Nhập tên khách hàng"
+                    placeholder={t('orders_page.form.customer_placeholder')}
                     required
                   />
                 </div>
 
                 {/* Chọn món ăn */}
                 <div className="space-y-2">
-                  <Label>Chọn món ăn *</Label>
+                  <Label>{t('orders_page.form.menu')}</Label>
                   <div className="border rounded-lg p-4 max-h-[300px] overflow-y-auto">
                     {menuItems.filter(item => item.status === 'AVAILABLE').length === 0 ? (
                       <p className="text-sm text-muted-foreground text-center py-4">
-                        Không có món ăn nào khả dụng.
+                        {t('orders_page.form.no_menu_items')}
                       </p>
                     ) : (
                       <div className="space-y-2">
@@ -583,7 +577,7 @@ export default function ManageOrdersPage() {
                                     size="sm"
                                     onClick={() => handleAddItem(item.id)}
                                   >
-                                    Thêm
+                                    {t('orders_page.form.add_item')}
                                   </Button>
                                 )}
                               </div>
@@ -598,7 +592,7 @@ export default function ManageOrdersPage() {
                 {selectedItems.length > 0 && (
                   <div className="border-t pt-4">
                     <div className="flex justify-between items-center">
-                      <span className="text-lg font-semibold">Tổng tiền:</span>
+                      <span className="text-lg font-semibold">{t('orders_page.form.total')}</span>
                       <span className="text-2xl font-bold text-primary">
                         {totalAmount.toLocaleString('vi-VN')}đ
                       </span>
@@ -613,7 +607,7 @@ export default function ManageOrdersPage() {
                     variant="outline"
                     onClick={() => setIsCreateOrderOpen(false)}
                   >
-                    Hủy
+                    {t('common.cancel')}
                   </Button>
                   <Button
                     type="submit"
@@ -622,10 +616,10 @@ export default function ManageOrdersPage() {
                     {createOrderMutation.isLoading ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Đang tạo...
+                        {t('orders_page.form.submitting')}
                       </>
                     ) : (
-                      'Tạo đơn hàng'
+                      t('orders_page.form.submit')
                     )}
                   </Button>
                 </div>
@@ -636,26 +630,26 @@ export default function ManageOrdersPage() {
       </div>
 
       {/* BẢNG ĐƠN HÀNG */}
-      <div className="border rounded-lg overflow-hidden">
-        <Table>
+      <div className="rounded-lg overflow-hidden border border-border/60 dark:border-border/30">
+        <Table className="[&_tr]:border-border/70 dark:[&_tr]:border-border/40">
           <TableHeader>
             <TableRow>
               <TableHead className="w-[40px]"></TableHead>
-              <TableHead>Bàn</TableHead>
-              <TableHead>Khách hàng</TableHead>
-              <TableHead>Tạo lúc/Cập nhật</TableHead>
-              <TableHead>Người xử lý</TableHead>
-              <TableHead>Số món</TableHead>
-              <TableHead>Tổng tiền</TableHead>
-              <TableHead>Trạng thái</TableHead>
-              <TableHead className="text-right">Hành động</TableHead>
+              <TableHead>{t('orders_page.table.table_header')}</TableHead>
+              <TableHead>{t('orders_page.table.customer_header')}</TableHead>
+              <TableHead>{t('orders_page.table.time_header')}</TableHead>
+              <TableHead>{t('orders_page.table.handler_header')}</TableHead>
+              <TableHead>{t('orders_page.table.items_header')}</TableHead>
+              <TableHead>{t('orders_page.table.total_header')}</TableHead>
+              <TableHead>{t('orders_page.table.status_header')}</TableHead>
+              <TableHead className="text-right">{t('orders_page.table.actions_header')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {Object.keys(filteredAndGroupedOrders).length === 0 ? (
               <TableRow>
                 <TableCell colSpan={9} className="text-center h-24 text-muted-foreground">
-                  Không có đơn hàng nào.
+                  {t('orders_page.table.no_orders')}
                 </TableCell>
               </TableRow>
             ) : (
@@ -669,7 +663,7 @@ export default function ManageOrdersPage() {
                         <div className="flex items-center gap-2">
                           <span>📋 {tableName}</span>
                           <Badge variant="secondary" className="ml-2">
-                            {orders.length} đơn
+                            {t('orders_page.table.orders_count', { count: orders.length })}
                           </Badge>
                         </div>
                       </TableCell>
@@ -682,7 +676,6 @@ export default function ManageOrdersPage() {
                         order={order} 
                         onStatusChange={(newStatus) => updateStatusMutation.mutate({ orderId: order.id, status: newStatus })}
                         isLoading={updateStatusMutation.isLoading}
-                        i18n={i18n}
                         isHighlighted={highlightedOrder === order.id}
                       />
                     ))}
@@ -698,12 +691,13 @@ export default function ManageOrdersPage() {
 }
 
 // --- COMPONENT CON: HÀNG ĐƠN HÀNG ---
-const OrderRow = ({ order, onStatusChange, isLoading, i18n, isHighlighted }) => {
+const OrderRow = ({ order, onStatusChange, isLoading, isHighlighted }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showDetailsDialog, setShowDetailsDialog] = useState(false);
   const [showPrintDialog, setShowPrintDialog] = useState(false);
   const printRef = useRef(null);
   const { toast } = useToast();
+  const { t, i18n } = useTranslation();
 
   // Logic In - mở dialog preview
   const handlePrint = () => {
@@ -712,11 +706,11 @@ const OrderRow = ({ order, onStatusChange, isLoading, i18n, isHighlighted }) => 
 
   const reactToPrintFn = useReactToPrint({
     contentRef: printRef,
-    documentTitle: `Hoa-don-${order.id}`,
+    documentTitle: t('orders_page.receipt.document_title', { id: order.id }),
     onAfterPrint: () => {
       toast({
-        title: "✅ In hóa đơn thành công",
-        description: `Đã in hóa đơn cho đơn #${order.id}`,
+        title: t('orders_page.toasts.print_success_title'),
+        description: t('orders_page.toasts.print_success_desc', { id: order.id }),
         duration: 3000,
       });
       setShowPrintDialog(false);
@@ -737,7 +731,7 @@ const OrderRow = ({ order, onStatusChange, isLoading, i18n, isHighlighted }) => 
   };
   
   // Hàm lấy 2 chữ cái đầu
-  const getInitials = (name) => name?.split(' ').map((n) => n[0]).join('').toUpperCase() || 'MÓN';
+  const getInitials = (name) => name?.split(' ').map((n) => n[0]).join('').toUpperCase() || t('orders_page.initials_placeholder');
 
   // Lấy translation cho status
   let currentLang = i18n.language || 'vi';
@@ -762,19 +756,19 @@ const OrderRow = ({ order, onStatusChange, isLoading, i18n, isHighlighted }) => 
               </Button>
             </CollapsibleTrigger>
           </TableCell>
-          <TableCell className="font-medium">{order.table?.name || 'N/A'}</TableCell>
+          <TableCell className="font-medium">{order.table?.name || t('orders_page.na')}</TableCell>
           <TableCell>{order.customerName}</TableCell>
           <TableCell>
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-1">
                 <Clock className="h-3 w-3 text-muted-foreground" />
-                <span className="text-xs text-muted-foreground">Tạo:</span>
+                <span className="text-xs text-muted-foreground">{t('orders_page.row.created_label')}</span>
                 <span className="text-sm">{format(new Date(order.createdAt), 'HH:mm dd/MM/yyyy')}</span>
               </div>
               {order.updatedAt && new Date(order.updatedAt).getTime() !== new Date(order.createdAt).getTime() && (
                 <div className="flex items-center gap-1">
                   <Clock className="h-3 w-3 text-primary" />
-                  <span className="text-xs text-muted-foreground">Cập nhật:</span>
+                  <span className="text-xs text-muted-foreground">{t('orders_page.row.updated_label')}</span>
                   <span className="text-sm font-medium text-primary">
                     {format(new Date(order.updatedAt), 'HH:mm dd/MM/yyyy')}
                   </span>
@@ -788,17 +782,19 @@ const OrderRow = ({ order, onStatusChange, isLoading, i18n, isHighlighted }) => 
                 <Avatar className="h-6 w-6">
                   <AvatarImage src={order.staff.avatarUrl} alt={order.staff.name} />
                   <AvatarFallback className="text-xs">
-                    {order.staff.name?.charAt(0).toUpperCase() || 'U'}
+                    {order.staff.name?.charAt(0).toUpperCase() || t('orders_page.row.staff_initial')}
                   </AvatarFallback>
                 </Avatar>
                 <span className="text-sm">{order.staff.name}</span>
               </div>
             ) : (
-              <span className="text-sm text-muted-foreground">Chưa có</span>
+              <span className="text-sm text-muted-foreground">{t('orders_page.row.no_handler')}</span>
             )}
           </TableCell>
           <TableCell>
-            <Badge variant="outline">{order.details?.length || 0} món</Badge>
+            <Badge variant="outline">
+              {t('orders_page.row.items_badge', { count: order.details?.length || 0 })}
+            </Badge>
           </TableCell>
           <TableCell className="font-bold text-lg">
             {order.totalAmount?.toLocaleString('vi-VN')}đ
@@ -819,55 +815,55 @@ const OrderRow = ({ order, onStatusChange, isLoading, i18n, isHighlighted }) => 
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
                   <DialogHeader>
-                    <DialogTitle>Chi tiết đơn hàng #{order.id}</DialogTitle>
+                    <DialogTitle>{t('orders_page.details.title', { id: order.id })}</DialogTitle>
                   </DialogHeader>
                   <div className="space-y-4 mt-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <p className="text-sm text-muted-foreground">Bàn</p>
-                        <p className="font-medium">{order.table?.name}</p>
+                        <p className="text-sm text-muted-foreground">{t('orders_page.details.table')}</p>
+                        <p className="font-medium">{order.table?.name || t('orders_page.na')}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-muted-foreground">Khách hàng</p>
+                        <p className="text-sm text-muted-foreground">{t('orders_page.details.customer')}</p>
                         <p className="font-medium">{order.customerName}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-muted-foreground">Tạo lúc</p>
+                        <p className="text-sm text-muted-foreground">{t('orders_page.details.created')}</p>
                         <p className="font-medium">{format(new Date(order.createdAt), 'HH:mm dd/MM/yyyy')}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-muted-foreground">Cập nhật lúc</p>
+                        <p className="text-sm text-muted-foreground">{t('orders_page.details.updated')}</p>
                         <p className="font-medium">
                           {order.updatedAt && new Date(order.updatedAt).getTime() !== new Date(order.createdAt).getTime() 
                             ? format(new Date(order.updatedAt), 'HH:mm dd/MM/yyyy')
-                            : 'Chưa cập nhật'}
+                            : t('orders_page.details.not_updated')}
                         </p>
                       </div>
                       <div>
-                        <p className="text-sm text-muted-foreground">Người xử lý</p>
+                        <p className="text-sm text-muted-foreground">{t('orders_page.details.handler')}</p>
                         {order.staff ? (
                           <div className="flex items-center gap-2 mt-1">
                             <Avatar className="h-6 w-6">
                               <AvatarImage src={order.staff.avatarUrl} alt={order.staff.name} />
                               <AvatarFallback className="text-xs">
-                                {order.staff.name?.charAt(0).toUpperCase() || 'U'}
+                                {order.staff.name?.charAt(0).toUpperCase() || t('orders_page.row.staff_initial')}
                               </AvatarFallback>
                             </Avatar>
                             <p className="font-medium">{order.staff.name}</p>
                           </div>
                         ) : (
-                          <p className="font-medium text-muted-foreground">Chưa có</p>
+                          <p className="font-medium text-muted-foreground">{t('orders_page.row.no_handler')}</p>
                         )}
                       </div>
         <div>
-                        <p className="text-sm text-muted-foreground">Trạng thái</p>
+                        <p className="text-sm text-muted-foreground">{t('orders_page.details.status')}</p>
                         <Badge variant={getStatusBadgeVariant(order.status)}>
                           {statusTranslation.text}
                         </Badge>
                       </div>
         </div>
                     <div className="border-t pt-4">
-                      <p className="text-sm font-semibold mb-2">Danh sách món:</p>
+                      <p className="text-sm font-semibold mb-2">{t('orders_page.details.items_title')}</p>
                       <div className="space-y-2">
                         {order.details?.map((detail, index) => (
                           <div key={detail.id} className="flex items-center gap-3 p-2 rounded-md bg-muted/50">
@@ -890,7 +886,7 @@ const OrderRow = ({ order, onStatusChange, isLoading, i18n, isHighlighted }) => 
                       </div>
                     </div>
                     <div className="border-t pt-4 flex justify-between items-center">
-                      <span className="text-lg font-bold">Tổng tiền:</span>
+                      <span className="text-lg font-bold">{t('orders_page.details.total_label')}</span>
                       <span className="text-2xl font-bold text-primary">
                         {order.totalAmount?.toLocaleString('vi-VN')}đ
                       </span>
@@ -911,37 +907,37 @@ const OrderRow = ({ order, onStatusChange, isLoading, i18n, isHighlighted }) => 
                   {order.status === 'PENDING' && (
                     <>
                       <DropdownMenuItem onClick={() => onStatusChange('COOKING')}>
-                        Xác nhận
+                        {t('orders_page.actions.confirm')}
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem 
                         onClick={() => onStatusChange('CANCELLED')} 
                         className="text-red-500"
                       >
-                        Hủy đơn
+                        {t('orders_page.actions.cancel')}
                       </DropdownMenuItem>
                     </>
                   )}
                   {order.status === 'COOKING' && (
                     <DropdownMenuItem onClick={() => onStatusChange('SERVED')}>
-                      Đã phục vụ
+                      {t('orders_page.actions.mark_served')}
                     </DropdownMenuItem>
                   )}
                   {order.status === 'SERVED' && (
                     <>
                       <DropdownMenuItem onClick={handlePrint}>
-                        In hóa đơn
+                        {t('orders_page.actions.print_receipt')}
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => onStatusChange('PAID')}>
-                        Thanh toán xong
+                        {t('orders_page.actions.mark_paid')}
                       </DropdownMenuItem>
                     </>
                   )}
                   {order.status === 'PAID' && (
                     <DropdownMenuItem onClick={handlePrint}>
                       <Printer className="mr-2 h-4 w-4" />
-                      In hóa đơn
+                      {t('orders_page.actions.print_receipt')}
                     </DropdownMenuItem>
                   )}
                 </DropdownMenuContent>
@@ -955,7 +951,9 @@ const OrderRow = ({ order, onStatusChange, isLoading, i18n, isHighlighted }) => 
         <Dialog open={showPrintDialog} onOpenChange={setShowPrintDialog}>
           <DialogContent className="max-w-2xl max-h-[95vh] overflow-y-auto print:overflow-visible">
             <DialogHeader className="print:hidden">
-              <DialogTitle className="text-center text-xl font-bold">Xem trước hóa đơn</DialogTitle>
+              <DialogTitle className="text-center text-xl font-bold">
+                {t('orders_page.print_preview.dialog_title')}
+              </DialogTitle>
             </DialogHeader>
             
             {/* Preview hóa đơn với border đẹp */}
@@ -971,7 +969,7 @@ const OrderRow = ({ order, onStatusChange, isLoading, i18n, isHighlighted }) => 
             <div className="flex gap-3 justify-center pt-4 border-t print:hidden">
               <Button onClick={reactToPrintFn} size="lg" className="flex-1 max-w-xs">
                 <Printer className="mr-2 h-5 w-5" />
-                In hóa đơn
+                {t('orders_page.print_preview.print_button')}
               </Button>
               <Button 
                 variant="outline" 
@@ -979,7 +977,7 @@ const OrderRow = ({ order, onStatusChange, isLoading, i18n, isHighlighted }) => 
                 size="lg"
                 className="flex-1 max-w-xs"
               >
-                Đóng
+                {t('orders_page.print_preview.close_button')}
               </Button>
             </div>
           </DialogContent>
@@ -1022,23 +1020,26 @@ const OrderRow = ({ order, onStatusChange, isLoading, i18n, isHighlighted }) => 
 
 // --- COMPONENT HÓA ĐƠN ĐỂ IN ---
 const BillReceipt = ({ order }) => {
+  const { t } = useTranslation();
+  const fallbackValue = t('orders_page.na');
+
   return (
     <div style={{ padding: '30px', fontFamily: 'monospace', maxWidth: '80mm', margin: '0 auto' }}>
       <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-        <h1 style={{ fontSize: '24px', margin: '0' }}>HÓA ĐƠN</h1>
-        <h2 style={{ fontSize: '20px', margin: '5px 0' }}>NHÀ HÀNG</h2>
-        <p style={{ margin: '5px 0' }}>Địa chỉ: 123 Đường ABC, TP.HCM</p>
-        <p style={{ margin: '5px 0' }}>SĐT: 0123-456-789</p>
+        <h1 style={{ fontSize: '24px', margin: '0' }}>{t('orders_page.receipt.title')}</h1>
+        <h2 style={{ fontSize: '20px', margin: '5px 0' }}>{t('orders_page.receipt.restaurant_name')}</h2>
+        <p style={{ margin: '5px 0' }}>{t('orders_page.receipt.address')}</p>
+        <p style={{ margin: '5px 0' }}>{t('orders_page.receipt.phone')}</p>
         <hr style={{ border: '1px dashed #000' }} />
       </div>
 
       <div style={{ marginBottom: '15px' }}>
-        <p style={{ margin: '5px 0' }}><strong>Hóa đơn #:</strong> {order.id}</p>
-        <p style={{ margin: '5px 0' }}><strong>Bàn:</strong> {order.table?.name || 'N/A'}</p>
-        <p style={{ margin: '5px 0' }}><strong>Khách hàng:</strong> {order.customerName}</p>
-        <p style={{ margin: '5px 0' }}><strong>Thời gian:</strong> {format(new Date(order.createdAt), 'HH:mm dd/MM/yyyy')}</p>
+        <p style={{ margin: '5px 0' }}><strong>{t('orders_page.receipt.invoice_number')}</strong> {order.id}</p>
+        <p style={{ margin: '5px 0' }}><strong>{t('orders_page.receipt.table')}</strong> {order.table?.name || fallbackValue}</p>
+        <p style={{ margin: '5px 0' }}><strong>{t('orders_page.receipt.customer')}</strong> {order.customerName || fallbackValue}</p>
+        <p style={{ margin: '5px 0' }}><strong>{t('orders_page.receipt.time')}</strong> {format(new Date(order.createdAt), 'HH:mm dd/MM/yyyy')}</p>
         {order.staff && (
-          <p style={{ margin: '5px 0' }}><strong>Nhân viên:</strong> {order.staff.name}</p>
+          <p style={{ margin: '5px 0' }}><strong>{t('orders_page.receipt.staff')}</strong> {order.staff.name}</p>
         )}
         <hr style={{ border: '1px dashed #000' }} />
       </div>
@@ -1047,10 +1048,10 @@ const BillReceipt = ({ order }) => {
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr style={{ borderBottom: '1px solid #000' }}>
-              <th style={{ textAlign: 'left', padding: '5px' }}>Món</th>
-              <th style={{ textAlign: 'center', padding: '5px' }}>SL</th>
-              <th style={{ textAlign: 'right', padding: '5px' }}>Giá</th>
-              <th style={{ textAlign: 'right', padding: '5px' }}>Thành tiền</th>
+              <th style={{ textAlign: 'left', padding: '5px' }}>{t('orders_page.receipt.table_header_item')}</th>
+              <th style={{ textAlign: 'center', padding: '5px' }}>{t('orders_page.receipt.table_header_qty')}</th>
+              <th style={{ textAlign: 'right', padding: '5px' }}>{t('orders_page.receipt.table_header_price')}</th>
+              <th style={{ textAlign: 'right', padding: '5px' }}>{t('orders_page.receipt.table_header_total')}</th>
             </tr>
           </thead>
           <tbody>
@@ -1073,14 +1074,14 @@ const BillReceipt = ({ order }) => {
 
       <div style={{ marginBottom: '20px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '18px', fontWeight: 'bold' }}>
-          <span>TỔNG CỘNG:</span>
+          <span>{t('orders_page.receipt.grand_total')}</span>
           <span>{order.totalAmount?.toLocaleString('vi-VN')}đ</span>
         </div>
       </div>
 
       <div style={{ textAlign: 'center', marginTop: '30px' }}>
-        <p style={{ margin: '5px 0' }}>Cảm ơn quý khách!</p>
-        <p style={{ margin: '5px 0' }}>Hẹn gặp lại!</p>
+        <p style={{ margin: '5px 0' }}>{t('orders_page.receipt.thank_you')}</p>
+        <p style={{ margin: '5px 0' }}>{t('orders_page.receipt.see_you')}</p>
       </div>
     </div>
   );

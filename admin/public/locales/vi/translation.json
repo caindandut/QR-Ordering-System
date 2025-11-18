@@ -214,5 +214,132 @@
         "success_password_title": "Thành công!",
         "error_password_title": "Lỗi đổi mật khẩu!",
         "error_password_desc": "Không thể đổi mật khẩu."
+    },
+    "orders_page": {
+        "title": "Quản lý Đơn hàng",
+        "search_label": "Tìm",
+        "search_placeholder": "Nhập tên khách hàng...",
+        "table_label": "Bàn",
+        "all_tables": "Tất cả các bàn",
+        "status_label": "Trạng thái",
+        "manual_button": "Tạo đơn thủ công",
+        "manual_dialog_title": "Tạo đơn hàng thủ công",
+        "unknown_table": "Bàn chưa xác định",
+        "na": "Không rõ",
+        "initials_placeholder": "?",
+        "loading_error": "Không thể tải dữ liệu đơn hàng.",
+        "form": {
+            "table": "Chọn bàn",
+            "table_placeholder": "Chọn một bàn",
+            "table_capacity": "Sức chứa: {{capacity}} khách",
+            "customer": "Tên khách hàng",
+            "customer_placeholder": "Nhập tên khách hàng...",
+            "menu": "Chọn món ăn",
+            "no_menu_items": "Không có món ăn khả dụng.",
+            "add_item": "Thêm",
+            "total": "Tổng tiền",
+            "submitting": "Đang tạo...",
+            "submit": "Tạo đơn hàng",
+            "validation_error": "Vui lòng điền đầy đủ thông tin và thêm ít nhất 1 món."
+        },
+        "table": {
+            "table_header": "Bàn",
+            "customer_header": "Khách hàng",
+            "time_header": "Thời gian",
+            "handler_header": "Người xử lý",
+            "items_header": "Món",
+            "total_header": "Tổng",
+            "status_header": "Trạng thái",
+            "actions_header": "Thao tác",
+            "orders_count": "{{count}} đơn",
+            "no_orders": "Không có đơn hàng cho bộ lọc này."
+        },
+        "row": {
+            "created_label": "Tạo",
+            "updated_label": "Cập nhật",
+            "staff_initial": "NV",
+            "no_handler": "Chưa phân công",
+            "items_badge": "{{count}} món"
+        },
+        "details": {
+            "title": "Đơn hàng #{{id}}",
+            "table": "Bàn",
+            "customer": "Khách hàng",
+            "created": "Tạo lúc",
+            "updated": "Cập nhật lúc",
+            "not_updated": "Chưa cập nhật",
+            "handler": "Người xử lý",
+            "status": "Trạng thái",
+            "items_title": "Chi tiết món",
+            "total_label": "Tổng thanh toán"
+        },
+        "actions": {
+            "confirm": "Xác nhận & chuyển bếp",
+            "cancel": "Hủy đơn",
+            "mark_served": "Đánh dấu đã phục vụ",
+            "print_receipt": "In hóa đơn",
+            "mark_paid": "Đánh dấu đã thanh toán"
+        },
+        "toasts": {
+            "new_order_title": "Có đơn hàng mới!",
+            "new_order_desc": "Bàn {{table}} - Khách {{customer}}.",
+            "create_success_title": "Tạo đơn thành công!",
+            "create_success_desc": "Đơn hàng đã được thêm.",
+            "create_error_desc": "Không thể tạo đơn hàng.",
+            "error_title": "Lỗi",
+            "update_error_desc": "Không thể cập nhật trạng thái đơn hàng.",
+            "print_success_title": "In hóa đơn thành công!",
+            "print_success_desc": "Đã in hóa đơn #{{id}}.",
+            "status": {
+                "default": {
+                    "title": "Đã cập nhật trạng thái đơn hàng",
+                    "desc": "Khách {{customer}}, bàn {{table}}."
+                },
+                "pending": {
+                    "title": "Đơn đang chờ xử lý",
+                    "desc": "Khách {{customer}}, bàn {{table}}."
+                },
+                "cooking": {
+                    "title": "Đơn đang chế biến",
+                    "desc": "Khách {{customer}}, bàn {{table}}."
+                },
+                "served": {
+                    "title": "Đơn đã phục vụ",
+                    "desc": "Khách {{customer}}, bàn {{table}}."
+                },
+                "paid": {
+                    "title": "Đơn đã thanh toán",
+                    "desc": "Khách {{customer}}, bàn {{table}}."
+                },
+                "cancelled": {
+                    "title": "Đơn đã bị hủy",
+                    "desc": "Khách {{customer}}, bàn {{table}}."
+                }
+            }
+        },
+        "print_preview": {
+            "dialog_title": "Xem trước hóa đơn",
+            "print_button": "In hóa đơn",
+            "close_button": "Đóng"
+        },
+        "receipt": {
+            "document_title": "Hóa đơn #{{id}}",
+            "title": "HÓA ĐƠN",
+            "restaurant_name": "NHÀ HÀNG",
+            "address": "Địa chỉ: 123 Đường ABC, TP.HCM",
+            "phone": "SĐT: 0123-456-789",
+            "invoice_number": "Hóa đơn #:",
+            "table": "Bàn:",
+            "customer": "Khách hàng:",
+            "time": "Thời gian:",
+            "staff": "Nhân viên:",
+            "table_header_item": "Món",
+            "table_header_qty": "SL",
+            "table_header_price": "Giá",
+            "table_header_total": "Thành tiền",
+            "grand_total": "TỔNG CỘNG:",
+            "thank_you": "Cảm ơn quý khách!",
+            "see_you": "Hẹn gặp lại!"
+        }
     }
 }

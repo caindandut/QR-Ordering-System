@@ -214,5 +214,132 @@
         "success_password_title": "成功！",
         "error_password_title": "パスワード変更エラー！",
         "error_password_desc": "パスワードを変更できませんでした。"
+    },
+    "orders_page": {
+        "title": "注文管理",
+        "search_label": "検索",
+        "search_placeholder": "顧客名で検索...",
+        "table_label": "テーブル",
+        "all_tables": "すべてのテーブル",
+        "status_label": "ステータス",
+        "manual_button": "手動で注文を作成",
+        "manual_dialog_title": "手動注文の作成",
+        "unknown_table": "テーブル未設定",
+        "na": "不明",
+        "initials_placeholder": "?",
+        "loading_error": "注文データを読み込めません。",
+        "form": {
+            "table": "テーブルを選択",
+            "table_placeholder": "テーブルを選択してください",
+            "table_capacity": "座席数: {{capacity}}名",
+            "customer": "顧客名",
+            "customer_placeholder": "顧客名を入力...",
+            "menu": "メニューを選択",
+            "no_menu_items": "利用可能なメニューがありません。",
+            "add_item": "追加",
+            "total": "合計金額",
+            "submitting": "作成中...",
+            "submit": "注文を作成",
+            "validation_error": "すべての情報を入力し、少なくとも1品を追加してください。"
+        },
+        "table": {
+            "table_header": "テーブル",
+            "customer_header": "顧客",
+            "time_header": "時間",
+            "handler_header": "担当者",
+            "items_header": "品目",
+            "total_header": "合計",
+            "status_header": "ステータス",
+            "actions_header": "操作",
+            "orders_count": "{{count}} 件",
+            "no_orders": "このフィルターには注文がありません。"
+        },
+        "row": {
+            "created_label": "作成",
+            "updated_label": "更新",
+            "staff_initial": "係",
+            "no_handler": "未割り当て",
+            "items_badge": "{{count}} 品"
+        },
+        "details": {
+            "title": "注文 #{{id}}",
+            "table": "テーブル",
+            "customer": "顧客",
+            "created": "作成日時",
+            "updated": "更新日時",
+            "not_updated": "未更新",
+            "handler": "担当者",
+            "status": "ステータス",
+            "items_title": "注文内容",
+            "total_label": "支払合計"
+        },
+        "actions": {
+            "confirm": "調理を開始",
+            "cancel": "注文をキャンセル",
+            "mark_served": "提供済みにする",
+            "print_receipt": "領収書を印刷",
+            "mark_paid": "支払い済みにする"
+        },
+        "toasts": {
+            "new_order_title": "新しい注文が届きました！",
+            "new_order_desc": "テーブル {{table}} - 顧客 {{customer}}",
+            "create_success_title": "注文を作成しました！",
+            "create_success_desc": "新しい注文が追加されました。",
+            "create_error_desc": "注文を作成できませんでした。",
+            "error_title": "エラー",
+            "update_error_desc": "注文ステータスを更新できませんでした。",
+            "print_success_title": "領収書を印刷しました！",
+            "print_success_desc": "領収書 #{{id}} を印刷しました。",
+            "status": {
+                "default": {
+                    "title": "注文ステータスを更新しました",
+                    "desc": "顧客 {{customer}} ・ テーブル {{table}}"
+                },
+                "pending": {
+                    "title": "注文が待機中です",
+                    "desc": "顧客 {{customer}} ・ テーブル {{table}}"
+                },
+                "cooking": {
+                    "title": "注文を調理中です",
+                    "desc": "顧客 {{customer}} ・ テーブル {{table}}"
+                },
+                "served": {
+                    "title": "注文を提供しました",
+                    "desc": "顧客 {{customer}} ・ テーブル {{table}}"
+                },
+                "paid": {
+                    "title": "注文の支払いが完了しました",
+                    "desc": "顧客 {{customer}} ・ テーブル {{table}}"
+                },
+                "cancelled": {
+                    "title": "注文をキャンセルしました",
+                    "desc": "顧客 {{customer}} ・ テーブル {{table}}"
+                }
+            }
+        },
+        "print_preview": {
+            "dialog_title": "領収書プレビュー",
+            "print_button": "印刷する",
+            "close_button": "閉じる"
+        },
+        "receipt": {
+            "document_title": "領収書 #{{id}}",
+            "title": "領収書",
+            "restaurant_name": "レストラン",
+            "address": "住所: 123 ABC通り, ホーチミン市",
+            "phone": "電話: 0123-456-789",
+            "invoice_number": "領収書番号:",
+            "table": "テーブル:",
+            "customer": "顧客:",
+            "time": "時間:",
+            "staff": "担当者:",
+            "table_header_item": "品目",
+            "table_header_qty": "数量",
+            "table_header_price": "単価",
+            "table_header_total": "小計",
+            "grand_total": "合計:",
+            "thank_you": "ご利用ありがとうございます！",
+            "see_you": "またのご来店をお待ちしております。"
+        }
     }
 }
