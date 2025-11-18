@@ -32,7 +32,22 @@
         "logout_success_title": "ログアウトしました",
         "logout_success_desc": "正常にログアウトしました。またお会いしましょう！",
         "logout_error_title": "エラー",
-        "logout_error_desc": "ログアウトできませんでした。もう一度お試しください。"
+        "logout_error_desc": "ログアウトできませんでした。もう一度お試しください。",
+        "notifications": {
+            "button_label": "通知",
+            "title": "通知",
+            "empty": "新しい注文はありません",
+            "new_order": "新しい注文 #{{id}}",
+            "new_badge": "新着",
+            "table": "テーブル:",
+            "customer": "顧客:",
+            "time": "時間:",
+            "payment_section": "💰 支払いリクエスト",
+            "payment_title": "支払い #{{id}}",
+            "payment_badge": "至急",
+            "total": "合計金額:",
+            "view_all": "すべての注文を見る"
+        }
     },
     "theme": {
         "toggle": "テーマを切り替える",

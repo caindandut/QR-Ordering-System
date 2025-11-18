@@ -34,6 +34,7 @@ export default function Header() {
   const { toast } = useToast();
   const { t } = useTranslation();
   const { newOrders, unreadCount, removeNotification, paymentRequests, paymentRequestCount, removePaymentRequest } = useNotification();
+  const fallbackValue = t('orders_page.na', { defaultValue: 'N/A' });
 
   const handleLogout = async () => {
     try {
@@ -104,12 +105,12 @@ export default function Header() {
                   {(unreadCount + paymentRequestCount) > 99 ? '99+' : (unreadCount + paymentRequestCount)}
                 </Badge>
               )}
-              <span className="sr-only">Thông báo</span>
+              <span className="sr-only">{t('header.notifications.button_label')}</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-80 max-h-96 overflow-y-auto" align="end">
             <DropdownMenuLabel className="flex items-center justify-between">
-              <span>Thông báo</span>
+              <span>{t('header.notifications.title')}</span>
               {unreadCount > 0 && (
                 <Badge variant="secondary">{unreadCount}</Badge>
               )}
@@ -117,7 +118,7 @@ export default function Header() {
             <DropdownMenuSeparator />
             {newOrders.length === 0 ? (
               <div className="p-4 text-center text-sm text-muted-foreground">
-                Không có đơn hàng mới
+                {t('header.notifications.empty')}
               </div>
             ) : (
               newOrders.map((order) => (
@@ -131,20 +132,22 @@ export default function Header() {
                 >
                   <div className="flex items-start justify-between w-full mb-1">
                     <span className="font-semibold text-sm">
-                      Đơn hàng mới #{order.id}
+                      {t('header.notifications.new_order', { id: order.id })}
                     </span>
-                    <Badge variant="outline" className="ml-2 text-xs">Mới</Badge>
+                    <Badge variant="outline" className="ml-2 text-xs">
+                      {t('header.notifications.new_badge')}
+                    </Badge>
                   </div>
                   <div className="text-xs text-muted-foreground space-y-0.5">
                     <div>
-                      <span className="font-medium">Bàn:</span> {order.table?.name || 'N/A'}
+                      <span className="font-medium">{t('header.notifications.table')}</span> {order.table?.name || fallbackValue}
                     </div>
                     <div>
-                      <span className="font-medium">Khách:</span> {order.customerName || 'N/A'}
+                      <span className="font-medium">{t('header.notifications.customer')}</span> {order.customerName || fallbackValue}
                     </div>
                     <div>
-                      <span className="font-medium">Thời gian:</span>{' '}
-                      {order.createdAt ? format(new Date(order.createdAt), 'HH:mm dd/MM/yyyy') : 'N/A'}
+                      <span className="font-medium">{t('header.notifications.time')}</span>{' '}
+                      {order.createdAt ? format(new Date(order.createdAt), 'HH:mm dd/MM/yyyy') : fallbackValue}
                     </div>
                   </div>
                 </DropdownMenuItem>
@@ -156,7 +159,9 @@ export default function Header() {
               <>
                 <DropdownMenuSeparator />
                 <DropdownMenuLabel className="flex items-center justify-between">
-                  <span className="text-orange-600 dark:text-orange-400">💰 Yêu cầu thanh toán</span>
+                  <span className="text-orange-600 dark:text-orange-400">
+                    {t('header.notifications.payment_section')}
+                  </span>
                   {paymentRequestCount > 0 && (
                     <Badge variant="destructive">{paymentRequestCount}</Badge>
                   )}
@@ -172,19 +177,21 @@ export default function Header() {
                   >
                     <div className="flex items-start justify-between w-full mb-1">
                       <span className="font-semibold text-sm">
-                        Thanh toán #{request.orderId}
+                        {t('header.notifications.payment_title', { id: request.orderId })}
                       </span>
-                      <Badge variant="destructive" className="ml-2 text-xs">Khẩn cấp</Badge>
+                      <Badge variant="destructive" className="ml-2 text-xs">
+                        {t('header.notifications.payment_badge')}
+                      </Badge>
                     </div>
                     <div className="text-xs text-muted-foreground space-y-0.5">
                       <div>
-                        <span className="font-medium">Bàn:</span> {request.tableName || 'N/A'}
+                        <span className="font-medium">{t('header.notifications.table')}</span> {request.tableName || fallbackValue}
                       </div>
                       <div>
-                        <span className="font-medium">Khách:</span> {request.customerName || 'N/A'}
+                        <span className="font-medium">{t('header.notifications.customer')}</span> {request.customerName || fallbackValue}
                       </div>
                       <div>
-                        <span className="font-medium">Tổng tiền:</span>{' '}
+                        <span className="font-medium">{t('header.notifications.total')}</span>{' '}
                         <span className="font-bold text-primary">{request.totalAmount?.toLocaleString('vi-VN')}đ</span>
                       </div>
                     </div>
@@ -201,7 +208,7 @@ export default function Header() {
                     to="/orders" 
                     className="w-full text-center justify-center font-medium text-primary"
                   >
-                    Xem tất cả đơn hàng
+                    {t('header.notifications.view_all')}
                   </Link>
                 </DropdownMenuItem>
               </>

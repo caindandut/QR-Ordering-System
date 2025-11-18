@@ -39,6 +39,7 @@ export default function OrderStatusPage() {
   let lang = i18n.language || 'vi';
   if (lang === 'ja') lang = 'jp';
   const { toast } = useToast();
+  const fallbackValue = t('status_page.na', { defaultValue: 'N/A' });
   
   // ĐỌC TỪ sessionStorage - mỗi tab có session riêng
   const tableId = sessionStorage.getItem('table_id');
@@ -84,15 +85,15 @@ export default function OrderStatusPage() {
       }
       
       toast({
-        title: '✅ Yêu cầu thanh toán đã gửi',
-        description: 'Nhân viên sẽ đến thanh toán cho bạn trong giây lát.',
+        title: t('status_page.payment.toast_success_title'),
+        description: t('status_page.payment.toast_success_desc'),
         duration: 5000,
       });
     },
     onError: (err) => {
       toast({
-        title: '❌ Lỗi',
-        description: err.response?.data?.message || 'Không thể gửi yêu cầu thanh toán.',
+        title: t('status_page.payment.toast_error_title'),
+        description: err.response?.data?.message || t('status_page.payment.toast_error_desc'),
         variant: 'destructive',
       });
     },
@@ -132,34 +133,33 @@ export default function OrderStatusPage() {
       }));
       
       // Hiển thị toast notification từ góc nhìn khách hàng
-      let toastTitle = '';
-      let toastDescription = '';
+      const statusToastMap = {
+        COOKING: {
+          title: t('status_page.toasts.cooking.title'),
+          description: t('status_page.toasts.cooking.desc'),
+        },
+        SERVED: {
+          title: t('status_page.toasts.served.title'),
+          description: t('status_page.toasts.served.desc'),
+        },
+        PAID: {
+          title: t('status_page.toasts.paid.title'),
+          description: t('status_page.toasts.paid.desc'),
+        },
+        CANCELLED: {
+          title: t('status_page.toasts.cancelled.title'),
+          description: t('status_page.toasts.cancelled.desc'),
+        },
+      };
       
-      switch (newStatus) {
-        case 'COOKING':
-          toastTitle = '✅ Đơn hàng của bạn đã được xác nhận';
-          toastDescription = 'Đơn hàng của bạn đã được xác nhận và đang được chế biến.';
-          break;
-        case 'SERVED':
-          toastTitle = '🍽️ Đơn hàng của bạn đã được phục vụ';
-          toastDescription = 'Đơn hàng của bạn đã được phục vụ. Vui lòng kiểm tra và thanh toán.';
-          break;
-        case 'PAID':
-          toastTitle = '💰 Đơn hàng của bạn đã được thanh toán';
-          toastDescription = 'Đơn hàng của bạn đã được thanh toán thành công. Cảm ơn bạn!';
-          break;
-        case 'CANCELLED':
-          toastTitle = '❌ Đơn hàng của bạn đã bị hủy';
-          toastDescription = 'Đơn hàng của bạn đã bị hủy. Vui lòng liên hệ nhân viên nếu cần hỗ trợ.';
-          break;
-        default:
-          toastTitle = 'Cập nhật trạng thái đơn hàng';
-          toastDescription = 'Đơn hàng của bạn đã được cập nhật trạng thái.';
-      }
+      const toastContent = statusToastMap[newStatus] || {
+        title: t('status_page.toasts.default.title'),
+        description: t('status_page.toasts.default.desc'),
+      };
       
       toast({
-        title: toastTitle,
-        description: toastDescription,
+        title: toastContent.title,
+        description: toastContent.description,
         duration: 5000,
       });
     };
@@ -202,25 +202,25 @@ export default function OrderStatusPage() {
       <Dialog open={showBillDialog} onOpenChange={setShowBillDialog}>
         <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-center">🧾 Biên Lai Thanh Toán</DialogTitle>
+            <DialogTitle className="text-center">{t('status_page.payment.dialog_title')}</DialogTitle>
           </DialogHeader>
           {billData && (
             <div>
               {/* Nội dung biên lai giống admin */}
               <div style={{ padding: '20px', fontFamily: 'monospace' }}>
                 <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-                  <h1 style={{ fontSize: '24px', margin: '0' }}>HÓA ĐƠN</h1>
-                  <h2 style={{ fontSize: '20px', margin: '5px 0' }}>NHÀ HÀNG</h2>
-                  <p style={{ margin: '5px 0' }}>Địa chỉ: 123 Đường ABC, TP.HCM</p>
-                  <p style={{ margin: '5px 0' }}>SĐT: 0123-456-789</p>
+                  <h1 style={{ fontSize: '24px', margin: '0' }}>{t('status_page.receipt.title')}</h1>
+                  <h2 style={{ fontSize: '20px', margin: '5px 0' }}>{t('status_page.receipt.restaurant_name')}</h2>
+                  <p style={{ margin: '5px 0' }}>{t('status_page.receipt.address')}</p>
+                  <p style={{ margin: '5px 0' }}>{t('status_page.receipt.phone')}</p>
                   <hr style={{ border: '1px dashed #000' }} />
                 </div>
 
                 <div style={{ marginBottom: '15px' }}>
-                  <p style={{ margin: '5px 0' }}><strong>Hóa đơn #:</strong> {billData.orderId}</p>
-                  <p style={{ margin: '5px 0' }}><strong>Bàn:</strong> {billData.tableName}</p>
-                  <p style={{ margin: '5px 0' }}><strong>Khách hàng:</strong> {billData.customerName}</p>
-                  <p style={{ margin: '5px 0' }}><strong>Thời gian:</strong> {billData.createdAt ? format(new Date(billData.createdAt), 'HH:mm dd/MM/yyyy') : 'N/A'}</p>
+                  <p style={{ margin: '5px 0' }}><strong>{t('status_page.receipt.invoice_number')}</strong> {billData.orderId}</p>
+                  <p style={{ margin: '5px 0' }}><strong>{t('status_page.receipt.table')}</strong> {billData.tableName}</p>
+                  <p style={{ margin: '5px 0' }}><strong>{t('status_page.receipt.customer')}</strong> {billData.customerName}</p>
+                  <p style={{ margin: '5px 0' }}><strong>{t('status_page.receipt.time')}</strong> {billData.createdAt ? format(new Date(billData.createdAt), 'HH:mm dd/MM/yyyy') : fallbackValue}</p>
                   <hr style={{ border: '1px dashed #000' }} />
                 </div>
 
@@ -228,10 +228,10 @@ export default function OrderStatusPage() {
                   <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                     <thead>
                       <tr style={{ borderBottom: '1px solid #000' }}>
-                        <th style={{ textAlign: 'left', padding: '5px' }}>Món</th>
-                        <th style={{ textAlign: 'center', padding: '5px' }}>SL</th>
-                        <th style={{ textAlign: 'right', padding: '5px' }}>Giá</th>
-                        <th style={{ textAlign: 'right', padding: '5px' }}>Thành tiền</th>
+                        <th style={{ textAlign: 'left', padding: '5px' }}>{t('status_page.receipt.table_header_item')}</th>
+                        <th style={{ textAlign: 'center', padding: '5px' }}>{t('status_page.receipt.table_header_qty')}</th>
+                        <th style={{ textAlign: 'right', padding: '5px' }}>{t('status_page.receipt.table_header_price')}</th>
+                        <th style={{ textAlign: 'right', padding: '5px' }}>{t('status_page.receipt.table_header_total')}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -254,21 +254,21 @@ export default function OrderStatusPage() {
 
                 <div style={{ marginBottom: '20px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '18px', fontWeight: 'bold' }}>
-                    <span>TỔNG CỘNG:</span>
+                    <span>{t('status_page.receipt.grand_total')}</span>
                     <span>{billData.totalAmount?.toLocaleString('vi-VN')}đ</span>
                   </div>
                 </div>
 
                 <div style={{ textAlign: 'center', marginTop: '20px' }}>
-                  <p style={{ margin: '5px 0' }}>Cảm ơn quý khách!</p>
-                  <p style={{ margin: '5px 0' }}>Hẹn gặp lại!</p>
+                  <p style={{ margin: '5px 0' }}>{t('status_page.receipt.thank_you')}</p>
+                  <p style={{ margin: '5px 0' }}>{t('status_page.receipt.see_you')}</p>
                 </div>
               </div>
 
               {/* Nút đóng */}
               <div className="px-4 pb-4">
                 <Button onClick={() => setShowBillDialog(false)} className="w-full" size="lg">
-                  Đóng
+                  {t('status_page.payment.close_button')}
                 </Button>
               </div>
             </div>
@@ -357,12 +357,12 @@ export default function OrderStatusPage() {
                       {paymentRequestMutation.isLoading ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Đang gửi...
+                          {t('status_page.payment.requesting')}
                         </>
                       ) : (
                         <>
                           <DollarSign className="mr-2 h-5 w-5" />
-                          Yêu cầu thanh toán
+                          {t('status_page.payment.request_button')}
                         </>
                       )}
                     </Button>
@@ -372,7 +372,7 @@ export default function OrderStatusPage() {
                   {requestedPayments[order.id] && orderStatuses[order.id] === 'SERVED' && (
                     <div className="space-y-2">
                       <div className="text-center text-sm text-primary font-medium p-2 bg-primary/10 rounded-md">
-                        ✓ Đã gửi yêu cầu thanh toán. Vui lòng đợi nhân viên.
+                        {t('status_page.payment.requested_message')}
                       </div>
                       <Button 
                         onClick={() => handleViewBill(order.id)}
@@ -380,7 +380,7 @@ export default function OrderStatusPage() {
                         className="w-full"
                         size="lg"
                       >
-                        🧾 Xem biên lai
+                        {t('status_page.payment.view_receipt')}
                       </Button>
                     </div>
                   )}

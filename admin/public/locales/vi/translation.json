@@ -32,7 +32,22 @@
         "logout_success_title": "Đã đăng xuất",
         "logout_success_desc": "Bạn đã đăng xuất thành công. Hẹn gặp lại!",
         "logout_error_title": "Lỗi",
-        "logout_error_desc": "Không thể đăng xuất. Vui lòng thử lại."
+        "logout_error_desc": "Không thể đăng xuất. Vui lòng thử lại.",
+        "notifications": {
+            "button_label": "Thông báo",
+            "title": "Thông báo",
+            "empty": "Không có đơn hàng mới",
+            "new_order": "Đơn hàng mới #{{id}}",
+            "new_badge": "Mới",
+            "table": "Bàn:",
+            "customer": "Khách:",
+            "time": "Thời gian:",
+            "payment_section": "💰 Yêu cầu thanh toán",
+            "payment_title": "Thanh toán #{{id}}",
+            "payment_badge": "Khẩn cấp",
+            "total": "Tổng tiền:",
+            "view_all": "Xem tất cả đơn hàng"
+        }
     },
     "theme": {
         "toggle": "Chuyển đổi theme",

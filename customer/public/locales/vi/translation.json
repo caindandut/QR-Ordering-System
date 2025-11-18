@@ -44,6 +44,7 @@
         "view_menu": "Xem Thực đơn",
         "payment_not_paid": "CHƯA THANH TOÁN",
         "payment_paid": "ĐÃ THANH TOÁN",
+        "na": "Không rõ",
         "order_status": {
             "PENDING": "Chờ xử lý",
             "CONFIRMED": "Đã xác nhận",
@@ -52,6 +53,57 @@
             "SERVED": "Đã phục vụ",
             "PAID": "Đã thanh toán",
             "CANCELLED": "Đã hủy"
+        },
+        "payment": {
+            "request_button": "Yêu cầu thanh toán",
+            "requesting": "Đang gửi...",
+            "requested_message": "✓ Đã gửi yêu cầu thanh toán. Vui lòng đợi nhân viên.",
+            "view_receipt": "🧾 Xem biên lai",
+            "dialog_title": "🧾 Biên lai thanh toán",
+            "close_button": "Đóng",
+            "toast_success_title": "✅ Yêu cầu đã được gửi",
+            "toast_success_desc": "Nhân viên sẽ đến hỗ trợ bạn trong giây lát.",
+            "toast_error_title": "❌ Lỗi",
+            "toast_error_desc": "Không thể gửi yêu cầu thanh toán."
+        },
+        "receipt": {
+            "title": "HÓA ĐƠN",
+            "restaurant_name": "NHÀ HÀNG",
+            "address": "Địa chỉ: Nguyen Luong Bang, Da Nang",
+            "phone": "SĐT: 0123-456-789",
+            "invoice_number": "Hóa đơn #:",
+            "table": "Bàn:",
+            "customer": "Khách hàng:",
+            "time": "Thời gian:",
+            "table_header_item": "Món",
+            "table_header_qty": "SL",
+            "table_header_price": "Giá",
+            "table_header_total": "Thành tiền",
+            "grand_total": "TỔNG CỘNG:",
+            "thank_you": "Cảm ơn quý khách!",
+            "see_you": "Hẹn gặp lại!"
+        },
+        "toasts": {
+            "default": {
+                "title": "Cập nhật trạng thái đơn hàng",
+                "desc": "Đơn hàng của bạn đã được cập nhật."
+            },
+            "cooking": {
+                "title": "✅ Đơn đã xác nhận",
+                "desc": "Đơn hàng đang được chế biến."
+            },
+            "served": {
+                "title": "🍽️ Đơn đã phục vụ",
+                "desc": "Vui lòng kiểm tra và chuẩn bị thanh toán."
+            },
+            "paid": {
+                "title": "💰 Đơn đã thanh toán",
+                "desc": "Cảm ơn bạn đã sử dụng dịch vụ."
+            },
+            "cancelled": {
+                "title": "❌ Đơn đã bị hủy",
+                "desc": "Vui lòng liên hệ nhân viên nếu cần hỗ trợ."
+            }
         }
     },
     "gateway": {
