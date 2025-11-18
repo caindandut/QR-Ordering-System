@@ -2,13 +2,6 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { useTranslation } from 'react-i18next';
 
 // `initialData` dùng cho việc "Sửa" (sẽ làm sau)
@@ -17,12 +10,9 @@ import { useTranslation } from 'react-i18next';
 export default function TableForm({ onSubmit, isLoading, initialData = {} }) {
   const { t } = useTranslation();
   
-  // Dùng `?.` (Optional Chaining)
-// Nó có nghĩa là: "Hãy thử đọc 'name'. Nếu 'initialData' là null,
-// đừng báo lỗi, cứ coi như kết quả là 'undefined'."
+  // Chỉ cần tên và sức chứa, trạng thái tự động qua socket
 const [name, setName] = useState(initialData?.name || '');
 const [capacity, setCapacity] = useState(initialData?.capacity || 0);
-const [status, setStatus] = useState(initialData?.status || 'AVAILABLE');
 
   //2. "CÁI MÓC" (HOOK) ĐỂ SYNC PROP VÀO STATE
   // Tác dụng: Chạy lại code này BẤT CỨ KHI NÀO `initialData` thay đổi.
@@ -31,25 +21,30 @@ const [status, setStatus] = useState(initialData?.status || 'AVAILABLE');
       // Nếu có `initialData` (chế độ Sửa)
       setName(initialData.name || '');
       setCapacity(initialData.capacity || 0);
-      setStatus(initialData.status || 'AVAILABLE');
     } else {
       // Nếu không (chế độ Thêm mới)
       setName('');
       setCapacity(0);
-      setStatus('AVAILABLE');
     }
   }, [initialData]); // 👈 "Theo dõi" initialData
 
   // 2. Hàm xử lý submit
   const handleSubmit = (e) => {
     e.preventDefault();
-    // 3. Gọi hàm `onSubmit` (là hàm `mutate` từ `useMutation`)
-    //    với dữ liệu đã được chuẩn hóa.
-    onSubmit({
+    // 3. Gọi hàm `onSubmit` với dữ liệu
+    // Nếu là chế độ sửa (có initialData), chỉ gửi name và capacity
+    // Nếu là chế độ thêm mới, gửi kèm status mặc định
+    const data = {
       name,
       capacity: parseInt(capacity, 10),
-      status,
-    });
+    };
+    
+    // Chỉ thêm status khi tạo mới (không có initialData)
+    if (!initialData || !initialData.id) {
+      data.status = 'AVAILABLE';
+    }
+    
+    onSubmit(data);
   };
 
   return (
@@ -77,21 +72,7 @@ const [status, setStatus] = useState(initialData?.status || 'AVAILABLE');
         />
       </div>
       
-      {/* --- TRẠNG THÁI --- */}
-      <div className="space-y-2">
-        <Label htmlFor="status">{t('common.status')}</Label>
-        <Select value={status} onValueChange={setStatus}>
-          <SelectTrigger>
-            <SelectValue placeholder={t('tables_page.select_status')} />
-          </SelectTrigger>
-          <SelectContent>
-            {/* Đây là các "Key" mà chúng ta đã thống nhất */}
-            <SelectItem value="AVAILABLE">{t('tables_page.status_available')}</SelectItem>
-            <SelectItem value="OCCUPIED">{t('tables_page.status_occupied')}</SelectItem>
-            <SelectItem value="HIDDEN">{t('tables_page.status_hidden')}</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+      
       
       {/* --- NÚT SUBMIT --- */}
       <Button type="submit" disabled={isLoading} className="w-full">

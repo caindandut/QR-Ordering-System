@@ -901,51 +901,51 @@ const OrderRow = ({ order, onStatusChange, isLoading, i18n, isHighlighted }) => 
 
               {/* Dropdown menu hành động - Ẩn khi đơn đã hủy */}
               {order.status !== 'CANCELLED' && (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                    <Button variant="ghost" size="icon">
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    {order.status === 'PENDING' && (
-                      <>
-                        <DropdownMenuItem onClick={() => onStatusChange('COOKING')}>
-                          Xác nhận
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem 
-                          onClick={() => onStatusChange('CANCELLED')} 
-                          className="text-red-500"
-                        >
-                          Hủy đơn
-                        </DropdownMenuItem>
-                      </>
-                    )}
-                    {order.status === 'COOKING' && (
-                      <DropdownMenuItem onClick={() => onStatusChange('SERVED')}>
-                        Đã phục vụ
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                  <Button variant="ghost" size="icon">
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {order.status === 'PENDING' && (
+                    <>
+                      <DropdownMenuItem onClick={() => onStatusChange('COOKING')}>
+                        Xác nhận
                       </DropdownMenuItem>
-                    )}
-                    {order.status === 'SERVED' && (
-                      <>
-                        <DropdownMenuItem onClick={handlePrint}>
-                          In hóa đơn
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => onStatusChange('PAID')}>
-                          Thanh toán xong
-                        </DropdownMenuItem>
-                      </>
-                    )}
-                    {order.status === 'PAID' && (
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem 
+                        onClick={() => onStatusChange('CANCELLED')} 
+                        className="text-red-500"
+                      >
+                        Hủy đơn
+                      </DropdownMenuItem>
+                    </>
+                  )}
+                  {order.status === 'COOKING' && (
+                    <DropdownMenuItem onClick={() => onStatusChange('SERVED')}>
+                      Đã phục vụ
+                    </DropdownMenuItem>
+                  )}
+                  {order.status === 'SERVED' && (
+                    <>
                       <DropdownMenuItem onClick={handlePrint}>
-                        <Printer className="mr-2 h-4 w-4" />
                         In hóa đơn
                       </DropdownMenuItem>
-                    )}
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => onStatusChange('PAID')}>
+                        Thanh toán xong
+                      </DropdownMenuItem>
+                    </>
+                  )}
+                  {order.status === 'PAID' && (
+                    <DropdownMenuItem onClick={handlePrint}>
+                      <Printer className="mr-2 h-4 w-4" />
+                      In hóa đơn
+                    </DropdownMenuItem>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
               )}
             </div>
           </TableCell>

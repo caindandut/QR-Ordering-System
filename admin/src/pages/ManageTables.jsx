@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'; // 👈 Thêm useState
+import { useState, useRef, useEffect } from 'react'; // 👈 Thêm useState, useEffect
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../services/api'; 
 import { QRCode } from 'react-qrcode-logo';
@@ -14,6 +14,8 @@ import {
   TableRow
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -33,14 +35,30 @@ import {
   AlertDialogTitle
 } from '@/components/ui/alert-dialog';
 import { useToast } from "@/hooks/use-toast"; // 👈 Import toast
-import { PlusCircle, Edit, Trash2, QrCode, Check, Printer, Copy } from 'lucide-react';
+import { PlusCircle, Edit, Trash2, QrCode, Check, Printer, Copy, Grid3x3, List, MoreHorizontal, Eye, EyeOff } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+} from "@/components/ui/dropdown-menu";
 import { translateTableStatus } from '@/lib/translations'; // 👈 Import hàm "dịch"
 import TableForm from '../components/TableForm'; // 👈 Import Form của chúng ta
+import TableCard from '../components/TableCard'; // 👈 Import TableCard
 import { useTranslation } from 'react-i18next';
+import { useSocket } from '../hooks/useSocket.js';
 
 // Hàm "lấy" dữ liệu (không đổi)
 const fetchTables = async () => {
   const response = await api.get('/api/tables');
+  return response.data;
+};
+
+// Hàm lấy đơn hàng
+const fetchOrders = async () => {
+  const response = await api.get('/api/admin/orders');
   return response.data;
 };
 
@@ -84,6 +102,13 @@ export default function ManageTablesPage() {
   const qrCodeRef = useRef(null);
 
   const [isCopied, setIsCopied] = useState(false);
+  
+  // 👇 4. STATE MỚI: View mode (grid hoặc list)
+  const [viewMode, setViewMode] = useState('grid'); // 'grid' hoặc 'list'
+  
+  // 👇 5. STATE MỚI: Bàn đang xem chi tiết
+  const [selectedTable, setSelectedTable] = useState(null);
+  
   // 2. Lấy "Bộ não tổng"
   const queryClient = useQueryClient();
   
@@ -91,6 +116,7 @@ export default function ManageTablesPage() {
   const { toast } = useToast();
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
+  const socket = useSocket();
 
   // --- LOGIC ĐỌC (READ) ---
   const {
@@ -101,6 +127,12 @@ export default function ManageTablesPage() {
   } = useQuery({
     queryKey: ['tables'],
     queryFn: fetchTables,
+  });
+
+  // Fetch đơn hàng
+  const { data: orders = [] } = useQuery({
+    queryKey: ['admin_orders'],
+    queryFn: fetchOrders,
   });
 
   // --- LOGIC GHI (CREATE) ---
@@ -212,6 +244,111 @@ export default function ManageTablesPage() {
     onAfterPrint: () => toast({ title: t('tables_page.print_success') }),
   });
 
+  // --- LOGIC SOCKET.IO CHO REAL-TIME ---
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleNewOrder = () => {
+      // Cập nhật lại danh sách đơn hàng
+      queryClient.invalidateQueries({ queryKey: ['admin_orders'] });
+    };
+
+    const handleUpdateOrder = () => {
+      // Cập nhật lại danh sách đơn hàng
+      queryClient.invalidateQueries({ queryKey: ['admin_orders'] });
+    };
+
+    socket.on('new_order_received', handleNewOrder);
+    socket.on('order_updated_for_admin', handleUpdateOrder);
+
+    return () => {
+      socket.off('new_order_received', handleNewOrder);
+      socket.off('order_updated_for_admin', handleUpdateOrder);
+    };
+  }, [socket, queryClient]);
+
+  // Hàm lấy đơn hàng theo bàn
+  const getOrdersByTable = (tableId) => {
+    return orders.filter(order => order.tableId === tableId);
+  };
+
+  // Hàm xử lý khi click vào card bàn
+  const handleTableCardClick = (table) => {
+    setSelectedTable(table);
+  };
+
+  // Hàm kiểm tra xem bàn có đang được dùng không
+  const isTableOccupied = (tableId) => {
+    const activeOrders = orders.filter(order => 
+      order.tableId === tableId && ['PENDING', 'COOKING', 'SERVED'].includes(order.status)
+    );
+    return activeOrders.length > 0;
+  };
+
+  // Hàm lấy trạng thái thực tế của bàn (bao gồm cả việc có khách)
+  const getActualTableStatus = (table) => {
+    if (table.status === 'HIDDEN') {
+      return {
+        label: 'Đã ẩn',
+        variant: 'secondary',
+        className: ''
+      };
+    }
+    
+    if (isTableOccupied(table.id)) {
+      return {
+        label: 'Đang có khách',
+        variant: 'destructive',
+        className: ''
+      };
+    }
+    
+    return {
+      label: 'Trống',
+      variant: 'default',
+      className: 'bg-green-600 hover:bg-green-700'
+    };
+  };
+
+  // Hàm thay đổi trạng thái bàn
+  const handleChangeTableStatus = (table, newStatus) => {
+    // Kiểm tra xem bàn có đang được dùng không
+    if (isTableOccupied(table.id)) {
+      toast({
+        title: "Không thể thay đổi trạng thái!",
+        description: `${table.name} đang có khách hàng. Vui lòng hoàn thành tất cả đơn hàng trước khi thay đổi trạng thái.`,
+        variant: "destructive",
+        duration: 5000,
+      });
+      return;
+    }
+
+    // Nếu không có khách, cho phép thay đổi
+    updateTableMutation.mutate({ 
+      id: table.id, 
+      data: { status: newStatus } 
+    });
+  };
+
+  // Tính thống kê
+  const getTableStats = () => {
+    if (!tables || !orders) return { total: 0, available: 0, occupied: 0, hidden: 0 };
+    
+    const activeOrders = orders.filter(order => 
+      ['PENDING', 'COOKING', 'SERVED'].includes(order.status)
+    );
+    const occupiedTableIds = new Set(activeOrders.map(order => order.tableId));
+    
+    return {
+      total: tables.length,
+      available: tables.filter(t => t.status !== 'HIDDEN' && !occupiedTableIds.has(t.id)).length,
+      occupied: tables.filter(t => occupiedTableIds.has(t.id)).length,
+      hidden: tables.filter(t => t.status === 'HIDDEN').length,
+    };
+  };
+
+  const stats = getTableStats();
+
   // --- XỬ LÝ TRẠNG THÁI LOADING/ERROR ---
   if (isLoading) {
     return <div>{t('tables_page.loading')}</div>;
@@ -231,11 +368,69 @@ export default function ManageTablesPage() {
     <div className="flex flex-col gap-4">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-foreground">{t('tables_page.title')}</h1>
-        {/* Nút "Thêm" bây giờ gọi hàm riêng */}
-        <Button onClick={handleOpenAddDialog}>
-          <PlusCircle className="mr-2 h-4 w-4" />
-          {t('tables_page.add_new')}
-        </Button>
+        
+        <div className="flex items-center gap-3">
+          {/* Toggle View Mode */}
+          <div className="flex items-center border rounded-lg p-1">
+            <Button
+              variant={viewMode === 'grid' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setViewMode('grid')}
+            >
+              <Grid3x3 className="h-4 w-4" />
+            </Button>
+            <Button
+              variant={viewMode === 'list' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setViewMode('list')}
+            >
+              <List className="h-4 w-4" />
+            </Button>
+          </div>
+          
+          {/* Nút "Thêm" bây giờ gọi hàm riêng */}
+          <Button onClick={handleOpenAddDialog}>
+            <PlusCircle className="mr-2 h-4 w-4" />
+            {t('tables_page.add_new')}
+          </Button>
+        </div>
+      </div>
+
+      {/* Thống kê bàn */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Tổng số bàn</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.total}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Bàn trống</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-600">{stats.available}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Đang sử dụng</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-red-600">{stats.occupied}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Đã ẩn</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-gray-600">{stats.hidden}</div>
+          </CardContent>
+        </Card>
+      </div>
         {/* --- DIALOG (Modal) THÔNG MINH --- */}
       {/* Nó dùng chung 1 state `isDialogOpen`.
         Nó đóng khi `onOpenChange(false)`
@@ -376,11 +571,94 @@ export default function ManageTablesPage() {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
 
-      {/* --- BẢNG DỮ LIỆU --- */}
-      <div className="border border-border rounded-lg">
-        <Table>
+      {/* --- DIALOG XEM CHI TIẾT ĐƠN HÀNG CỦA BÀN --- */}
+      <Dialog open={!!selectedTable} onOpenChange={(open) => !open && setSelectedTable(null)}>
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Chi tiết {selectedTable?.name}</DialogTitle>
+            <DialogDescription>
+              Danh sách đơn hàng hiện tại của bàn
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 mt-4">
+            {selectedTable && (() => {
+              const tableOrders = getOrdersByTable(selectedTable.id);
+              const activeOrders = tableOrders.filter(order => 
+                ['PENDING', 'COOKING', 'SERVED'].includes(order.status)
+              );
+              
+              if (activeOrders.length === 0) {
+                return (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <p>Bàn này hiện không có đơn hàng nào đang hoạt động.</p>
+                  </div>
+                );
+              }
+              
+              return activeOrders.map((order) => (
+                <Card key={order.id}>
+                  <CardHeader>
+                    <div className="flex justify-between items-center">
+                      <CardTitle className="text-lg">Đơn #{order.id}</CardTitle>
+                      <Badge variant={
+                        order.status === 'PENDING' ? 'default' :
+                        order.status === 'COOKING' ? 'secondary' :
+                        order.status === 'SERVED' ? 'default' : 'outline'
+                      }>
+                        {order.status === 'PENDING' ? 'Chờ xác nhận' :
+                         order.status === 'COOKING' ? 'Đang nấu' :
+                         order.status === 'SERVED' ? 'Đã phục vụ' : order.status}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Khách hàng:</span>
+                        <span className="font-medium">{order.customerName}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Số món:</span>
+                        <span className="font-medium">{order.details?.length || 0} món</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Tổng tiền:</span>
+                        <span className="font-bold text-lg">
+                          {order.totalAmount?.toLocaleString('vi-VN')}đ
+                        </span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Thời gian:</span>
+                        <span>{new Date(order.createdAt).toLocaleString('vi-VN')}</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ));
+            })()}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* --- HIỂN THỊ GRID HOẶC LIST --- */}
+      {viewMode === 'grid' ? (
+        // Grid View
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {tables.map((table) => (
+            <TableCard
+              key={table.id}
+              table={table}
+              orders={getOrdersByTable(table.id)}
+              onClick={handleTableCardClick}
+            />
+          ))}
+        </div>
+      ) : (
+        // List View (bảng)
+        <div className="border border-border rounded-lg">
+          <Table>
           <TableHeader>
             <TableRow>
               <TableHead>ID</TableHead>
@@ -396,48 +674,89 @@ export default function ManageTablesPage() {
                 <TableCell>{table.id}</TableCell>
                 <TableCell className="font-medium">{table.name}</TableCell>
                 <TableCell>{table.capacity}</TableCell>
-                {/* 8. Dùng hàm "dịch" (bạn cần thêm vào `lib/utils.js`) */}
+                {/* Hiển thị trạng thái thực tế (bao gồm việc có khách) */}
                 <TableCell>
-                  {translateTableStatus(table.status, lang)}
+                  {(() => {
+                    const status = getActualTableStatus(table);
+                    return (
+                      <Badge variant={status.variant} className={status.className}>
+                        {status.label}
+                      </Badge>
+                    );
+                  })()}
                 </TableCell>
-                <TableCell className="text-right space-x-3">
+                <TableCell className="text-right">
+                  <div className="flex items-center justify-end gap-2">
+                    {/* Nút xem QR */}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-blue-500 hover:text-blue-700"
+                      onClick={() => setQrCodeTable(table)}
+                    >
+                      <QrCode className="h-4 w-4" />
+                    </Button>
 
-                  {/* 👇 7. NÚT MỚI: MỞ MODAL QR CODE */}
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="text-blue-500 hover:text-blue-700"
-                    // Chỉ "ghi" vào state, không gọi API
-                    onClick={() => setQrCodeTable(table)}
-                  >
-                    <QrCode className="h-4 w-4" />
-                  </Button>
+                    {/* Dropdown menu hành động */}
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="sm">
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Hành động</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        
+                        {/* Sửa thông tin */}
+                        <DropdownMenuItem onClick={() => handleOpenEditDialog(table)}>
+                          <Edit className="mr-2 h-4 w-4" />
+                          Sửa thông tin
+                        </DropdownMenuItem>
 
-                  <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => handleOpenEditDialog(table)}
-                  >
-                    <Edit className="mr-1 h-4 w-4" />
-                    {/* Sửa */}
-                  </Button>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuLabel>Thay đổi trạng thái</DropdownMenuLabel>
 
-                  {/* 👇 7. NÚT XÓA MỚI */}
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    // 7a. Chỉ "ghi" vào state, không gọi API
-                    onClick={() => setTableToDelete(table)}
-                  >
-                    <Trash2 className="mr-1 h-4 w-4" />
-                    {/* Xóa */}
-                  </Button>
+                        {/* Hiển thị */}
+                        {table.status === 'HIDDEN' && (
+                          <DropdownMenuItem 
+                            onClick={() => handleChangeTableStatus(table, 'AVAILABLE')}
+                          >
+                            <Eye className="mr-2 h-4 w-4" />
+                            Hiển thị bàn
+                          </DropdownMenuItem>
+                        )}
+
+                        {/* Ẩn */}
+                        {table.status !== 'HIDDEN' && (
+                          <DropdownMenuItem 
+                            onClick={() => handleChangeTableStatus(table, 'HIDDEN')}
+                          >
+                            <EyeOff className="mr-2 h-4 w-4" />
+                            Ẩn bàn
+                          </DropdownMenuItem>
+                        )}
+
+                        <DropdownMenuSeparator />
+
+                        {/* Xóa */}
+                        <DropdownMenuItem 
+                          onClick={() => setTableToDelete(table)}
+                          className="text-red-500 focus:text-red-500"
+                        >
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Xóa bàn
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      </div>
+        </div>
+      )}
     </div>
   );
 }
