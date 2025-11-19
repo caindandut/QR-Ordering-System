@@ -1,14 +1,5 @@
-import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom'; 
 import { Button } from '@/components/ui/button';
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetClose,
-  SheetTrigger,
-} from '@/components/ui/sheet';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,14 +13,13 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useTranslation } from 'react-i18next';
 import { Badge } from '@/components/ui/badge';
-import { LogOut, Menu, BookOpen, ClipboardList, ShoppingCart } from 'lucide-react'; 
+import { BookOpen, ClipboardList, ShoppingCart } from 'lucide-react'; 
 import { useCartStore } from '../store/cartStore';
 import { ModeToggle } from "./ModeToggle";
 import { LanguageToggle } from "./LanguageToggle";
 import api from '../services/api';
 
 export default function CustomerHeader() {
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const navigate = useNavigate();
   
   const location = useLocation(); 
@@ -66,21 +56,17 @@ export default function CustomerHeader() {
     navigate('/');
   };
 
-  const handleLinkClick = () => {
-    setIsSheetOpen(false);
-  };
-
   const NavLink = ({ to, icon: Icon, children }) => (
-    <Link to={to} onClick={handleLinkClick}>
+    <Link to={to}>
       <Button
         variant={pathname === to ? 'secondary' : 'ghost'} 
-        className="w-full justify-start text-lg md:text-sm md:justify-center md:w-auto"
+        className="justify-center w-full md:w-auto"
       >
         <Icon className="h-5 w-5 md:mr-2" />
-        <span className="md:hidden lg:inline-block">{children}</span>
+        <span className="hidden md:inline-block">{children}</span>
         {/* Chỉ hiện Badge (số lượng) cho Giỏ hàng */}
         {to === '/order/cart' && totalItems > 0 && (
-          <Badge className="ml-2 md:hidden lg:inline-block">{totalItems}</Badge>
+          <Badge className="ml-2 hidden md:inline-block">{totalItems}</Badge>
         )}
       </Button>
     </Link>
@@ -90,33 +76,8 @@ export default function CustomerHeader() {
     <header className="flex items-center justify-between p-4 border-b border-border sticky top-0 bg-background z-10">
       
       <div className="flex items-center gap-4">
-        <div className="md:hidden">
-          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-            <SheetTrigger asChild>
-              <Button variant="outline" size="icon">
-                <Menu className="h-5 w-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="w-[300px] bg-background">
-              <SheetHeader>
-                <SheetTitle className="text-2xl text-left">{t('header.restaurant_name')}</SheetTitle>
-              </SheetHeader>
-              <nav className="flex flex-col gap-2 mt-8">
-                <SheetClose asChild>
-                  <NavLink to="/order" icon={BookOpen}>{t('header.menu')}</NavLink>
-                </SheetClose>
-                <SheetClose asChild>
-                  <NavLink to="/order/cart" icon={ShoppingCart}>{t('header.cart')}</NavLink>
-                </SheetClose>
-                <SheetClose asChild>
-                  <NavLink to="/order/status" icon={ClipboardList}>{t('header.orders')}</NavLink>
-                </SheetClose>
-              </nav>
-            </SheetContent>
-          </Sheet>
-        </div>
+        <h1 className="text-xl font-bold">{t('header.restaurant_name')}</h1>
         <div className="hidden md:flex items-center gap-2">
-          <h1 className="text-xl font-bold mr-4">{t('header.restaurant_name')}</h1>
           <NavLink to="/order" icon={BookOpen}>{t('header.menu')}</NavLink>
           <NavLink to="/order/cart" icon={ShoppingCart}>{t('header.cart')}</NavLink>
           <NavLink to="/order/status" icon={ClipboardList}>{t('header.orders')}</NavLink>

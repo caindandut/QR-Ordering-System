@@ -20,7 +20,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { Loader2 } from 'lucide-react';
-import CartButton from '../components/CartButton';
 import { useTranslation } from 'react-i18next'; 
 
 
