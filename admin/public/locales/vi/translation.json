@@ -297,7 +297,7 @@
         },
         "toasts": {
             "new_order_title": "Có đơn hàng mới!",
-            "new_order_desc": "Bàn {{table}} - Khách {{customer}}.",
+            "new_order_desc": "{{table}} - Khách {{customer}}.",
             "create_success_title": "Tạo đơn thành công!",
             "create_success_desc": "Đơn hàng đã được thêm.",
             "create_error_desc": "Không thể tạo đơn hàng.",
@@ -308,27 +308,27 @@
             "status": {
                 "default": {
                     "title": "Đã cập nhật trạng thái đơn hàng",
-                    "desc": "Khách {{customer}}, bàn {{table}}."
+                    "desc": "Khách {{customer}},  {{table}}."
                 },
                 "pending": {
                     "title": "Đơn đang chờ xử lý",
-                    "desc": "Khách {{customer}}, bàn {{table}}."
+                    "desc": "Khách {{customer}},  {{table}}."
                 },
                 "cooking": {
                     "title": "Đơn đang chế biến",
-                    "desc": "Khách {{customer}}, bàn {{table}}."
+                    "desc": "Khách {{customer}},  {{table}}."
                 },
                 "served": {
                     "title": "Đơn đã phục vụ",
-                    "desc": "Khách {{customer}}, bàn {{table}}."
+                    "desc": "Khách {{customer}},  {{table}}."
                 },
                 "paid": {
                     "title": "Đơn đã thanh toán",
-                    "desc": "Khách {{customer}}, bàn {{table}}."
+                    "desc": "Khách {{customer}}, {{table}}."
                 },
                 "cancelled": {
                     "title": "Đơn đã bị hủy",
-                    "desc": "Khách {{customer}}, bàn {{table}}."
+                    "desc": "Khách {{customer}},  {{table}}."
                 }
             }
         },
@@ -341,7 +341,7 @@
             "document_title": "Hóa đơn #{{id}}",
             "title": "HÓA ĐƠN",
             "restaurant_name": "NHÀ HÀNG",
-            "address": "Địa chỉ: 123 Đường ABC, TP.HCM",
+            "address": "Địa chỉ: Nguyen Luong Bang, Da Nang",
             "phone": "SĐT: 0123-456-789",
             "invoice_number": "Hóa đơn #:",
             "table": "Bàn:",

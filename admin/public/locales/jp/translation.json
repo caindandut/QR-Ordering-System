@@ -297,7 +297,7 @@
         },
         "toasts": {
             "new_order_title": "新しい注文が届きました！",
-            "new_order_desc": "テーブル {{table}} - 顧客 {{customer}}",
+            "new_order_desc": "{{table}} - 顧客 {{customer}}",
             "create_success_title": "注文を作成しました！",
             "create_success_desc": "新しい注文が追加されました。",
             "create_error_desc": "注文を作成できませんでした。",
@@ -308,27 +308,27 @@
             "status": {
                 "default": {
                     "title": "注文ステータスを更新しました",
-                    "desc": "顧客 {{customer}} ・ テーブル {{table}}"
+                    "desc": "顧客 {{customer}} ・  {{table}}"
                 },
                 "pending": {
                     "title": "注文が待機中です",
-                    "desc": "顧客 {{customer}} ・ テーブル {{table}}"
+                    "desc": "顧客 {{customer}} ・  {{table}}"
                 },
                 "cooking": {
                     "title": "注文を調理中です",
-                    "desc": "顧客 {{customer}} ・ テーブル {{table}}"
+                    "desc": "顧客 {{customer}} ・  {{table}}"
                 },
                 "served": {
                     "title": "注文を提供しました",
-                    "desc": "顧客 {{customer}} ・ テーブル {{table}}"
+                    "desc": "顧客 {{customer}} ・  {{table}}"
                 },
                 "paid": {
                     "title": "注文の支払いが完了しました",
-                    "desc": "顧客 {{customer}} ・ テーブル {{table}}"
+                    "desc": "顧客 {{customer}} ・  {{table}}"
                 },
                 "cancelled": {
                     "title": "注文をキャンセルしました",
-                    "desc": "顧客 {{customer}} ・ テーブル {{table}}"
+                    "desc": "顧客 {{customer}} ・  {{table}}"
                 }
             }
         },
