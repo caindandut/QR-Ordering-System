@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, Clock, ShoppingCart } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
+import { translateTableStatus } from '@/lib/translations';
 
 /**
  * TableCard - Component hiển thị bàn dạng card
@@ -12,7 +13,10 @@ import { useTranslation } from 'react-i18next';
  * - onClick: Callback khi click vào card
  */
 export default function TableCard({ table, orders = [], onClick }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language;
+  const normalizedLang = lang === 'ja' ? 'jp' : lang;
+  const numberLocale = normalizedLang === 'jp' ? 'ja-JP' : 'vi-VN';
   
   // Lọc đơn hàng đang active (chưa thanh toán hoặc hủy)
   const activeOrders = orders.filter(order => 
@@ -33,10 +37,10 @@ export default function TableCard({ table, orders = [], onClick }) {
   const getUsageTime = () => {
     if (!oldestOrder) return null;
     const minutes = Math.floor((Date.now() - new Date(oldestOrder.createdAt)) / 60000);
-    if (minutes < 60) return `${minutes} phút`;
+    if (minutes < 60) return t('tables_page.card.usage_minutes', { count: minutes });
     const hours = Math.floor(minutes / 60);
     const remainingMinutes = minutes % 60;
-    return `${hours}h ${remainingMinutes}m`;
+    return t('tables_page.card.usage_hours', { hours, minutes: remainingMinutes });
   };
   
   // Xác định màu theo trạng thái và số đơn
@@ -57,12 +61,24 @@ export default function TableCard({ table, orders = [], onClick }) {
   // Badge trạng thái
   const getStatusBadge = () => {
     if (table.status === 'HIDDEN') {
-      return <Badge variant="secondary" className="text-xs">Đã ẩn</Badge>;
+      return (
+        <Badge variant="secondary" className="text-xs">
+          {translateTableStatus('HIDDEN', normalizedLang)}
+        </Badge>
+      );
     }
     if (activeOrders.length > 0) {
-      return <Badge variant="destructive" className="text-xs">Đang có khách</Badge>;
+      return (
+        <Badge variant="destructive" className="text-xs">
+          {translateTableStatus('OCCUPIED', normalizedLang)}
+        </Badge>
+      );
     }
-    return <Badge variant="default" className="text-xs bg-green-600">Trống</Badge>;
+    return (
+      <Badge variant="default" className="text-xs bg-green-600">
+        {translateTableStatus('AVAILABLE', normalizedLang)}
+      </Badge>
+    );
   };
 
   return (
@@ -85,7 +101,7 @@ export default function TableCard({ table, orders = [], onClick }) {
         {/* Sức chứa */}
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Users className="h-4 w-4" />
-          <span>Sức chứa: {table.capacity} người</span>
+          <span>{t('tables_page.card.capacity', { count: table.capacity })}</span>
         </div>
         
         {/* Thông tin khi bàn đang được dùng */}
@@ -94,7 +110,7 @@ export default function TableCard({ table, orders = [], onClick }) {
             {/* Số đơn hàng */}
             <div className="flex items-center gap-2 text-sm font-medium">
               <ShoppingCart className="h-4 w-4" />
-              <span>{activeOrders.length} đơn hàng</span>
+              <span>{t('tables_page.card.orders', { count: activeOrders.length })}</span>
             </div>
             
             {/* Thời gian sử dụng */}
@@ -108,9 +124,11 @@ export default function TableCard({ table, orders = [], onClick }) {
             {/* Tổng tiền */}
             <div className="pt-2 border-t">
               <div className="flex justify-between items-center">
-                <span className="text-sm font-medium">Tổng tiền:</span>
+                <span className="text-sm font-medium">
+                  {t('tables_page.card.total_label')}
+                </span>
                 <span className="text-lg font-bold text-primary">
-                  {totalAmount.toLocaleString('vi-VN')}đ
+                  {totalAmount.toLocaleString(numberLocale)}đ
                 </span>
               </div>
             </div>
@@ -121,7 +139,7 @@ export default function TableCard({ table, orders = [], onClick }) {
         {activeOrders.length === 0 && table.status !== 'HIDDEN' && (
           <div className="pt-2 text-center">
             <p className="text-sm text-muted-foreground italic">
-              Bàn đang trống
+              {t('tables_page.card.empty')}
             </p>
           </div>
         )}
@@ -130,7 +148,7 @@ export default function TableCard({ table, orders = [], onClick }) {
         {table.status === 'HIDDEN' && (
           <div className="pt-2 text-center">
             <p className="text-sm text-muted-foreground italic">
-              Bàn đã bị ẩn
+              {t('tables_page.card.hidden')}
             </p>
           </div>
         )}

@@ -87,7 +87,46 @@
         "select_status": "ステータスを選択",
         "status_available": "空席",
         "status_occupied": "使用中",
-        "status_hidden": "非表示"
+        "status_hidden": "非表示",
+        "stats": {
+            "total": "テーブル総数",
+            "available": "空席",
+            "occupied": "使用中",
+            "hidden": "非表示"
+        },
+        "columns": {
+            "id": "ID"
+        },
+        "status_change_blocked_title": "ステータスを変更できません！",
+        "status_change_blocked_desc": "{{table}} は現在ご利用中です。すべての注文が完了してからステータスを変更してください。",
+        "details": {
+            "title": "{{name}} の詳細",
+            "description": "このテーブルの現在の注文一覧",
+            "empty": "このテーブルには進行中の注文がありません。",
+            "order_label": "注文 #{{id}}",
+            "customer": "顧客:",
+            "items": "品目数:",
+            "items_count": "{{count}} 品",
+            "total": "合計:",
+            "time": "時間:"
+        },
+        "dropdown": {
+            "actions": "操作",
+            "edit": "情報を編集",
+            "status": "ステータスを変更",
+            "show": "テーブルを表示",
+            "hide": "テーブルを非表示",
+            "delete": "テーブルを削除"
+        },
+        "card": {
+            "capacity": "座席数: {{count}} 名",
+            "orders": "{{count}} 件の注文",
+            "total_label": "合計:",
+            "empty": "空席です",
+            "hidden": "このテーブルは非表示です",
+            "usage_minutes": "{{count}} 分",
+            "usage_hours": "{{hours}}時間 {{minutes}}分"
+        }
     },
     "categories_page": {
         "title": "カテゴリー管理",

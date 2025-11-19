@@ -44,7 +44,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
-import { translateTableStatus } from '@/lib/translations'; // 👈 Import hàm "dịch"
+import { translateOrderStatus, translateTableStatus } from '@/lib/translations';
 import TableForm from '../components/TableForm'; // 👈 Import Form của chúng ta
 import TableCard from '../components/TableCard'; // 👈 Import TableCard
 import { useTranslation } from 'react-i18next';
@@ -116,6 +116,8 @@ export default function ManageTablesPage() {
   const { toast } = useToast();
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
+  const normalizedLang = lang === 'ja' ? 'jp' : lang;
+  const numberLocale = normalizedLang === 'jp' ? 'ja-JP' : 'vi-VN';
   const socket = useSocket();
 
   // --- LOGIC ĐỌC (READ) ---
@@ -289,7 +291,7 @@ export default function ManageTablesPage() {
   const getActualTableStatus = (table) => {
     if (table.status === 'HIDDEN') {
       return {
-        label: 'Đã ẩn',
+        label: translateTableStatus('HIDDEN', normalizedLang),
         variant: 'secondary',
         className: ''
       };
@@ -297,14 +299,14 @@ export default function ManageTablesPage() {
     
     if (isTableOccupied(table.id)) {
       return {
-        label: 'Đang có khách',
+        label: translateTableStatus('OCCUPIED', normalizedLang),
         variant: 'destructive',
         className: ''
       };
     }
     
     return {
-      label: 'Trống',
+      label: translateTableStatus('AVAILABLE', normalizedLang),
       variant: 'default',
       className: 'bg-green-600 hover:bg-green-700'
     };
@@ -315,8 +317,8 @@ export default function ManageTablesPage() {
     // Kiểm tra xem bàn có đang được dùng không
     if (isTableOccupied(table.id)) {
       toast({
-        title: "Không thể thay đổi trạng thái!",
-        description: `${table.name} đang có khách hàng. Vui lòng hoàn thành tất cả đơn hàng trước khi thay đổi trạng thái.`,
+        title: t('tables_page.status_change_blocked_title'),
+        description: t('tables_page.status_change_blocked_desc', { table: table.name }),
         variant: "destructive",
         duration: 5000,
       });
@@ -400,7 +402,9 @@ export default function ManageTablesPage() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Tổng số bàn</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              {t('tables_page.stats.total')}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.total}</div>
@@ -408,7 +412,9 @@ export default function ManageTablesPage() {
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Bàn trống</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              {t('tables_page.stats.available')}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">{stats.available}</div>
@@ -416,7 +422,9 @@ export default function ManageTablesPage() {
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Đang sử dụng</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              {t('tables_page.stats.occupied')}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-red-600">{stats.occupied}</div>
@@ -424,7 +432,9 @@ export default function ManageTablesPage() {
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Đã ẩn</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              {t('tables_page.stats.hidden')}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-gray-600">{stats.hidden}</div>
@@ -576,9 +586,11 @@ export default function ManageTablesPage() {
       <Dialog open={!!selectedTable} onOpenChange={(open) => !open && setSelectedTable(null)}>
         <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Chi tiết {selectedTable?.name}</DialogTitle>
+            <DialogTitle>
+              {selectedTable ? t('tables_page.details.title', { name: selectedTable.name }) : ''}
+            </DialogTitle>
             <DialogDescription>
-              Danh sách đơn hàng hiện tại của bàn
+              {t('tables_page.details.description')}
             </DialogDescription>
           </DialogHeader>
           
@@ -592,7 +604,7 @@ export default function ManageTablesPage() {
               if (activeOrders.length === 0) {
                 return (
                   <div className="text-center py-8 text-muted-foreground">
-                    <p>Bàn này hiện không có đơn hàng nào đang hoạt động.</p>
+                    <p>{t('tables_page.details.empty')}</p>
                   </div>
                 );
               }
@@ -601,37 +613,48 @@ export default function ManageTablesPage() {
                 <Card key={order.id}>
                   <CardHeader>
                     <div className="flex justify-between items-center">
-                      <CardTitle className="text-lg">Đơn #{order.id}</CardTitle>
-                      <Badge variant={
-                        order.status === 'PENDING' ? 'default' :
-                        order.status === 'COOKING' ? 'secondary' :
-                        order.status === 'SERVED' ? 'default' : 'outline'
-                      }>
-                        {order.status === 'PENDING' ? 'Chờ xác nhận' :
-                         order.status === 'COOKING' ? 'Đang nấu' :
-                         order.status === 'SERVED' ? 'Đã phục vụ' : order.status}
-                      </Badge>
+                      <CardTitle className="text-lg">
+                        {t('tables_page.details.order_label', { id: order.id })}
+                      </CardTitle>
+                      {(() => {
+                        const translatedStatus = translateOrderStatus(order.status, normalizedLang);
+                        return (
+                          <Badge variant={translatedStatus.variant}>
+                            {translatedStatus.text}
+                          </Badge>
+                        );
+                      })()}
                     </div>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Khách hàng:</span>
+                        <span className="text-muted-foreground">
+                          {t('tables_page.details.customer')}
+                        </span>
                         <span className="font-medium">{order.customerName}</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Số món:</span>
-                        <span className="font-medium">{order.details?.length || 0} món</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Tổng tiền:</span>
-                        <span className="font-bold text-lg">
-                          {order.totalAmount?.toLocaleString('vi-VN')}đ
+                        <span className="text-muted-foreground">
+                          {t('tables_page.details.items')}
+                        </span>
+                        <span className="font-medium">
+                          {t('tables_page.details.items_count', { count: order.details?.length || 0 })}
                         </span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Thời gian:</span>
-                        <span>{new Date(order.createdAt).toLocaleString('vi-VN')}</span>
+                        <span className="text-muted-foreground">
+                          {t('tables_page.details.total')}
+                        </span>
+                        <span className="font-bold text-lg">
+                          {order.totalAmount?.toLocaleString(numberLocale)}đ
+                        </span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">
+                          {t('tables_page.details.time')}
+                        </span>
+                        <span>{new Date(order.createdAt).toLocaleString(numberLocale)}</span>
                       </div>
                     </div>
                   </CardContent>
@@ -661,7 +684,7 @@ export default function ManageTablesPage() {
           <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>ID</TableHead>
+              <TableHead>{t('tables_page.columns.id')}</TableHead>
               <TableHead>{t('tables_page.table_name')}</TableHead>
               <TableHead>{t('tables_page.capacity')}</TableHead>
               <TableHead>{t('common.status')}</TableHead>
@@ -705,17 +728,17 @@ export default function ManageTablesPage() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Hành động</DropdownMenuLabel>
+                        <DropdownMenuLabel>{t('tables_page.dropdown.actions')}</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         
                         {/* Sửa thông tin */}
                         <DropdownMenuItem onClick={() => handleOpenEditDialog(table)}>
                           <Edit className="mr-2 h-4 w-4" />
-                          Sửa thông tin
+                          {t('tables_page.dropdown.edit')}
                         </DropdownMenuItem>
 
                         <DropdownMenuSeparator />
-                        <DropdownMenuLabel>Thay đổi trạng thái</DropdownMenuLabel>
+                        <DropdownMenuLabel>{t('tables_page.dropdown.status')}</DropdownMenuLabel>
 
                         {/* Hiển thị */}
                         {table.status === 'HIDDEN' && (
@@ -723,7 +746,7 @@ export default function ManageTablesPage() {
                             onClick={() => handleChangeTableStatus(table, 'AVAILABLE')}
                           >
                             <Eye className="mr-2 h-4 w-4" />
-                            Hiển thị bàn
+                            {t('tables_page.dropdown.show')}
                           </DropdownMenuItem>
                         )}
 
@@ -733,7 +756,7 @@ export default function ManageTablesPage() {
                             onClick={() => handleChangeTableStatus(table, 'HIDDEN')}
                           >
                             <EyeOff className="mr-2 h-4 w-4" />
-                            Ẩn bàn
+                            {t('tables_page.dropdown.hide')}
                           </DropdownMenuItem>
                         )}
 
@@ -745,7 +768,7 @@ export default function ManageTablesPage() {
                           className="text-red-500 focus:text-red-500"
                         >
                           <Trash2 className="mr-2 h-4 w-4" />
-                          Xóa bàn
+                          {t('tables_page.dropdown.delete')}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>

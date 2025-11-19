@@ -87,7 +87,46 @@
         "select_status": "Chọn trạng thái",
         "status_available": "Trống",
         "status_occupied": "Đang có khách",
-        "status_hidden": "Ẩn"
+        "status_hidden": "Ẩn",
+        "stats": {
+            "total": "Tổng số bàn",
+            "available": "Bàn trống",
+            "occupied": "Đang sử dụng",
+            "hidden": "Đã ẩn"
+        },
+        "columns": {
+            "id": "ID"
+        },
+        "status_change_blocked_title": "Không thể thay đổi trạng thái!",
+        "status_change_blocked_desc": "{{table}} đang có khách hàng. Vui lòng hoàn thành tất cả đơn hàng trước khi thay đổi trạng thái.",
+        "details": {
+            "title": "Chi tiết {{name}}",
+            "description": "Danh sách đơn hàng hiện tại của bàn",
+            "empty": "Bàn này hiện không có đơn hàng nào đang hoạt động.",
+            "order_label": "Đơn #{{id}}",
+            "customer": "Khách hàng:",
+            "items": "Số món:",
+            "items_count": "{{count}} món",
+            "total": "Tổng tiền:",
+            "time": "Thời gian:"
+        },
+        "dropdown": {
+            "actions": "Hành động",
+            "edit": "Sửa thông tin",
+            "status": "Thay đổi trạng thái",
+            "show": "Hiển thị bàn",
+            "hide": "Ẩn bàn",
+            "delete": "Xóa bàn"
+        },
+        "card": {
+            "capacity": "Sức chứa: {{count}} người",
+            "orders": "{{count}} đơn hàng",
+            "total_label": "Tổng tiền:",
+            "empty": "Bàn đang trống",
+            "hidden": "Bàn đã bị ẩn",
+            "usage_minutes": "{{count}} phút",
+            "usage_hours": "{{hours}}h {{minutes}}m"
+        }
     },
     "categories_page": {
         "title": "Quản lý Danh mục",
