@@ -79,6 +79,15 @@
             "toast_error_title": "❌ エラー",
             "toast_error_desc": "支払い依頼を送信できませんでした。"
         },
+        "cancel": {
+            "button": "この注文をキャンセル",
+            "cancelling": "キャンセル中...",
+            "confirm": "この注文をキャンセルしてもよろしいですか？",
+            "toast_success_title": "注文をキャンセルしました",
+            "toast_success_desc": "ご注文はキャンセルされました。",
+            "toast_error_title": "キャンセルに失敗しました",
+            "toast_error_desc": "この注文はキャンセルできません。もう一度お試しください。"
+        },
         "receipt": {
             "title": "領収書",
             "restaurant_name": "レストラン",

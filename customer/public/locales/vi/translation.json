@@ -79,6 +79,15 @@
             "toast_error_title": "❌ Lỗi",
             "toast_error_desc": "Không thể gửi yêu cầu thanh toán."
         },
+        "cancel": {
+            "button": "Hủy đơn này",
+            "cancelling": "Đang hủy...",
+            "confirm": "Bạn có chắc chắn muốn hủy đơn hàng này?",
+            "toast_success_title": "Đã hủy đơn hàng",
+            "toast_success_desc": "Đơn hàng của bạn đã được hủy.",
+            "toast_error_title": "Hủy đơn thất bại",
+            "toast_error_desc": "Không thể hủy đơn hàng này. Vui lòng thử lại."
+        },
         "receipt": {
             "title": "HÓA ĐƠN",
             "restaurant_name": "NHÀ HÀNG",

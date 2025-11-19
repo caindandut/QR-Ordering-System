@@ -204,6 +204,65 @@ router.post('/:id/request-payment', async (req, res) => {
   }
 });
 
+// POST /api/orders/:id/cancel
+// Khách hàng hủy đơn hàng ở trạng thái PENDING
+router.post('/:id/cancel', async (req, res) => {
+  const orderId = parseInt(req.params.id);
+
+  try {
+    const existingOrder = await prisma.order.findUnique({
+      where: { id: orderId },
+      include: {
+        table: { select: { name: true } },
+        staff: { select: { id: true, name: true, avatarUrl: true } },
+        details: {
+          include: {
+            menuItem: { select: { name: true, imageUrl: true } }
+          }
+        }
+      }
+    });
+
+    if (!existingOrder) {
+      return res.status(404).json({ message: 'Không tìm thấy đơn hàng.' });
+    }
+
+    if (existingOrder.status !== 'PENDING') {
+      return res.status(400).json({
+        message: 'Chỉ có thể hủy các đơn hàng đang chờ xử lý.'
+      });
+    }
+
+    const cancelledOrder = await prisma.order.update({
+      where: { id: orderId },
+      data: { status: 'CANCELLED' },
+      include: {
+        table: { select: { name: true } },
+        staff: { select: { id: true, name: true, avatarUrl: true } },
+        details: {
+          include: {
+            menuItem: { select: { name: true, imageUrl: true } }
+          }
+        }
+      }
+    });
+
+    io.to(`order_${orderId}`).emit('order_status_updated', {
+      orderId,
+      newStatus: 'CANCELLED',
+    });
+
+    io.emit('order_updated_for_admin', cancelledOrder);
+
+    res.status(200).json({
+      message: 'Đơn hàng đã được hủy.',
+      order: cancelledOrder,
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Lỗi server', error: error.message });
+  }
+});
+
 // DELETE /api/orders/clear-session
 // Hủy tất cả đơn hàng chưa thanh toán của khách hàng khi logout
 router.delete('/clear-session', async (req, res) => {

@@ -31,6 +31,11 @@ const requestPayment = async (orderId) => {
   return response.data;
 };
 
+const cancelOrder = async (orderId) => {
+  const response = await api.post(`/api/orders/${orderId}/cancel`);
+  return response.data;
+};
+
 const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
 export default function OrderStatusPage() {
@@ -98,6 +103,38 @@ export default function OrderStatusPage() {
       });
     },
   });
+
+  const cancelOrderMutation = useMutation({
+    mutationFn: cancelOrder,
+    onSuccess: (_, orderId) => {
+      setOrderStatuses(prev => ({ ...prev, [orderId]: 'CANCELLED' }));
+      setRequestedPayments(prev => {
+        const updated = { ...prev };
+        delete updated[orderId];
+        return updated;
+      });
+      setOrderBills(prev => {
+        const updated = { ...prev };
+        delete updated[orderId];
+        return updated;
+      });
+      toast({
+        title: t('status_page.cancel.toast_success_title'),
+        description: t('status_page.cancel.toast_success_desc'),
+        duration: 4000,
+      });
+    },
+    onError: (err) => {
+      toast({
+        title: t('status_page.cancel.toast_error_title'),
+        description: err.response?.data?.message || t('status_page.cancel.toast_error_desc'),
+        variant: 'destructive',
+      });
+    },
+  });
+  const handleCancelOrder = (orderId) => {
+    cancelOrderMutation.mutate(orderId);
+  };
 
   // useEffect (như cũ)
   useEffect(() => {
@@ -290,7 +327,11 @@ export default function OrderStatusPage() {
       <div className="max-w-2xl mx-auto space-y-6">
         {/* 4. LẶP (MAP) QUA TẤT CẢ ĐƠN HÀNG */}
         {initialOrders && initialOrders.length > 0 ? (
-          initialOrders.map((order, orderIndex) => ( // 👈 Thêm `orderIndex`
+          initialOrders.map((order, orderIndex) => {
+            if (orderStatuses[order.id] === 'CANCELLED') {
+              return null;
+            }
+            return (
             <Card key={order.id} className="overflow-hidden shadow-md">
               <CardHeader className="flex flex-row items-center justify-between bg-card p-4">
                 {/* 5. [THÊM MỚI] Thêm Số thứ tự */}
@@ -346,7 +387,30 @@ export default function OrderStatusPage() {
                     </div>
                   </div>
                   
-                  {/* Hàng 2: Nút yêu cầu thanh toán (chỉ hiện khi SERVED) */}
+                  {/* Hàng 2: Hủy đơn (khi đang chờ xử lý) */}
+                  {orderStatuses[order.id] === 'PENDING' && (
+                    <Button
+                      onClick={() => handleCancelOrder(order.id)}
+                      variant="outline"
+                      className="w-full"
+                      size="lg"
+                      disabled={cancelOrderMutation.isLoading && cancelOrderMutation.variables === order.id}
+                    >
+                      {cancelOrderMutation.isLoading && cancelOrderMutation.variables === order.id ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          {t('status_page.cancel.cancelling')}
+                        </>
+                      ) : (
+                        <>
+                          <X className="mr-2 h-5 w-5" />
+                          {t('status_page.cancel.button')}
+                        </>
+                      )}
+                    </Button>
+                  )}
+
+                  {/* Hàng 3: Nút yêu cầu thanh toán (chỉ hiện khi SERVED) */}
                   {orderStatuses[order.id] === 'SERVED' && !requestedPayments[order.id] && (
                     <Button 
                       onClick={() => paymentRequestMutation.mutate(order.id)}
@@ -387,7 +451,7 @@ export default function OrderStatusPage() {
                 </div>
               </CardFooter>
             </Card>
-          ))
+          );})
         ) : (
           <Card className="p-8">
             <p className="text-center text-muted-foreground">{t('status_page.no_orders')}</p>
