@@ -166,4 +166,62 @@ router.get('/revenue-chart', async (req, res) => {
   }
 });
 
+// GET /api/dashboard/active-orders
+// Lấy danh sách orders đang xử lý (PENDING, COOKING, SERVED)
+router.get('/active-orders', async (req, res) => {
+  try {
+    const { status, tableId, limit } = req.query;
+    
+    // Build where conditions
+    const whereConditions = {
+      status: {
+        in: ['PENDING', 'COOKING', 'SERVED']
+      }
+    };
+    
+    // Filter theo status cụ thể nếu có
+    if (status && ['PENDING', 'COOKING', 'SERVED'].includes(status)) {
+      whereConditions.status = status;
+    }
+    
+    // Filter theo bàn nếu có
+    if (tableId) {
+      whereConditions.tableId = parseInt(tableId);
+    }
+    
+    // Fetch orders với full details
+    const orders = await prisma.order.findMany({
+      where: whereConditions,
+      include: {
+        table: {
+          select: { name: true }
+        },
+        staff: {
+          select: { id: true, name: true, avatarUrl: true }
+        },
+        details: {
+          include: {
+            menuItem: {
+              select: { name: true, imageUrl: true, price: true }
+            }
+          }
+        }
+      },
+      orderBy: {
+        createdAt: 'desc'
+      },
+      take: limit ? parseInt(limit) : 20 // Default 20 orders
+    });
+    
+    res.status(200).json(orders);
+    
+  } catch (error) {
+    console.error('Active orders error:', error);
+    res.status(500).json({
+      message: 'Lỗi khi lấy danh sách đơn hàng',
+      error: error.message
+    });
+  }
+});
+
 export default router;

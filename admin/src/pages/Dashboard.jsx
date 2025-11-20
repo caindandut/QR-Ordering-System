@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import StatsCard from '@/components/dashboard/StatsCard';
 import RevenueChart from '@/components/dashboard/RevenueChart';
+import ActiveOrdersList from '@/components/dashboard/ActiveOrdersList';
 import dashboardService from '@/services/dashboardService';
 import { DollarSign, ShoppingCart, Users, TrendingUp } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -98,6 +99,9 @@ export default function DashboardPage() {
 
       {/* 2. Khu vực Biểu đồ */}
       <RevenueChart data={chartData} />
+      
+      {/*  3. Khu vực Đơn hàng đang xử lý */}
+      <ActiveOrdersList />
     </div>
   );
 }

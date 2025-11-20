@@ -10,7 +10,7 @@ import {
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from "next-themes";
 import { AdminRoute } from './components/AdminRoute';
-import { SocketProvider } from './context/SocketContext.jsx';
+import { SocketProvider } from '@/context/SocketContext.jsx';
 import RootLayout from './layouts/RootLayout';
 import AdminLayout from './layouts/AdminLayout';
 import LoginPage from './pages/Login';

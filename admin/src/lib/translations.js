@@ -1,5 +1,4 @@
 
-
 export const translateTableStatus = (statusKey, lang = 'vi') => {
   if (lang === 'vi') {
     switch (statusKey) {
@@ -80,6 +79,8 @@ export const translateOrderStatus = (statusKey, lang = 'vi') => {
         return { text: 'Đã thanh toán', variant: 'default' };
       case 'CANCELLED':
         return { text: 'Đã hủy', variant: 'destructive' };
+      case 'DENIED':
+        return { text: 'Đã từ chối', variant: 'destructive' };
       default:
         return { text: statusKey, variant: 'outline' };
     }
@@ -97,6 +98,8 @@ export const translateOrderStatus = (statusKey, lang = 'vi') => {
         return { text: '支払い済み', variant: 'default' }; // (Shiharai-zumi - Đã thanh toán)
       case 'CANCELLED':
         return { text: 'キャンセル', variant: 'destructive' }; // (Kyanseru - Đã hủy)
+      case 'DENIED':
+        return { text: '拒否されました', variant: 'destructive' }; // (Kyohi saremashita - Đã từ chối)
       default:
         return { text: statusKey, variant: 'outline' };
     }

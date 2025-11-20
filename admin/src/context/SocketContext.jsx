@@ -12,12 +12,15 @@ export const SocketContext = createContext();
 export const SocketProvider = ({ children }) => {
   // Dùng state để trigger re-render khi socket được tạo
   const [socket, setSocket] = useState(null);
+  const [connected, setConnected] = useState(false);
   const socketRef = useRef(null);
 
   // 6. Kết nối khi "Provider" được render
   useEffect(() => {
     // 6a. Chỉ kết nối nếu chưa có
     if (!socketRef.current) {
+      console.log('🔌 Initializing Socket.IO connection...');
+      
       // 6b. Tạo kết nối (Socket.IO client)
       const newSocket = io(SOCKET_URL, {
         transports: ['websocket', 'polling'],
@@ -29,9 +32,21 @@ export const SocketProvider = ({ children }) => {
       socketRef.current = newSocket;
       setSocket(newSocket); // Trigger re-render để các component con có thể sử dụng socket
 
+      // Listen to connection events
+      newSocket.on('connect', () => {
+        console.log('✅ Socket.IO connected successfully!', newSocket.id);
+        setConnected(true);
+      });
+
+      newSocket.on('disconnect', () => {
+        console.log('❌ Socket.IO disconnected');
+        setConnected(false);
+      });
+
       // Lắng nghe các sự kiện kết nối/lỗi
       newSocket.on('connect_error', (err) => {
         console.error('Lỗi kết nối Socket.IO (Admin):', err.message);
+        setConnected(false);
       });
     }
 
@@ -43,9 +58,11 @@ export const SocketProvider = ({ children }) => {
     //    Nếu không, kết nối sẽ "lơ lửng" (zombie connection).
     return () => {
       if (currentSocket) {
+        console.log('🔌 Disconnecting socket...');
         currentSocket.disconnect();
         socketRef.current = null;
         setSocket(null);
+        setConnected(false);
       }
     };
   }, []); // 👈 Mảng rỗng `[]` = Chỉ chạy 1 LẦN DUY NHẤT khi mount

@@ -1,3 +1,4 @@
+
 export const translateOrderStatus = (statusKey, lang = 'vi') => {
   const translations = {
     vi: {
@@ -9,6 +10,7 @@ export const translateOrderStatus = (statusKey, lang = 'vi') => {
       SERVED: { text: 'Đã phục vụ', variant: 'success' },
       PAID: { text: 'Đã thanh toán', variant: 'outline' },
       CANCELLED: { text: 'Đã hủy', variant: 'destructive' },
+      DENIED: { text: 'Đã từ chối', variant: 'destructive' },
     },
     jp: {
       PENDING: { text: '保留中', variant: 'secondary' },
@@ -19,6 +21,7 @@ export const translateOrderStatus = (statusKey, lang = 'vi') => {
       SERVED: { text: '提供済み', variant: 'success' },
       PAID: { text: '支払い済み', variant: 'outline' },
       CANCELLED: { text: 'キャンセル', variant: 'destructive' },
+      DENIED: { text: '拒否されました', variant: 'destructive' },
     },
   };
 

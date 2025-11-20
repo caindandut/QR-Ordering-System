@@ -1,0 +1,134 @@
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Clock, User, Utensils } from 'lucide-react';
+import { formatDistanceToNow } from 'date-fns';
+import { vi } from 'date-fns/locale';
+
+/**
+ * OrderCard - Component hiển thị thông tin một đơn hàng
+ * @param {Object} order - Thông tin đơn hàng
+ * @param {Function} onApprove - Callback khi approve order
+ * @param {Function} onDeny - Callback khi deny order
+ * @param {Function} onServed - Callback khi mark as served
+ * @param {Boolean} loading - Trạng thái đang xử lý
+ */
+export default function OrderCard({ order, onApprove, onDeny, onServed, loading }) {
+  // Get status badge color
+  const getStatusBadge = (status) => {
+    const statusMap = {
+      PENDING: { label: 'Chờ duyệt', className: 'bg-yellow-500' },
+      COOKING: { label: 'Đang nấu', className: 'bg-blue-500' },
+      SERVED: { label: 'Đã phục vụ', className: 'bg-green-500' },
+      DENIED: { label: 'Đã từ chối', className: 'bg-red-500' },
+      CANCELLED: { label: 'Đã hủy', className: 'bg-red-500' },
+      PAID: { label: 'Đã thanh toán', className: 'bg-gray-500' },
+    };
+    return statusMap[status] || { label: status, className: 'bg-gray-500' };
+  };
+
+  const statusInfo = getStatusBadge(order.status);
+  const timeAgo = formatDistanceToNow(new Date(order.createdAt), {
+    addSuffix: true,
+    locale: vi,
+  });
+
+  return (
+    <Card>
+      <CardHeader className="pb-3">
+        <div className="flex items-start justify-between">
+          <div className="space-y-1">
+            <CardTitle className="text-lg">
+              {order.table?.name || `Bàn ${order.tableId}`}
+            </CardTitle>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <User className="h-3 w-3" />
+              <span>{order.customerName}</span>
+            </div>
+          </div>
+          <Badge className={statusInfo.className}>{statusInfo.label}</Badge>
+        </div>
+      </CardHeader>
+
+      <CardContent className="space-y-4">
+        {/* Danh sách món ăn */}
+        <div className="space-y-2">
+          <div className="flex items-center gap-1 text-sm font-medium">
+            <Utensils className="h-3 w-3" />
+            <span>Món ăn:</span>
+          </div>
+          <div className="space-y-1 pl-4">
+            {order.details?.map((detail, index) => (
+              <div key={index} className="flex justify-between text-sm">
+                <span>
+                  {detail.quantity}x {detail.menuItem.name}
+                </span>
+                <span className="text-muted-foreground">
+                  {(detail.priceAtOrder * detail.quantity).toLocaleString('vi-VN')}đ
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Tổng tiền và thời gian */}
+        <div className="flex items-center justify-between border-t pt-3">
+          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+            <Clock className="h-3 w-3" />
+            <span>{timeAgo}</span>
+          </div>
+          <div className="text-lg font-bold">
+            {order.totalAmount.toLocaleString('vi-VN')}đ
+          </div>
+        </div>
+
+        {/* Action buttons */}
+        <div className="flex gap-2">
+          {order.status === 'PENDING' && (
+            <>
+              <Button
+                size="sm"
+                variant="default"
+                className="flex-1"
+                onClick={() => onApprove(order.id)}
+                disabled={loading}
+              >
+                Duyệt
+              </Button>
+              <Button
+                size="sm"
+                variant="destructive"
+                className="flex-1"
+                onClick={() => onDeny(order.id)}
+                disabled={loading}
+              >
+                Từ chối
+              </Button>
+            </>
+          )}
+          {order.status === 'COOKING' && (
+            <Button
+              size="sm"
+              variant="default"
+              className="w-full"
+              onClick={() => onServed(order.id)}
+              disabled={loading}
+            >
+              Đánh dấu đã phục vụ
+            </Button>
+          )}
+          {order.status === 'SERVED' && (
+            <Button
+              size="sm"
+              variant="outline"
+              className="w-full"
+              disabled
+            >
+              Chờ thanh toán
+            </Button>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}

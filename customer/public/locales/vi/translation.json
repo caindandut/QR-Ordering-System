@@ -125,6 +125,10 @@
             "cancelled": {
                 "title": "❌ Đơn đã bị hủy",
                 "desc": "Vui lòng liên hệ nhân viên nếu cần hỗ trợ."
+            },
+            "denied": {
+                "title": "❌ Đơn hàng bị từ chối",
+                "desc": "Nhà hàng không thể phục vụ món này. Vui lòng liên hệ nhân viên."
             }
         }
     },

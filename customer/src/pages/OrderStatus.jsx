@@ -187,6 +187,10 @@ export default function OrderStatusPage() {
           title: t('status_page.toasts.cancelled.title'),
           description: t('status_page.toasts.cancelled.desc'),
         },
+        DENIED: {
+          title: t('status_page.toasts.denied.title'),
+          description: t('status_page.toasts.denied.desc'),
+        },
       };
       
       const toastContent = statusToastMap[newStatus] || {

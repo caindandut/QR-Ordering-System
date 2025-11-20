@@ -301,7 +301,12 @@ export default function ManageOrdersPage() {
     if (!allOrders) return { filteredAndGroupedOrders: {}, tableList: [], orderCounts: {} };
     
     // Lọc theo status
-    let filtered = allOrders.filter(order => order.status === statusFilter);
+    let filtered = allOrders.filter(order => {
+      if (statusFilter === 'CANCELLED') {
+        return order.status === 'CANCELLED' || order.status === 'DENIED';
+      }
+      return order.status === statusFilter;
+    });
     
     // Lọc theo bàn nếu có
     if (tableFilter !== "ALL") {
@@ -725,7 +730,9 @@ const OrderRow = ({ order, onStatusChange, isLoading, isHighlighted }) => {
       case 'COOKING': return 'secondary';
       case 'SERVED': return 'default';
       case 'PAID': return 'default';
+      case 'PAID': return 'default';
       case 'CANCELLED': return 'destructive';
+      case 'DENIED': return 'destructive';
       default: return 'outline';
     }
   };
