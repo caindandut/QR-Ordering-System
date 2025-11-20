@@ -10,8 +10,10 @@ import uploadRoutes from './routes/uploadRoutes.js';
 import staffRoutes from './routes/staffRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import adminOrderRoutes from './routes/adminOrderRoutes.js';
+import dashboardRoutes from './routes/dashboardRoutes.js';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
+
 // --- Khởi tạo ---
 dotenv.config(); // Nạp các biến từ file .env
 const app = express(); // Tạo app Express
@@ -38,6 +40,7 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/staff', staffRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/admin/orders', adminOrderRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 const httpServer = createServer(app);
 
