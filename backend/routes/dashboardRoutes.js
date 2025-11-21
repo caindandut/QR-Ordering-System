@@ -333,4 +333,76 @@ router.get('/top-items', async (req, res) => {
   }
 });
 
+// GET /api/dashboard/tables
+// Lấy danh sách tất cả bàn với trạng thái và order hiện tại
+router.get('/tables', async (req, res) => {
+  try {
+    const tables = await prisma.table.findMany({
+      orderBy: { id: 'asc' },
+    });
+
+    const tablesWithStatus = await Promise.all(
+      tables.map(async (table) => {
+        const activeOrder = await prisma.order.findFirst({
+          where: {
+            tableId: table.id,
+            status: { in: ['PENDING', 'COOKING', 'SERVED'] },
+          },
+          include: {
+            details: {
+              include: {
+                menuItem: {
+                  select: { name: true, imageUrl: true },
+                },
+              },
+            },
+          },
+          orderBy: { createdAt: 'desc' },
+        });
+
+        let status = table.status;
+        if (activeOrder && status !== 'HIDDEN') {
+          status = 'OCCUPIED';
+        } else if (!activeOrder && status !== 'HIDDEN') {
+          status = 'AVAILABLE';
+        }
+
+        let currentOrder = null;
+        if (activeOrder) {
+          currentOrder = {
+            id: activeOrder.id,
+            customerName: activeOrder.customerName,
+            totalAmount: activeOrder.totalAmount,
+            status: activeOrder.status,
+            createdAt: activeOrder.createdAt,
+            details: activeOrder.details.map(detail => ({
+              menuItemName: detail.menuItem.name,
+              menuItemImage: detail.menuItem.imageUrl,
+              quantity: detail.quantity,
+              priceAtOrder: detail.priceAtOrder,
+              subtotal: detail.quantity * detail.priceAtOrder,
+            })),
+          };
+        }
+
+        return {
+          id: table.id,
+          name: table.name,
+          capacity: table.capacity,
+          status,
+          currentOrder,
+        };
+      })
+    );
+
+    res.status(200).json(tablesWithStatus);
+  } catch (error) {
+    console.error('Tables fetch error:', error);
+    res.status(500).json({
+      message: 'Lỗi khi lấy danh sách bàn',
+      error: error.message,
+    });
+  }
+});
+
 export default router;

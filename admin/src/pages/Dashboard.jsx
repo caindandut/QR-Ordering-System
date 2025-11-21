@@ -4,6 +4,7 @@ import StatsCard from '@/components/dashboard/StatsCard';
 import RevenueChart from '@/components/dashboard/RevenueChart';
 import ActiveOrdersList from '@/components/dashboard/ActiveOrdersList';
 import TopItemsTable from '@/components/dashboard/TopItemsTable';
+import TableMap from '@/components/dashboard/TableMap';
 import dashboardService from '@/services/dashboardService';
 import { DollarSign, ShoppingCart, Users, TrendingUp } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -128,6 +129,11 @@ export default function DashboardPage() {
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4">
         <ActiveOrdersList />
         <TopItemsTable />
+      </div>
+
+      {/* 4. Khu vực Sơ đồ Bàn */}
+      <div className="mt-8">
+        <TableMap />
       </div>
     </div>
   );

@@ -191,7 +191,7 @@ export default function ActiveOrdersList() {
             Không có đơn hàng nào
           </div>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 lg:grid-cols-2">
             {orders.map((order) => (
               <OrderCard
                 key={order.id}

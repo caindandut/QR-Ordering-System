@@ -45,6 +45,12 @@ export const fetchTopItems = async (period = 'today', limit = 10) => {
   return response.data;
 };
 
+// Lấy danh sách bàn với trạng thái
+export const fetchTables = async () => {
+  const response = await api.get('/api/dashboard/tables');
+  return response.data;
+};
+
 const dashboardService = {
   fetchDashboardStats,
   fetchRevenueChart,
@@ -53,6 +59,7 @@ const dashboardService = {
   denyOrder,
   markAsServed,
   fetchTopItems,
+  fetchTables,
 };
 
 export default dashboardService;
