@@ -4,15 +4,19 @@ import { cn } from '@/lib/utils';
 import { SheetClose } from '@/components/ui/sheet';
 import { useAuthStore } from '../store/authStore';
 import { useTranslation } from 'react-i18next';
+import { useState, useEffect } from 'react';
+import { io } from 'socket.io-client';
+import api from '../services/api';
+import { useNotificationSound } from '../hooks/useNotificationSound';
 
 // NavItem (sử dụng theme colors)
-const NavItem = ({ to, icon: Icon, children, onClick }) => (
+const NavItem = ({ to, icon: Icon, children, onClick, badge }) => (
   <NavLink
     to={to}
     end={to === '/'}
     className={({ isActive }) =>
       cn(
-        'flex items-center gap-2 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-foreground hover:bg-accent',
+        'flex items-center gap-2 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-foreground hover:bg-accent relative',
         isActive && 'bg-secondary text-foreground font-semibold'
       )
     }
@@ -20,16 +24,55 @@ const NavItem = ({ to, icon: Icon, children, onClick }) => (
   >
     <Icon className="h-4 w-4" />
     {children}
+    {badge > 0 && (
+      <span className="ml-auto bg-red-500 text-white text-xs rounded-full h-5 min-w-[20px] px-1.5 flex items-center justify-center font-semibold">
+        {badge}
+      </span>
+    )}
   </NavLink>
 );
 
-// 👇 1. NHẬN PROP MỚI: isMobileSheet = false (mặc định là false)
 export default function Sidebar({ onLinkClick, isMobileSheet = false }) {
-  // 👇 2. LẤY DỮ LIỆU `user` TỪ "BỘ NÃO"
-  //    (Lưu ý: chúng ta chỉ cần `user`, không cần `user.role`
-  //     để tránh lỗi nếu user là null)
   const user = useAuthStore((state) => state.user);
   const { t } = useTranslation();
+  const [pendingCount, setPendingCount] = useState(0);
+  const { play } = useNotificationSound();
+
+  // Fetch pending orders count
+  const fetchPendingCount = async () => {
+    try {
+      const response = await api.get('/api/admin/orders/pending-count');
+      setPendingCount(response.data.count);
+    } catch (error) {
+      console.error('Failed to fetch pending count:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPendingCount();
+
+    // Socket.IO listener for new orders
+    const socket = io(import.meta.env.VITE_API_URL || 'http://localhost:3000');
+
+    socket.on('new_order_received', (order) => {
+      if (order.status === 'PENDING') {
+        setPendingCount(prev => prev + 1);
+        play(); // Play notification sound
+        
+        // Show toast notification (if toast is available)
+        console.log('🔔 Đơn hàng mới:', order);
+      }
+    });
+
+    socket.on('orderStatusChanged', (data) => {
+      // Refetch count when order status changes
+      fetchPendingCount();
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
   return (
     <div className="h-full border-r border-border bg-card w-64">
       <div className="flex h-full max-h-screen flex-col gap-2">
@@ -53,7 +96,7 @@ export default function Sidebar({ onLinkClick, isMobileSheet = false }) {
           <NavItem to="/" icon={Home} onClick={onLinkClick}>
             {t('sidebar.dashboard')}
           </NavItem>
-          <NavItem to="/orders" icon={ClipboardList} onClick={onLinkClick}>
+          <NavItem to="/orders" icon={ClipboardList} onClick={onLinkClick} badge={pendingCount}>
             {t('sidebar.orders')}
           </NavItem>
           <NavItem to="/tables" icon={Table} onClick={onLinkClick}>

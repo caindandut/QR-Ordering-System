@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import StatsCard from '@/components/dashboard/StatsCard';
+import StatsCardSkeleton from '@/components/dashboard/StatsCardSkeleton';
+import { Skeleton } from '@/components/ui/skeleton';
 import RevenueChart from '@/components/dashboard/RevenueChart';
 import ActiveOrdersList from '@/components/dashboard/ActiveOrdersList';
 import TopItemsTable from '@/components/dashboard/TopItemsTable';
@@ -93,13 +95,29 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-muted-foreground">Đang tải dữ liệu...</div>
+      <div className="flex flex-col gap-4">
+        <Skeleton className="h-9 w-48" />
+        
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {[...Array(4)].map((_, i) => (
+            <StatsCardSkeleton key={i} />
+          ))}
+        </div>
+
+        <Skeleton className="h-80 w-full" />
+
+        <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <Skeleton className="h-96 w-full" />
+          <Skeleton className="h-96 w-full" />
+        </div>
+
+        <div className="mt-8">
+          <Skeleton className="h-64 w-full" />
+        </div>
       </div>
     );
   }
 
-  // Tính trend và comparison text
   const revenueTrend = getTrend(stats.todayRevenue, stats.yesterdayRevenue);
   const ordersTrend = getTrend(stats.todayOrders, stats.yesterdayOrders);
 
@@ -111,7 +129,7 @@ export default function DashboardPage() {
     : '';
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 animate-in fade-in duration-500">
       <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
       
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

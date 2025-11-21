@@ -214,4 +214,20 @@ router.post('/create', async (req, res) => {
   }
 });
 
+// GET /api/admin/orders/pending-count
+// Lấy số lượng đơn hàng đang chờ duyệt (cho notification badge)
+router.get('/pending-count', async (req, res) => {
+  try {
+    const count = await prisma.order.count({
+      where: {
+        status: 'PENDING'
+      }
+    });
+    
+    res.status(200).json({ count });
+  } catch (error) {
+    res.status(500).json({ message: 'Lỗi server', error: error.message });
+  }
+});
+
 export default router;
