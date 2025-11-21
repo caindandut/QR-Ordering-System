@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import api from '../services/api';
 import { useNotificationSound } from '../hooks/useNotificationSound';
+import { useToast } from '@/hooks/use-toast';
 
 // NavItem (sử dụng theme colors)
 const NavItem = ({ to, icon: Icon, children, onClick, badge }) => (
@@ -37,6 +38,7 @@ export default function Sidebar({ onLinkClick, isMobileSheet = false }) {
   const { t } = useTranslation();
   const [pendingCount, setPendingCount] = useState(0);
   const { play } = useNotificationSound();
+  const { toast } = useToast();
 
   // Fetch pending orders count
   const fetchPendingCount = async () => {
@@ -57,11 +59,28 @@ export default function Sidebar({ onLinkClick, isMobileSheet = false }) {
     socket.on('new_order_received', (order) => {
       if (order.status === 'PENDING') {
         setPendingCount(prev => prev + 1);
-        play(); // Play notification sound
         
-        // Show toast notification (if toast is available)
-        console.log('🔔 Đơn hàng mới:', order);
+        // Play notification sound
+        play(); 
+        
+        // Show toast notification
+        // Fix: Removed "Bàn" prefix as table name likely includes it
+        toast({
+          title: "Đơn hàng mới! 🔔",
+          description: `${order.table?.name} - ${order.customerName}`,
+          variant: "default",
+        });
       }
+    });
+
+    socket.on('payment_requested', (data) => {
+      play(); // Play notification sound
+      
+      toast({
+        title: "Yêu cầu thanh toán! 💸",
+        description: `${data.tableName} - ${data.customerName}`,
+        variant: "warning",
+      });
     });
 
     socket.on('orderStatusChanged', (data) => {

@@ -169,7 +169,7 @@ export default function Header() {
                 {paymentRequests.map((request) => (
                   <DropdownMenuItem 
                     key={request.orderId}
-                    className="flex flex-col items-start p-3 cursor-pointer bg-orange-50 dark:bg-orange-950/20"
+                    className="flex flex-col items-start p-3 cursor-pointer"
                     onClick={() => {
                       navigate(`/orders?highlightOrder=${request.orderId}`);
                       removePaymentRequest(request.orderId);
@@ -179,9 +179,6 @@ export default function Header() {
                       <span className="font-semibold text-sm">
                         {t('header.notifications.payment_title', { id: request.orderId })}
                       </span>
-                      <Badge variant="destructive" className="ml-2 text-xs">
-                        {t('header.notifications.payment_badge')}
-                      </Badge>
                     </div>
                     <div className="text-xs text-muted-foreground space-y-0.5">
                       <div>
