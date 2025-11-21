@@ -1,0 +1,91 @@
+[
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\Sidebar.jsx",
+        "messages": [
+            {
+                "ruleId": "no-unused-vars",
+                "severity": 2,
+                "message": "'Icon' is defined but never used.",
+                "line": 14,
+                "column": 30,
+                "nodeType": "Identifier",
+                "messageId": "unusedVar",
+                "endLine": 14,
+                "endColumn": 34,
+                "suggestions": [
+                    {
+                        "messageId": "removeVar",
+                        "data": {
+                            "varName": "Icon"
+                        },
+                        "fix": {
+                            "range": [
+                                611,
+                                623
+                            ],
+                            "text": ""
+                        },
+                        "desc": "Remove unused variable 'Icon'."
+                    }
+                ]
+            },
+            {
+                "ruleId": "no-unused-vars",
+                "severity": 2,
+                "message": "'data' is defined but never used.",
+                "line": 86,
+                "column": 38,
+                "nodeType": "Identifier",
+                "messageId": "unusedVar",
+                "endLine": 86,
+                "endColumn": 42,
+                "suggestions": [
+                    {
+                        "messageId": "removeVar",
+                        "data": {
+                            "varName": "data"
+                        },
+                        "fix": {
+                            "range": [
+                                2804,
+                                2808
+                            ],
+                            "text": ""
+                        },
+                        "desc": "Remove unused variable 'data'."
+                    }
+                ]
+            },
+            {
+                "ruleId": "react-hooks/exhaustive-deps",
+                "severity": 1,
+                "message": "React Hook useEffect has missing dependencies: 'play' and 'toast'. Either include them or remove the dependency array.",
+                "line": 94,
+                "column": 6,
+                "nodeType": "ArrayExpression",
+                "endLine": 94,
+                "endColumn": 8,
+                "suggestions": [
+                    {
+                        "desc": "Update the dependencies array to be: [play, toast]",
+                        "fix": {
+                            "range": [
+                                2958,
+                                2960
+                            ],
+                            "text": "[play, toast]"
+                        }
+                    }
+                ]
+            }
+        ],
+        "suppressedMessages": [],
+        "errorCount": 2,
+        "fatalErrorCount": 0,
+        "warningCount": 1,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "source": "import { NavLink } from 'react-router-dom';\nimport { Home, ClipboardList, Utensils, Users, X, LayoutGrid, Table } from 'lucide-react';\nimport { cn } from '@/lib/utils';\nimport { SheetClose } from '@/components/ui/sheet';\nimport { useAuthStore } from '../store/authStore';\nimport { useTranslation } from 'react-i18next';\nimport { useState, useEffect } from 'react';\nimport { io } from 'socket.io-client';\nimport api from '../services/api';\nimport { useNotificationSound } from '../hooks/useNotificationSound';\nimport { useToast } from '@/hooks/use-toast';\n\n// NavItem (sử dụng theme colors)\nconst NavItem = ({ to, icon: Icon, children, onClick, badge }) => (\n  <NavLink\n    to={to}\n    end={to === '/'}\n    className={({ isActive }) =>\n      cn(\n        'flex items-center gap-2 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-foreground hover:bg-accent relative',\n        isActive && 'bg-secondary text-foreground font-semibold'\n      )\n    }\n    onClick={onClick}\n  >\n    <Icon className=\"h-4 w-4\" />\n    {children}\n    {badge > 0 && (\n      <span className=\"ml-auto bg-red-500 text-white text-xs rounded-full h-5 min-w-[20px] px-1.5 flex items-center justify-center font-semibold\">\n        {badge}\n      </span>\n    )}\n  </NavLink>\n);\n\nexport default function Sidebar({ onLinkClick, isMobileSheet = false }) {\n  const user = useAuthStore((state) => state.user);\n  const { t } = useTranslation();\n  const [pendingCount, setPendingCount] = useState(0);\n  const { play } = useNotificationSound();\n  const { toast } = useToast();\n\n  // Fetch pending orders count\n  const fetchPendingCount = async () => {\n    try {\n      const response = await api.get('/api/admin/orders/pending-count');\n      setPendingCount(response.data.count);\n    } catch (error) {\n      console.error('Failed to fetch pending count:', error);\n    }\n  };\n\n  useEffect(() => {\n    fetchPendingCount();\n\n    // Socket.IO listener for new orders\n    const socket = io(import.meta.env.VITE_API_URL || 'http://localhost:3000');\n\n    socket.on('new_order_received', (order) => {\n      if (order.status === 'PENDING') {\n        setPendingCount(prev => prev + 1);\n        \n        // Play notification sound\n        play(); \n        \n        // Show toast notification\n        // Fix: Removed \"Bàn\" prefix as table name likely includes it\n        toast({\n          title: \"Đơn hàng mới! 🔔\",\n          description: `${order.table?.name} - ${order.customerName}`,\n          variant: \"default\",\n        });\n      }\n    });\n\n    socket.on('payment_requested', (data) => {\n      play(); // Play notification sound\n      \n      toast({\n        title: \"Yêu cầu thanh toán! 💸\",\n        description: `${data.tableName} - ${data.customerName}`,\n        variant: \"warning\",\n      });\n    });\n\n    socket.on('orderStatusChanged', (data) => {\n      // Refetch count when order status changes\n      fetchPendingCount();\n    });\n\n    return () => {\n      socket.disconnect();\n    };\n  }, []);\n  return (\n    <div className=\"h-full border-r border-border dark:border-white/10 bg-card w-64\">\n      <div className=\"flex h-full max-h-screen flex-col gap-2\">\n        \n        <div className=\"flex h-16 items-center justify-between border-b border-border px-6\">\n          <h1 className=\"text-lg font-bold text-card-foreground\">{t('sidebar.restaurant_name')}</h1>\n          \n          {/* 👇 2. CHỈ RENDER NÚT \"X\" KHI isMobileSheet LÀ TRUE */}\n          {isMobileSheet && (\n            <SheetClose asChild>\n              <button className=\"text-muted-foreground hover:text-foreground transition-colors\">\n                <X className=\"h-6 w-6\" />\n                <span className=\"sr-only\">{t('sidebar.close_menu')}</span>\n              </button>\n            </SheetClose>\n          )}\n        </div>\n        \n        <nav className=\"flex-1 flex flex-col gap-1 px-4 text-sm font-medium\">\n          {/* ... (các NavItem vẫn giữ nguyên) ... */}\n          <NavItem to=\"/\" icon={Home} onClick={onLinkClick}>\n            {t('sidebar.dashboard')}\n          </NavItem>\n          <NavItem to=\"/orders\" icon={ClipboardList} onClick={onLinkClick} badge={pendingCount}>\n            {t('sidebar.orders')}\n          </NavItem>\n          <NavItem to=\"/tables\" icon={Table} onClick={onLinkClick}>\n            {t('sidebar.tables')}\n          </NavItem>\n          <NavItem to=\"/menu\" icon={Utensils} onClick={onLinkClick}>\n            {t('sidebar.menu')}\n          </NavItem>\n          <NavItem to=\"/categories\" icon={LayoutGrid} onClick={onLinkClick}>\n            {t('sidebar.categories')}\n          </NavItem>\n          {user?.role === 'ADMIN' && (\n            <NavItem to=\"/staff\" icon={Users} onClick={onLinkClick}>\n              {t('sidebar.staff')}\n            </NavItem>\n          )}\n        </nav>\n      </div>\n    </div>\n  );\n}",
+        "usedDeprecatedRules": []
+    }
+]

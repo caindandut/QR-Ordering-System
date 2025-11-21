@@ -23,7 +23,6 @@ import { Badge } from '@/components/ui/badge';
 import { Loader2, TrendingUp } from 'lucide-react';
 
 export default function TopItemsTable() {
-  const { t } = useTranslation();
   const [period, setPeriod] = useState('today');
 
   const { data: topItems, isLoading, isError } = useQuery({

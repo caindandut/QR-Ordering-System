@@ -1,0 +1,1143 @@
+[
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\eslint.config.js",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\postcss.config.js",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\App.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\AdminRoute.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\CategoryForm.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\Header.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\LanguageToggle.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\MenuForm.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\ModeToggle.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\PasswordForm.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\ProfileForm.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\ProtectedRoute.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\Sidebar.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\StaffForm.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\TableCard.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\TableForm.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\dashboard\\ActiveOrdersList.jsx",
+        "messages": [
+            {
+                "ruleId": "react-hooks/exhaustive-deps",
+                "severity": 1,
+                "message": "React Hook useEffect has a missing dependency: 'fetchOrders'. Either include it or remove the dependency array.",
+                "line": 51,
+                "column": 6,
+                "nodeType": "ArrayExpression",
+                "endLine": 51,
+                "endColumn": 20,
+                "suggestions": [
+                    {
+                        "desc": "Update the dependencies array to be: [fetchOrders, statusFilter]",
+                        "fix": {
+                            "range": [
+                                1557,
+                                1571
+                            ],
+                            "text": "[fetchOrders, statusFilter]"
+                        }
+                    }
+                ]
+            },
+            {
+                "ruleId": "no-unused-vars",
+                "severity": 2,
+                "message": "'error' is defined but never used.",
+                "line": 114,
+                "column": 14,
+                "nodeType": "Identifier",
+                "messageId": "unusedVar",
+                "endLine": 114,
+                "endColumn": 19
+            },
+            {
+                "ruleId": "no-unused-vars",
+                "severity": 2,
+                "message": "'error' is defined but never used.",
+                "line": 133,
+                "column": 14,
+                "nodeType": "Identifier",
+                "messageId": "unusedVar",
+                "endLine": 133,
+                "endColumn": 19
+            },
+            {
+                "ruleId": "no-unused-vars",
+                "severity": 2,
+                "message": "'error' is defined but never used.",
+                "line": 152,
+                "column": 14,
+                "nodeType": "Identifier",
+                "messageId": "unusedVar",
+                "endLine": 152,
+                "endColumn": 19
+            }
+        ],
+        "suppressedMessages": [],
+        "errorCount": 3,
+        "fatalErrorCount": 0,
+        "warningCount": 1,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "source": "import { useState, useEffect, useContext } from 'react';\r\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';\r\nimport {\r\n  Select,\r\n  SelectContent,\r\n  SelectItem,\r\n  SelectTrigger,\r\n  SelectValue,\r\n} from '@/components/ui/select';\r\nimport OrderCard from './OrderCard';\r\nimport dashboardService from '@/services/dashboardService';\r\nimport { useToast } from '@/hooks/use-toast';\r\nimport { SocketContext } from '@/context/SocketContext.jsx';\r\n\r\n/**\r\n * ActiveOrdersList - Component hiển thị danh sách orders đang xử lý\r\n */\r\nexport default function ActiveOrdersList() {\r\n  const [orders, setOrders] = useState([]);\r\n  const [loading, setLoading] = useState(true);\r\n  const [actionLoading, setActionLoading] = useState(false);\r\n  const [statusFilter, setStatusFilter] = useState('all');\r\n  const { toast } = useToast();\r\n  const socket = useContext(SocketContext);\r\n\r\n  // Fetch orders\r\n  const fetchOrders = async () => {\r\n    try {\r\n      setLoading(true);\r\n      const filters = {};\r\n      if (statusFilter !== 'all') {\r\n        filters.status = statusFilter.toUpperCase();\r\n      }\r\n      const data = await dashboardService.fetchActiveOrders(filters);\r\n      setOrders(data);\r\n    } catch (error) {\r\n      console.error('Error fetching active orders:', error);\r\n      toast({\r\n        title: 'Lỗi',\r\n        description: 'Không thể tải danh sách đơn hàng',\r\n        variant: 'destructive',\r\n      });\r\n    } finally {\r\n      setLoading(false);\r\n    }\r\n  };\r\n\r\n  // Initial fetch\r\n  useEffect(() => {\r\n    fetchOrders();\r\n  }, [statusFilter]);\r\n\r\n  // Socket.IO real-time updates\r\n  useEffect(() => {\r\n    if (!socket) return;\r\n\r\n    // Khi có đơn hàng mới\r\n    const handleNewOrder = (newOrder) => {\r\n      // Thêm vào đầu list nếu match filter\r\n      if (statusFilter === 'all' || statusFilter === newOrder.status.toLowerCase()) {\r\n        setOrders((prev) => [newOrder, ...prev]);\r\n      }\r\n      \r\n      // Play notification sound (optional - can add later)\r\n      // playNotificationSound();\r\n      \r\n      toast({\r\n        title: 'Đơn hàng mới',\r\n        description: `${newOrder.table?.name} - ${newOrder.customerName}`,\r\n      });\r\n    };\r\n\r\n    // Khi order được cập nhật\r\n    const handleOrderUpdate = (updatedOrder) => {\r\n      setOrders((prev) => {\r\n        // Nếu order không còn active (PAID, DENIED), xóa khỏi list\r\n        if (!['PENDING', 'COOKING', 'SERVED'].includes(updatedOrder.status)) {\r\n          return prev.filter((o) => o.id !== updatedOrder.id);\r\n        }\r\n        \r\n        // Nếu không match filter, xóa\r\n        if (statusFilter !== 'all' && statusFilter !== updatedOrder.status.toLowerCase()) {\r\n          return prev.filter((o) => o.id !== updatedOrder.id);\r\n        }\r\n        \r\n        // Cập nhật order\r\n        const orderExists = prev.find((o) => o.id === updatedOrder.id);\r\n        if (orderExists) {\r\n          return prev.map((o) => (o.id === updatedOrder.id ? updatedOrder : o));\r\n        } else {\r\n          return [updatedOrder, ...prev];\r\n        }\r\n      });\r\n    };\r\n\r\n    socket.on('new_order_received', handleNewOrder);\r\n    socket.on('order_updated_for_admin', handleOrderUpdate);\r\n\r\n    return () => {\r\n      socket.off('new_order_received', handleNewOrder);\r\n      socket.off('order_updated_for_admin', handleOrderUpdate);\r\n    };\r\n  }, [socket, statusFilter, toast]);\r\n\r\n  // Order actions\r\n  const handleApprove = async (orderId) => {\r\n    try {\r\n      setActionLoading(true);\r\n      await dashboardService.approveOrder(orderId);\r\n      toast({\r\n        title: 'Thành công',\r\n        description: 'Đơn hàng đã được duyệt',\r\n      });\r\n    } catch (error) {\r\n      toast({\r\n        title: 'Lỗi',\r\n        description: 'Không thể duyệt đơn hàng',\r\n        variant: 'destructive',\r\n      });\r\n    } finally {\r\n      setActionLoading(false);\r\n    }\r\n  };\r\n\r\n  const handleDeny = async (orderId) => {\r\n    try {\r\n      setActionLoading(true);\r\n      await dashboardService.denyOrder(orderId);\r\n      toast({\r\n        title: 'Thành công',\r\n        description: 'Đơn hàng đã bị từ chối',\r\n      });\r\n    } catch (error) {\r\n      toast({\r\n        title: 'Lỗi',\r\n        description: 'Không thể từ chối đơn hàng',\r\n        variant: 'destructive',\r\n      });\r\n    } finally {\r\n      setActionLoading(false);\r\n    }\r\n  };\r\n\r\n  const handleServed = async (orderId) => {\r\n    try {\r\n      setActionLoading(true);\r\n      await dashboardService.markAsServed(orderId);\r\n      toast({\r\n        title: 'Thành công',\r\n        description: 'Đơn hàng đã được đánh dấu là đã phục vụ',\r\n      });\r\n    } catch (error) {\r\n      toast({\r\n        title: 'Lỗi',\r\n        description: 'Không thể cập nhật trạng thái',\r\n        variant: 'destructive',\r\n      });\r\n    } finally {\r\n      setActionLoading(false);\r\n    }\r\n  };\r\n\r\n  return (\r\n    <Card>\r\n      <CardHeader>\r\n        <div className=\"flex items-center justify-between\">\r\n          <CardTitle>Đơn hàng đang xử lý</CardTitle>\r\n          \r\n          {/* Filter */}\r\n          <Select value={statusFilter} onValueChange={setStatusFilter}>\r\n            <SelectTrigger className=\"w-[180px]\">\r\n              <SelectValue placeholder=\"Lọc theo trạng thái\" />\r\n            </SelectTrigger>\r\n            <SelectContent>\r\n              <SelectItem value=\"all\">Tất cả</SelectItem>\r\n              <SelectItem value=\"pending\">Chờ duyệt</SelectItem>\r\n              <SelectItem value=\"cooking\">Đang nấu</SelectItem>\r\n              <SelectItem value=\"served\">Đã phục vụ</SelectItem>\r\n            </SelectContent>\r\n          </Select>\r\n        </div>\r\n      </CardHeader>\r\n\r\n      <CardContent>\r\n        {loading ? (\r\n          <div className=\"text-center py-8 text-muted-foreground\">\r\n            Đang tải...\r\n          </div>\r\n        ) : orders.length === 0 ? (\r\n          <div className=\"text-center py-8 text-muted-foreground\">\r\n            Không có đơn hàng nào\r\n          </div>\r\n        ) : (\r\n          <div className=\"grid gap-4 lg:grid-cols-2\">\r\n            {orders.map((order) => (\r\n              <OrderCard\r\n                key={order.id}\r\n                order={order}\r\n                onApprove={handleApprove}\r\n                onDeny={handleDeny}\r\n                onServed={handleServed}\r\n                loading={actionLoading}\r\n              />\r\n            ))}\r\n          </div>\r\n        )}\r\n      </CardContent>\r\n    </Card>\r\n  );\r\n}\r\n",
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\dashboard\\OrderCard.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\dashboard\\RevenueChart.jsx",
+        "messages": [
+            {
+                "ruleId": "no-unused-vars",
+                "severity": 2,
+                "message": "'useState' is defined but never used. Allowed unused vars must match /^[A-Z_]/u.",
+                "line": 1,
+                "column": 10,
+                "nodeType": "Identifier",
+                "messageId": "unusedVar",
+                "endLine": 1,
+                "endColumn": 18,
+                "suggestions": [
+                    {
+                        "messageId": "removeVar",
+                        "data": {
+                            "varName": "useState"
+                        },
+                        "fix": {
+                            "range": [
+                                0,
+                                33
+                            ],
+                            "text": ""
+                        },
+                        "desc": "Remove unused variable 'useState'."
+                    }
+                ]
+            }
+        ],
+        "suppressedMessages": [],
+        "errorCount": 1,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "source": "import { useState } from 'react';\r\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';\r\nimport {\r\n  DropdownMenu,\r\n  DropdownMenuContent,\r\n  DropdownMenuItem,\r\n  DropdownMenuTrigger,\r\n} from '@/components/ui/dropdown-menu';\r\nimport { Button } from '@/components/ui/button';\r\nimport { ChevronDown } from 'lucide-react';\r\nimport {\r\n  LineChart,\r\n  Line,\r\n  XAxis,\r\n  YAxis,\r\n  CartesianGrid,\r\n  Tooltip,\r\n  ResponsiveContainer,\r\n} from 'recharts';\r\nimport { format } from 'date-fns';\r\n\r\n/**\r\n * RevenueChart - Component hiển thị biểu đồ doanh thu với filter thời gian\r\n * @param {Array} data - Mảng dữ liệu [{date: 'YYYY-MM-DD', revenue: number}]\r\n * @param {string} period - Khoảng thời gian hiện tại ('week' hoặc 'month')\r\n * @param {Function} onPeriodChange - Callback khi thay đổi period\r\n */\r\nexport default function RevenueChart({ data, period = 'week', onPeriodChange }) {\r\n  const periodLabels = {\r\n    week: 'Tuần này',\r\n    month: 'Tháng này',\r\n  };\r\n\r\n  // Không render nếu không có dữ liệu\r\n  if (!data || data.length === 0) {\r\n    return (\r\n      <Card>\r\n        <CardHeader>\r\n          <div className=\"flex items-center justify-between\">\r\n            <CardTitle>Doanh thu</CardTitle>\r\n            <DropdownMenu>\r\n              <DropdownMenuTrigger asChild>\r\n                <Button variant=\"outline\" size=\"sm\">\r\n                  {periodLabels[period]}\r\n                  <ChevronDown className=\"ml-2 h-4 w-4\" />\r\n                </Button>\r\n              </DropdownMenuTrigger>\r\n              <DropdownMenuContent align=\"end\">\r\n                <DropdownMenuItem onClick={() => onPeriodChange('week')}>\r\n                  Tuần này\r\n                </DropdownMenuItem>\r\n                <DropdownMenuItem onClick={() => onPeriodChange('month')}>\r\n                  Tháng này\r\n                </DropdownMenuItem>\r\n              </DropdownMenuContent>\r\n            </DropdownMenu>\r\n          </div>\r\n        </CardHeader>\r\n        <CardContent>\r\n          <div className=\"text-muted-foreground text-center py-8\">\r\n            Không có dữ liệu\r\n          </div>\r\n        </CardContent>\r\n      </Card>\r\n    );\r\n  }\r\n\r\n  // Format dữ liệu cho biểu đồ\r\n  const chartData = data.map((item) => ({\r\n    name: format(new Date(item.date), 'dd/MM'), // Hiển thị ngắn gọn: 20/11\r\n    doanhThu: item.revenue, // Đổi key sang tiếng Việt\r\n    fullDate: item.date, // Giữ lại cho tooltip\r\n  }));\r\n\r\n  // Custom formatter cho tooltip\r\n  const formatTooltip = (value) => {\r\n    return `${value.toLocaleString('vi-VN')}đ`;\r\n  };\r\n\r\n  // Custom formatter cho trục Y (hiển thị triệu đồng)\r\n  const formatYAxis = (value) => {\r\n    if (value >= 1000000) {\r\n      return `${(value / 1000000).toFixed(1)}tr`;\r\n    }\r\n    return `${(value / 1000)}k`;\r\n  };\r\n\r\n  return (\r\n    <Card>\r\n      <CardHeader>\r\n        <div className=\"flex items-center justify-between\">\r\n          <CardTitle>Doanh thu</CardTitle>\r\n          <DropdownMenu>\r\n            <DropdownMenuTrigger asChild>\r\n              <Button variant=\"outline\" size=\"sm\">\r\n                {periodLabels[period]}\r\n                <ChevronDown className=\"ml-2 h-4 w-4\" />\r\n              </Button>\r\n            </DropdownMenuTrigger>\r\n            <DropdownMenuContent align=\"end\">\r\n              <DropdownMenuItem onClick={() => onPeriodChange('week')}>\r\n                Tuần này\r\n              </DropdownMenuItem>\r\n              <DropdownMenuItem onClick={() => onPeriodChange('month')}>\r\n                Tháng này\r\n              </DropdownMenuItem>\r\n            </DropdownMenuContent>\r\n          </DropdownMenu>\r\n        </div>\r\n      </CardHeader>\r\n      <CardContent>\r\n        <div style={{ width: '100%', height: 300 }}>\r\n          <ResponsiveContainer>\r\n            <LineChart data={chartData}>\r\n              <CartesianGrid strokeDasharray=\"3 3\" />\r\n              <XAxis \r\n                dataKey=\"name\" \r\n                style={{ fontSize: '12px' }}\r\n              />\r\n              <YAxis \r\n                tickFormatter={formatYAxis}\r\n                style={{ fontSize: '12px' }}\r\n              />\r\n              <Tooltip \r\n                formatter={formatTooltip}\r\n                labelFormatter={(label) => `Ngày ${label}`}\r\n              />\r\n              <Line \r\n                type=\"monotone\" \r\n                dataKey=\"doanhThu\"\r\n                name=\"Doanh thu\"\r\n                stroke=\"#8884d8\" \r\n                strokeWidth={2}\r\n                dot={{ fill: '#8884d8', r: 4 }}\r\n                activeDot={{ r: 6 }}\r\n              />\r\n            </LineChart>\r\n          </ResponsiveContainer>\r\n        </div>\r\n      </CardContent>\r\n    </Card>\r\n  );\r\n}\r\n",
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\dashboard\\StatsCard.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\dashboard\\StatsCardSkeleton.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\dashboard\\TableDetailsModal.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\dashboard\\TableMap.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\dashboard\\TopItemsTable.jsx",
+        "messages": [
+            {
+                "ruleId": "no-unused-vars",
+                "severity": 2,
+                "message": "'t' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u.",
+                "line": 26,
+                "column": 11,
+                "nodeType": "Identifier",
+                "messageId": "unusedVar",
+                "endLine": 26,
+                "endColumn": 12,
+                "suggestions": [
+                    {
+                        "messageId": "removeVar",
+                        "data": {
+                            "varName": "t"
+                        },
+                        "fix": {
+                            "range": [
+                                740,
+                                771
+                            ],
+                            "text": ""
+                        },
+                        "desc": "Remove unused variable 't'."
+                    }
+                ]
+            }
+        ],
+        "suppressedMessages": [],
+        "errorCount": 1,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "source": "import React, { useState } from 'react';\r\nimport { useQuery } from '@tanstack/react-query';\r\nimport { fetchTopItems } from '@/services/dashboardService';\r\nimport { useTranslation } from 'react-i18next';\r\nimport {\r\n  Table,\r\n  TableBody,\r\n  TableCell,\r\n  TableHead,\r\n  TableHeader,\r\n  TableRow,\r\n} from '@/components/ui/table';\r\nimport {\r\n  Card,\r\n  CardContent,\r\n  CardDescription,\r\n  CardHeader,\r\n  CardTitle,\r\n} from '@/components/ui/card';\r\nimport { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';\r\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';\r\nimport { Badge } from '@/components/ui/badge';\r\nimport { Loader2, TrendingUp } from 'lucide-react';\r\n\r\nexport default function TopItemsTable() {\r\n  const { t } = useTranslation();\r\n  const [period, setPeriod] = useState('today');\r\n\r\n  const { data: topItems, isLoading, isError } = useQuery({\r\n    queryKey: ['topItems', period],\r\n    queryFn: () => fetchTopItems(period, 10),\r\n  });\r\n\r\n  return (\r\n    <Card>\r\n      <CardHeader>\r\n        <div className=\"flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4\">\r\n          <div>\r\n            <CardTitle className=\"flex items-center gap-2\">\r\n              <TrendingUp className=\"h-5 w-5 text-primary\" />\r\n              Món bán chạy nhất\r\n            </CardTitle>\r\n            <CardDescription>\r\n              Xem thống kê món ăn có doanh số cao nhất\r\n            </CardDescription>\r\n          </div>\r\n          \r\n          <Tabs value={period} onValueChange={setPeriod}>\r\n            <TabsList>\r\n              <TabsTrigger value=\"today\">Hôm nay</TabsTrigger>\r\n              <TabsTrigger value=\"week\">Tuần này</TabsTrigger>\r\n              <TabsTrigger value=\"month\">Tháng này</TabsTrigger>\r\n            </TabsList>\r\n          </Tabs>\r\n        </div>\r\n      </CardHeader>\r\n      \r\n      <CardContent>\r\n        {isLoading ? (\r\n          <div className=\"flex justify-center items-center h-64\">\r\n            <Loader2 className=\"h-8 w-8 animate-spin text-muted-foreground\" />\r\n          </div>\r\n        ) : isError ? (\r\n          <div className=\"text-center text-red-500 p-8\">\r\n            Lỗi: Không thể tải dữ liệu món bán chạy\r\n          </div>\r\n        ) : !topItems || topItems.length === 0 ? (\r\n          <div className=\"text-center text-muted-foreground p-8\">\r\n            <p>Chưa có dữ liệu cho khoảng thời gian này</p>\r\n            <p className=\"text-sm mt-2\">\r\n              Hãy đợi khi có đơn hàng được thanh toán\r\n            </p>\r\n          </div>\r\n        ) : (\r\n          <div className=\"rounded-md border dark:border-white/10\">\r\n            <Table>\r\n              <TableHeader>\r\n                <TableRow>\r\n                  <TableHead className=\"w-[60px]\">STT</TableHead>\r\n                  <TableHead>Món ăn</TableHead>\r\n                  <TableHead className=\"text-right\">Số lượng bán</TableHead>\r\n                  <TableHead className=\"text-right\">Doanh thu</TableHead>\r\n                </TableRow>\r\n              </TableHeader>\r\n              <TableBody>\r\n                {topItems.map((item, index) => (\r\n                  <TableRow key={item.menuItemId}>\r\n                    <TableCell className=\"font-medium\">\r\n                      {index === 0 && (\r\n                        <Badge variant=\"default\" className=\"mr-1\">🏆</Badge>\r\n                      )}\r\n                      {index + 1}\r\n                    </TableCell>\r\n                    <TableCell>\r\n                      <div className=\"flex items-center gap-3\">\r\n                        <Avatar className=\"h-10 w-10 rounded-md\">\r\n                          <AvatarImage src={item.imageUrl} alt={item.name} />\r\n                          <AvatarFallback className=\"rounded-md\">\r\n                            {item.name[0]}\r\n                          </AvatarFallback>\r\n                        </Avatar>\r\n                        <div className=\"flex flex-col\">\r\n                          <span className=\"font-medium\">{item.name}</span>\r\n                          <span className=\"text-xs text-muted-foreground\">\r\n                            {item.category}\r\n                          </span>\r\n                        </div>\r\n                      </div>\r\n                    </TableCell>\r\n                    <TableCell className=\"text-right font-semibold\">\r\n                      {item.quantitySold}\r\n                    </TableCell>\r\n                    <TableCell className=\"text-right font-bold text-primary\">\r\n                      {item.revenue.toLocaleString('vi-VN')}đ\r\n                    </TableCell>\r\n                  </TableRow>\r\n                ))}\r\n              </TableBody>\r\n            </Table>\r\n          </div>\r\n        )}\r\n      </CardContent>\r\n    </Card>\r\n  );\r\n}\r\n",
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\ui\\alert-dialog.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\ui\\avatar.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\ui\\badge.jsx",
+        "messages": [
+            {
+                "ruleId": "react-refresh/only-export-components",
+                "severity": 2,
+                "message": "Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components.",
+                "line": 34,
+                "column": 17,
+                "nodeType": "Identifier",
+                "messageId": "namedExport",
+                "endLine": 34,
+                "endColumn": 30
+            }
+        ],
+        "suppressedMessages": [],
+        "errorCount": 1,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "source": "import * as React from \"react\"\r\nimport { cva } from \"class-variance-authority\";\r\n\r\nimport { cn } from \"@/lib/utils\"\r\n\r\nconst badgeVariants = cva(\r\n  \"inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2\",\r\n  {\r\n    variants: {\r\n      variant: {\r\n        default:\r\n          \"border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80\",\r\n        secondary:\r\n          \"border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80\",\r\n        destructive:\r\n          \"border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80\",\r\n        outline: \"text-foreground\",\r\n      },\r\n    },\r\n    defaultVariants: {\r\n      variant: \"default\",\r\n    },\r\n  }\r\n)\r\n\r\nfunction Badge({\r\n  className,\r\n  variant,\r\n  ...props\r\n}) {\r\n  return (<div className={cn(badgeVariants({ variant }), className)} {...props} />);\r\n}\r\n\r\nexport { Badge, badgeVariants }\r\n",
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\ui\\button.jsx",
+        "messages": [
+            {
+                "ruleId": "react-refresh/only-export-components",
+                "severity": 2,
+                "message": "Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components.",
+                "line": 48,
+                "column": 18,
+                "nodeType": "Identifier",
+                "messageId": "namedExport",
+                "endLine": 48,
+                "endColumn": 32
+            }
+        ],
+        "suppressedMessages": [],
+        "errorCount": 1,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "source": "import * as React from \"react\"\r\nimport { Slot } from \"@radix-ui/react-slot\"\r\nimport { cva } from \"class-variance-authority\";\r\n\r\nimport { cn } from \"@/lib/utils\"\r\n\r\nconst buttonVariants = cva(\r\n  \"inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0\",\r\n  {\r\n    variants: {\r\n      variant: {\r\n        default:\r\n          \"bg-primary text-primary-foreground shadow hover:bg-primary/90\",\r\n        destructive:\r\n          \"bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90\",\r\n        outline:\r\n          \"border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground\",\r\n        secondary:\r\n          \"bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80\",\r\n        ghost: \"hover:bg-accent hover:text-accent-foreground\",\r\n        link: \"text-primary underline-offset-4 hover:underline\",\r\n      },\r\n      size: {\r\n        default: \"h-9 px-4 py-2\",\r\n        sm: \"h-8 rounded-md px-3 text-xs\",\r\n        lg: \"h-10 rounded-md px-8\",\r\n        icon: \"h-9 w-9\",\r\n      },\r\n    },\r\n    defaultVariants: {\r\n      variant: \"default\",\r\n      size: \"default\",\r\n    },\r\n  }\r\n)\r\n\r\nconst Button = React.forwardRef(({ className, variant, size, asChild = false, ...props }, ref) => {\r\n  const Comp = asChild ? Slot : \"button\"\r\n  return (\r\n    <Comp\r\n      className={cn(buttonVariants({ variant, size, className }))}\r\n      ref={ref}\r\n      {...props} />\r\n  );\r\n})\r\nButton.displayName = \"Button\"\r\n\r\nexport { Button, buttonVariants }\r\n",
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\ui\\card.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\ui\\collapsible.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\ui\\dialog.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\ui\\dropdown-menu.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\ui\\input.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\ui\\label.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\ui\\select.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\ui\\sheet.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\ui\\skeleton.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\ui\\table.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\ui\\tabs.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\ui\\textarea.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\ui\\toast.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\components\\ui\\toaster.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\context\\NotificationContext.jsx",
+        "messages": [
+            {
+                "ruleId": "react-refresh/only-export-components",
+                "severity": 2,
+                "message": "Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components.",
+                "line": 7,
+                "column": 14,
+                "nodeType": "Identifier",
+                "messageId": "namedExport",
+                "endLine": 7,
+                "endColumn": 29
+            }
+        ],
+        "suppressedMessages": [],
+        "errorCount": 1,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "source": "// src/context/NotificationContext.jsx\r\nimport React, { createContext, useContext, useState, useEffect } from 'react';\r\nimport { useSocket } from '../hooks/useSocket';\r\n\r\nconst NotificationContext = createContext(null);\r\n\r\nexport const useNotification = () => {\r\n  const context = useContext(NotificationContext);\r\n  if (!context) {\r\n    throw new Error('useNotification must be used within NotificationProvider');\r\n  }\r\n  return context;\r\n};\r\n\r\nexport const NotificationProvider = ({ children }) => {\r\n  // State lưu danh sách đơn hàng mới chưa xem\r\n  const [newOrders, setNewOrders] = useState([]);\r\n  const [unreadCount, setUnreadCount] = useState(0);\r\n  const [paymentRequests, setPaymentRequests] = useState([]); // Yêu cầu thanh toán\r\n  const [paymentRequestCount, setPaymentRequestCount] = useState(0);\r\n  const socket = useSocket();\r\n\r\n  // Lắng nghe socket events\r\n  useEffect(() => {\r\n    if (!socket) return;\r\n\r\n    const handleNewOrder = (newOrder) => {\r\n      if (!newOrder || !newOrder.id) {\r\n        console.error('Đơn hàng không hợp lệ:', newOrder);\r\n        return;\r\n      }\r\n\r\n      // Thêm đơn hàng mới vào danh sách chưa đọc\r\n      setNewOrders((prev) => {\r\n        // Kiểm tra xem đã tồn tại chưa để tránh duplicate\r\n        const exists = prev.some(order => order.id === newOrder.id);\r\n        if (exists) return prev;\r\n        return [newOrder, ...prev];\r\n      });\r\n\r\n      // Tăng số lượng thông báo chưa đọc\r\n      setUnreadCount((prev) => prev + 1);\r\n    };\r\n\r\n    const handlePaymentRequest = (paymentRequest) => {\r\n      if (!paymentRequest || !paymentRequest.orderId) {\r\n        console.error('Yêu cầu thanh toán không hợp lệ:', paymentRequest);\r\n        return;\r\n      }\r\n\r\n      // Thêm yêu cầu thanh toán vào danh sách\r\n      setPaymentRequests((prev) => {\r\n        const exists = prev.some(req => req.orderId === paymentRequest.orderId);\r\n        if (exists) return prev;\r\n        return [paymentRequest, ...prev];\r\n      });\r\n\r\n      // Tăng số lượng yêu cầu thanh toán\r\n      setPaymentRequestCount((prev) => prev + 1);\r\n    };\r\n\r\n    socket.on('new_order_received', handleNewOrder);\r\n    socket.on('payment_requested', handlePaymentRequest);\r\n\r\n    return () => {\r\n      socket.off('new_order_received', handleNewOrder);\r\n      socket.off('payment_requested', handlePaymentRequest);\r\n    };\r\n  }, [socket]);\r\n\r\n  // Hàm xóa tất cả thông báo (khi vào trang quản lý đơn hàng)\r\n  const clearNotifications = () => {\r\n    setNewOrders([]);\r\n    setUnreadCount(0);\r\n  };\r\n\r\n  // Hàm xóa một thông báo cụ thể\r\n  const removeNotification = (orderId) => {\r\n    setNewOrders((prev) => prev.filter(order => order.id !== orderId));\r\n    setUnreadCount((prev) => Math.max(0, prev - 1));\r\n  };\r\n\r\n  // Hàm xóa yêu cầu thanh toán\r\n  const removePaymentRequest = (orderId) => {\r\n    setPaymentRequests((prev) => prev.filter(req => req.orderId !== orderId));\r\n    setPaymentRequestCount((prev) => Math.max(0, prev - 1));\r\n  };\r\n\r\n  // Hàm xóa tất cả yêu cầu thanh toán\r\n  const clearPaymentRequests = () => {\r\n    setPaymentRequests([]);\r\n    setPaymentRequestCount(0);\r\n  };\r\n\r\n  const value = {\r\n    newOrders,\r\n    unreadCount,\r\n    clearNotifications,\r\n    removeNotification,\r\n    paymentRequests,\r\n    paymentRequestCount,\r\n    removePaymentRequest,\r\n    clearPaymentRequests,\r\n  };\r\n\r\n  return (\r\n    <NotificationContext.Provider value={value}>\r\n      {children}\r\n    </NotificationContext.Provider>\r\n  );\r\n};\r\n\r\n",
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\context\\SocketContext.js",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\context\\SocketContext.jsx",
+        "messages": [
+            {
+                "ruleId": "react-refresh/only-export-components",
+                "severity": 2,
+                "message": "Fast refresh only works when a file only exports components. Move your React context(s) to a separate file.",
+                "line": 9,
+                "column": 14,
+                "nodeType": "Identifier",
+                "messageId": "reactContext",
+                "endLine": 9,
+                "endColumn": 27
+            },
+            {
+                "ruleId": "no-unused-vars",
+                "severity": 2,
+                "message": "'connected' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u.",
+                "line": 15,
+                "column": 10,
+                "nodeType": "Identifier",
+                "messageId": "unusedVar",
+                "endLine": 15,
+                "endColumn": 19,
+                "suggestions": [
+                    {
+                        "messageId": "removeVar",
+                        "data": {
+                            "varName": "connected"
+                        },
+                        "fix": {
+                            "range": [
+                                521,
+                                530
+                            ],
+                            "text": ""
+                        },
+                        "desc": "Remove unused variable 'connected'."
+                    }
+                ]
+            }
+        ],
+        "suppressedMessages": [],
+        "errorCount": 2,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "source": "import React, { createContext, useEffect, useRef, useState } from 'react';\nimport { io } from 'socket.io-client';\n\n\n// 1. Lấy URL Backend từ .env\nconst SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';\n\n// 2. Tạo \"Context\" (Cái khuôn)\nexport const SocketContext = createContext();\n\n// 3. Tạo \"Nhà cung cấp\" (Provider - Cái \"ăng-ten\" thật)\nexport const SocketProvider = ({ children }) => {\n  // Dùng state để trigger re-render khi socket được tạo\n  const [socket, setSocket] = useState(null);\n  const [connected, setConnected] = useState(false);\n  const socketRef = useRef(null);\n\n  // 6. Kết nối khi \"Provider\" được render\n  useEffect(() => {\n    // 6a. Chỉ kết nối nếu chưa có\n    if (!socketRef.current) {\n      console.log('🔌 Initializing Socket.IO connection...');\n      \n      // 6b. Tạo kết nối (Socket.IO client)\n      const newSocket = io(SOCKET_URL, {\n        transports: ['websocket', 'polling'],\n        reconnection: true,\n        reconnectionDelay: 1000,\n        reconnectionAttempts: 5,\n      });\n\n      socketRef.current = newSocket;\n      setSocket(newSocket); // Trigger re-render để các component con có thể sử dụng socket\n\n      // Listen to connection events\n      newSocket.on('connect', () => {\n        console.log('✅ Socket.IO connected successfully!', newSocket.id);\n        setConnected(true);\n      });\n\n      newSocket.on('disconnect', () => {\n        console.log('❌ Socket.IO disconnected');\n        setConnected(false);\n      });\n\n      // Lắng nghe các sự kiện kết nối/lỗi\n      newSocket.on('connect_error', (err) => {\n        console.error('Lỗi kết nối Socket.IO (Admin):', err.message);\n        setConnected(false);\n      });\n    }\n\n    const currentSocket = socketRef.current; // Lấy socket hiện tại\n\n    // 7. 🧠 KHÁI NIỆM: \"Dọn dẹp\" (Cleanup)\n    //    TẠI SAO? Khi người dùng \"Đăng xuất\" (ProtectedRoute\n    //    unmounts), chúng ta phải \"ngắt kết nối\" thủ công.\n    //    Nếu không, kết nối sẽ \"lơ lửng\" (zombie connection).\n    return () => {\n      if (currentSocket) {\n        console.log('🔌 Disconnecting socket...');\n        currentSocket.disconnect();\n        socketRef.current = null;\n        setSocket(null);\n        setConnected(false);\n      }\n    };\n  }, []); // 👈 Mảng rỗng `[]` = Chỉ chạy 1 LẦN DUY NHẤT khi mount\n\n  // 8. \"Phát sóng\" (Provide) kết nối cho các \"con\"\n  return (\n    <SocketContext.Provider value={socket}>\n      {children}\n    </SocketContext.Provider>\n  );\n};",
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\hooks\\use-toast.js",
+        "messages": [
+            {
+                "ruleId": "no-unused-vars",
+                "severity": 2,
+                "message": "'actionTypes' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u.",
+                "line": 8,
+                "column": 7,
+                "nodeType": "Identifier",
+                "messageId": "unusedVar",
+                "endLine": 8,
+                "endColumn": 18
+            }
+        ],
+        "suppressedMessages": [],
+        "errorCount": 1,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "source": "\"use client\";\r\n// Inspired by react-hot-toast library\r\nimport * as React from \"react\"\r\n\r\nconst TOAST_LIMIT = 1\r\nconst TOAST_REMOVE_DELAY = 1000000\r\n\r\nconst actionTypes = {\r\n  ADD_TOAST: \"ADD_TOAST\",\r\n  UPDATE_TOAST: \"UPDATE_TOAST\",\r\n  DISMISS_TOAST: \"DISMISS_TOAST\",\r\n  REMOVE_TOAST: \"REMOVE_TOAST\"\r\n}\r\n\r\nlet count = 0\r\n\r\nfunction genId() {\r\n  count = (count + 1) % Number.MAX_SAFE_INTEGER\r\n  return count.toString();\r\n}\r\n\r\nconst toastTimeouts = new Map()\r\n\r\nconst addToRemoveQueue = (toastId) => {\r\n  if (toastTimeouts.has(toastId)) {\r\n    return\r\n  }\r\n\r\n  const timeout = setTimeout(() => {\r\n    toastTimeouts.delete(toastId)\r\n    dispatch({\r\n      type: \"REMOVE_TOAST\",\r\n      toastId: toastId,\r\n    })\r\n  }, TOAST_REMOVE_DELAY)\r\n\r\n  toastTimeouts.set(toastId, timeout)\r\n}\r\n\r\nexport const reducer = (state, action) => {\r\n  switch (action.type) {\r\n    case \"ADD_TOAST\":\r\n      return {\r\n        ...state,\r\n        toasts: [action.toast, ...state.toasts].slice(0, TOAST_LIMIT),\r\n      };\r\n\r\n    case \"UPDATE_TOAST\":\r\n      return {\r\n        ...state,\r\n        toasts: state.toasts.map((t) =>\r\n          t.id === action.toast.id ? { ...t, ...action.toast } : t),\r\n      };\r\n\r\n    case \"DISMISS_TOAST\": {\r\n      const { toastId } = action\r\n\r\n      // ! Side effects ! - This could be extracted into a dismissToast() action,\r\n      // but I'll keep it here for simplicity\r\n      if (toastId) {\r\n        addToRemoveQueue(toastId)\r\n      } else {\r\n        state.toasts.forEach((toast) => {\r\n          addToRemoveQueue(toast.id)\r\n        })\r\n      }\r\n\r\n      return {\r\n        ...state,\r\n        toasts: state.toasts.map((t) =>\r\n          t.id === toastId || toastId === undefined\r\n            ? {\r\n                ...t,\r\n                open: false,\r\n              }\r\n            : t),\r\n      };\r\n    }\r\n    case \"REMOVE_TOAST\":\r\n      if (action.toastId === undefined) {\r\n        return {\r\n          ...state,\r\n          toasts: [],\r\n        }\r\n      }\r\n      return {\r\n        ...state,\r\n        toasts: state.toasts.filter((t) => t.id !== action.toastId),\r\n      };\r\n  }\r\n}\r\n\r\nconst listeners = []\r\n\r\nlet memoryState = { toasts: [] }\r\n\r\nfunction dispatch(action) {\r\n  memoryState = reducer(memoryState, action)\r\n  listeners.forEach((listener) => {\r\n    listener(memoryState)\r\n  })\r\n}\r\n\r\nfunction toast({\r\n  ...props\r\n}) {\r\n  const id = genId()\r\n\r\n  const update = (props) =>\r\n    dispatch({\r\n      type: \"UPDATE_TOAST\",\r\n      toast: { ...props, id },\r\n    })\r\n  const dismiss = () => dispatch({ type: \"DISMISS_TOAST\", toastId: id })\r\n\r\n  dispatch({\r\n    type: \"ADD_TOAST\",\r\n    toast: {\r\n      ...props,\r\n      id,\r\n      open: true,\r\n      onOpenChange: (open) => {\r\n        if (!open) dismiss()\r\n      },\r\n    },\r\n  })\r\n\r\n  return {\r\n    id: id,\r\n    dismiss,\r\n    update,\r\n  }\r\n}\r\n\r\nfunction useToast() {\r\n  const [state, setState] = React.useState(memoryState)\r\n\r\n  React.useEffect(() => {\r\n    listeners.push(setState)\r\n    return () => {\r\n      const index = listeners.indexOf(setState)\r\n      if (index > -1) {\r\n        listeners.splice(index, 1)\r\n      }\r\n    };\r\n  }, [state])\r\n\r\n  return {\r\n    ...state,\r\n    toast,\r\n    dismiss: (toastId) => dispatch({ type: \"DISMISS_TOAST\", toastId }),\r\n  };\r\n}\r\n\r\nexport { useToast, toast }\r\n",
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\hooks\\useNotificationSound.js",
+        "messages": [
+            {
+                "ruleId": "no-unused-vars",
+                "severity": 2,
+                "message": "'error' is defined but never used.",
+                "line": 10,
+                "column": 15,
+                "nodeType": "Identifier",
+                "messageId": "unusedVar",
+                "endLine": 10,
+                "endColumn": 20,
+                "suggestions": [
+                    {
+                        "messageId": "removeVar",
+                        "data": {
+                            "varName": "error"
+                        },
+                        "fix": {
+                            "range": [
+                                304,
+                                309
+                            ],
+                            "text": ""
+                        },
+                        "desc": "Remove unused variable 'error'."
+                    }
+                ]
+            }
+        ],
+        "suppressedMessages": [],
+        "errorCount": 1,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "source": "export const useNotificationSound = () => {\r\n  const play = () => {\r\n    // Ưu tiên 1: Chơi file MP3 nếu có (User yêu cầu)\r\n    const audio = new Audio('/sounds/notification.mp3');\r\n    \r\n    audio.play()\r\n      .then(() => {\r\n        console.log('🔊 Playing custom MP3 sound');\r\n      })\r\n      .catch((error) => {\r\n        // Ưu tiên 2: Fallback sang Web Audio API (Melody dễ chịu hơn)\r\n        console.log('MP3 not found or blocked, playing fallback melody');\r\n        playFallbackMelody();\r\n      });\r\n  };\r\n\r\n  const playFallbackMelody = () => {\r\n    try {\r\n      const audioContext = new (window.AudioContext || window.webkitAudioContext)();\r\n      \r\n      if (audioContext.state === 'suspended') {\r\n        audioContext.resume();\r\n      }\r\n\r\n      const now = audioContext.currentTime;\r\n      \r\n      // Tạo melody: C5 - E5 - G5 - C6 (Arpeggio tươi vui)\r\n      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6\r\n      \r\n      notes.forEach((freq, index) => {\r\n        const oscillator = audioContext.createOscillator();\r\n        const gainNode = audioContext.createGain();\r\n        \r\n        oscillator.connect(gainNode);\r\n        gainNode.connect(audioContext.destination);\r\n        \r\n        oscillator.type = 'sine';\r\n        oscillator.frequency.value = freq;\r\n        \r\n        const startTime = now + (index * 0.1); // Cách nhau 100ms\r\n        const duration = 0.3;\r\n        \r\n        gainNode.gain.setValueAtTime(0.0, startTime);\r\n        gainNode.gain.linearRampToValueAtTime(0.2, startTime + 0.05); // Fade in\r\n        gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration); // Fade out\r\n        \r\n        oscillator.start(startTime);\r\n        oscillator.stop(startTime + duration);\r\n      });\r\n\r\n    } catch (error) {\r\n      console.error('Fallback sound failed:', error);\r\n    }\r\n  };\r\n\r\n  return { play };\r\n};\r\n",
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\hooks\\useSocket.js",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\i18n.js",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\layouts\\AdminLayout.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\layouts\\RootLayout.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\lib\\translations.js",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\lib\\utils.js",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\main.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\pages\\Account.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\pages\\Dashboard.jsx",
+        "messages": [
+            {
+                "ruleId": "no-unused-vars",
+                "severity": 2,
+                "message": "'t' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u.",
+                "line": 15,
+                "column": 11,
+                "nodeType": "Identifier",
+                "messageId": "unusedVar",
+                "endLine": 15,
+                "endColumn": 12,
+                "suggestions": [
+                    {
+                        "messageId": "removeVar",
+                        "data": {
+                            "varName": "t"
+                        },
+                        "fix": {
+                            "range": [
+                                777,
+                                808
+                            ],
+                            "text": ""
+                        },
+                        "desc": "Remove unused variable 't'."
+                    }
+                ]
+            },
+            {
+                "ruleId": "react-hooks/exhaustive-deps",
+                "severity": 1,
+                "message": "React Hook useEffect has a missing dependency: 'fetchDashboardData'. Either include it or remove the dependency array.",
+                "line": 35,
+                "column": 6,
+                "nodeType": "ArrayExpression",
+                "endLine": 35,
+                "endColumn": 8,
+                "suggestions": [
+                    {
+                        "desc": "Update the dependencies array to be: [fetchDashboardData]",
+                        "fix": {
+                            "range": [
+                                1311,
+                                1313
+                            ],
+                            "text": "[fetchDashboardData]"
+                        }
+                    }
+                ]
+            },
+            {
+                "ruleId": "react-hooks/exhaustive-deps",
+                "severity": 1,
+                "message": "React Hook useEffect has a missing dependency: 'fetchRevenueData'. Either include it or remove the dependency array.",
+                "line": 39,
+                "column": 6,
+                "nodeType": "ArrayExpression",
+                "endLine": 39,
+                "endColumn": 21,
+                "suggestions": [
+                    {
+                        "desc": "Update the dependencies array to be: [fetchRevenueData, revenuePeriod]",
+                        "fix": {
+                            "range": [
+                                1370,
+                                1385
+                            ],
+                            "text": "[fetchRevenueData, revenuePeriod]"
+                        }
+                    }
+                ]
+            }
+        ],
+        "suppressedMessages": [],
+        "errorCount": 1,
+        "fatalErrorCount": 0,
+        "warningCount": 2,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "source": "import { useEffect, useState } from 'react';\r\nimport { useTranslation } from 'react-i18next';\r\nimport StatsCard from '@/components/dashboard/StatsCard';\r\nimport StatsCardSkeleton from '@/components/dashboard/StatsCardSkeleton';\r\nimport { Skeleton } from '@/components/ui/skeleton';\r\nimport RevenueChart from '@/components/dashboard/RevenueChart';\r\nimport ActiveOrdersList from '@/components/dashboard/ActiveOrdersList';\r\nimport TopItemsTable from '@/components/dashboard/TopItemsTable';\r\nimport TableMap from '@/components/dashboard/TableMap';\r\nimport dashboardService from '@/services/dashboardService';\r\nimport { DollarSign, ShoppingCart, Users, TrendingUp } from 'lucide-react';\r\nimport { useToast } from '@/hooks/use-toast';\r\n\r\nexport default function DashboardPage() {\r\n  const { t } = useTranslation();\r\n  const { toast } = useToast();\r\n  \r\n  const [stats, setStats] = useState({\r\n    todayRevenue: 0,\r\n    todayOrders: 0,\r\n    occupiedTables: 0,\r\n    topItem: null,\r\n    yesterdayRevenue: 0,\r\n    yesterdayOrders: 0,\r\n    revenueChangePercent: 0,\r\n    ordersChangeDelta: 0,\r\n  });\r\n  \r\n  const [chartData, setChartData] = useState([]);\r\n  const [loading, setLoading] = useState(true);\r\n  const [revenuePeriod, setRevenuePeriod] = useState('week');\r\n\r\n  useEffect(() => {\r\n    fetchDashboardData();\r\n  }, []);\r\n\r\n  useEffect(() => {\r\n    fetchRevenueData();\r\n  }, [revenuePeriod]);\r\n\r\n  const fetchDashboardData = async () => {\r\n    setLoading(true);\r\n    try {\r\n      const [statsData, revenueData] = await Promise.all([\r\n        dashboardService.fetchDashboardStats(),\r\n        dashboardService.fetchRevenueChart(revenuePeriod),\r\n      ]);\r\n\r\n      setStats(statsData);\r\n      setChartData(revenueData);\r\n    } catch (error) {\r\n      console.error('Error fetching dashboard data:', error);\r\n      toast({\r\n        title: 'Lỗi',\r\n        description: 'Không thể tải dữ liệu dashboard. Vui lòng thử lại.',\r\n        variant: 'destructive',\r\n      });\r\n    } finally {\r\n      setLoading(false);\r\n    }\r\n  };\r\n\r\n  const fetchRevenueData = async () => {\r\n    try {\r\n      const revenueData = await dashboardService.fetchRevenueChart(revenuePeriod);\r\n      setChartData(revenueData);\r\n    } catch (error) {\r\n      console.error('Error fetching revenue data:', error);\r\n    }\r\n  };\r\n\r\n  const handlePeriodChange = (newPeriod) => {\r\n    setRevenuePeriod(newPeriod);\r\n  };\r\n\r\n  const formatCurrency = (amount) => {\r\n    return `${amount.toLocaleString('vi-VN')}đ`;\r\n  };\r\n\r\n  const getTrend = (current, previous) => {\r\n    if (current > previous) return 'up';\r\n    if (current < previous) return 'down';\r\n    return 'neutral';\r\n  };\r\n\r\n  const formatPercentage = (percent) => {\r\n    const sign = percent > 0 ? '+' : '';\r\n    return `${sign}${percent}%`;\r\n  };\r\n\r\n  const formatDelta = (delta) => {\r\n    const sign = delta > 0 ? '+' : '';\r\n    return `${sign}${delta}`;\r\n  };\r\n\r\n  if (loading) {\r\n    return (\r\n      <div className=\"flex flex-col gap-4\">\r\n        <Skeleton className=\"h-9 w-48\" />\r\n        \r\n        <div className=\"grid gap-4 md:grid-cols-2 lg:grid-cols-4\">\r\n          {[...Array(4)].map((_, i) => (\r\n            <StatsCardSkeleton key={i} />\r\n          ))}\r\n        </div>\r\n\r\n        <Skeleton className=\"h-80 w-full\" />\r\n\r\n        <div className=\"mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4\">\r\n          <Skeleton className=\"h-96 w-full\" />\r\n          <Skeleton className=\"h-96 w-full\" />\r\n        </div>\r\n\r\n        <div className=\"mt-8\">\r\n          <Skeleton className=\"h-64 w-full\" />\r\n        </div>\r\n      </div>\r\n    );\r\n  }\r\n\r\n  const revenueTrend = getTrend(stats.todayRevenue, stats.yesterdayRevenue);\r\n  const ordersTrend = getTrend(stats.todayOrders, stats.yesterdayOrders);\r\n\r\n  const revenueComparison = stats.revenueChangePercent !== undefined \r\n    ? `${formatPercentage(stats.revenueChangePercent)} so với hôm qua`\r\n    : '';\r\n  const ordersComparison = stats.ordersChangeDelta !== undefined \r\n    ? `${formatDelta(stats.ordersChangeDelta)} đơn`\r\n    : '';\r\n\r\n  return (\r\n    <div className=\"flex flex-col gap-4 animate-in fade-in duration-500\">\r\n      <h1 className=\"text-3xl font-bold text-foreground\">Dashboard</h1>\r\n      \r\n      <div className=\"grid gap-4 md:grid-cols-2 lg:grid-cols-4\">\r\n        <StatsCard\r\n          title=\"Doanh thu hôm nay\"\r\n          value={formatCurrency(stats.todayRevenue)}\r\n          icon={DollarSign}\r\n          description=\"Tổng từ các đơn đã thanh toán\"\r\n          trend={revenueTrend}\r\n          comparisonText={revenueComparison}\r\n        />\r\n        \r\n        <StatsCard\r\n          title=\"Đơn hàng hôm nay\"\r\n          value={stats.todayOrders}\r\n          icon={ShoppingCart}\r\n          description=\"Tất cả đơn hàng trong ngày\"\r\n          trend={ordersTrend}\r\n          comparisonText={ordersComparison}\r\n        />\r\n        \r\n        <StatsCard\r\n          title=\"Bàn đang phục vụ\"\r\n          value={stats.occupiedTables}\r\n          icon={Users}\r\n          description=\"Số bàn hiện có khách\"\r\n        />\r\n        \r\n        <StatsCard\r\n          title=\"Món bán chạy\"\r\n          value={stats.topItem?.name || 'Chưa có dữ liệu'}\r\n          icon={TrendingUp}\r\n          description={stats.topItem ? `Đã bán ${stats.topItem.totalSold} phần` : ''}\r\n        />\r\n      </div>\r\n\r\n      <RevenueChart \r\n        data={chartData} \r\n        period={revenuePeriod}\r\n        onPeriodChange={handlePeriodChange}\r\n      />\r\n      \r\n      <div className=\"mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4\">\r\n        <ActiveOrdersList />\r\n        <TopItemsTable />\r\n      </div>\r\n\r\n      <div className=\"mt-8\">\r\n        <TableMap />\r\n      </div>\r\n    </div>\r\n  );\r\n}",
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\pages\\Login.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\pages\\ManageCategories.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\pages\\ManageMenu.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\pages\\ManageOrders.jsx",
+        "messages": [
+            {
+                "ruleId": "react-hooks/exhaustive-deps",
+                "severity": 1,
+                "message": "React Hook useEffect has a missing dependency: 'clearNotifications'. Either include it or remove the dependency array.",
+                "line": 118,
+                "column": 6,
+                "nodeType": "ArrayExpression",
+                "endLine": 118,
+                "endColumn": 8,
+                "suggestions": [
+                    {
+                        "desc": "Update the dependencies array to be: [clearNotifications]",
+                        "fix": {
+                            "range": [
+                                3986,
+                                3988
+                            ],
+                            "text": "[clearNotifications]"
+                        }
+                    }
+                ]
+            },
+            {
+                "ruleId": "react-hooks/exhaustive-deps",
+                "severity": 1,
+                "message": "React Hook useEffect has a missing dependency: 't'. Either include it or remove the dependency array.",
+                "line": 205,
+                "column": 6,
+                "nodeType": "ArrayExpression",
+                "endLine": 205,
+                "endColumn": 34,
+                "suggestions": [
+                    {
+                        "desc": "Update the dependencies array to be: [socket, queryClient, toast, t]",
+                        "fix": {
+                            "range": [
+                                6894,
+                                6922
+                            ],
+                            "text": "[socket, queryClient, toast, t]"
+                        }
+                    }
+                ]
+            },
+            {
+                "ruleId": "react-hooks/exhaustive-deps",
+                "severity": 1,
+                "message": "React Hook useMemo has an unnecessary dependency: 'i18n.language'. Either exclude it or remove the dependency array.",
+                "line": 351,
+                "column": 6,
+                "nodeType": "ArrayExpression",
+                "endLine": 351,
+                "endColumn": 82,
+                "suggestions": [
+                    {
+                        "desc": "Update the dependencies array to be: [allOrders, statusFilter, tableFilter, customerNameSearch, t]",
+                        "fix": {
+                            "range": [
+                                12007,
+                                12083
+                            ],
+                            "text": "[allOrders, statusFilter, tableFilter, customerNameSearch, t]"
+                        }
+                    }
+                ]
+            },
+            {
+                "ruleId": "no-unused-vars",
+                "severity": 2,
+                "message": "'isLoading' is defined but never used.",
+                "line": 699,
+                "column": 44,
+                "nodeType": "Identifier",
+                "messageId": "unusedVar",
+                "endLine": 699,
+                "endColumn": 53,
+                "suggestions": [
+                    {
+                        "messageId": "removeVar",
+                        "data": {
+                            "varName": "isLoading"
+                        },
+                        "fix": {
+                            "range": [
+                                27118,
+                                27129
+                            ],
+                            "text": ""
+                        },
+                        "desc": "Remove unused variable 'isLoading'."
+                    }
+                ]
+            }
+        ],
+        "suppressedMessages": [],
+        "errorCount": 1,
+        "fatalErrorCount": 0,
+        "warningCount": 3,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "source": "import React, { useState, useEffect, useMemo, useRef } from 'react';\nimport { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';\nimport { useSearchParams } from 'react-router-dom';\nimport api from '../services/api';\nimport { useSocket } from '../hooks/useSocket.js';\nimport { useNotification } from '../context/NotificationContext';\nimport { useToast } from \"@/hooks/use-toast\";\nimport { useReactToPrint } from 'react-to-print';\nimport { format } from 'date-fns';\nimport { useTranslation } from 'react-i18next';\n\n// Import components\nimport {\n  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,\n} from '@/components/ui/table';\nimport {\n  Collapsible,\n  CollapsibleContent,\n  CollapsibleTrigger,\n} from \"@/components/ui/collapsible\";\nimport {\n  DropdownMenu,\n  DropdownMenuContent,\n  DropdownMenuItem,\n  DropdownMenuSeparator,\n  DropdownMenuTrigger,\n} from \"@/components/ui/dropdown-menu\";\nimport {\n  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,\n} from \"@/components/ui/select\";\nimport { Button } from '@/components/ui/button';\nimport { Badge } from '@/components/ui/badge';\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';\nimport { translateOrderStatus } from '@/lib/translations';\nimport { cn } from '@/lib/utils';\nimport { Loader2, MoreHorizontal, ChevronDown, Printer, Eye, Clock, Plus, Search } from 'lucide-react';\nimport {\n  Dialog,\n  DialogContent,\n  DialogHeader,\n  DialogTitle,\n  DialogTrigger,\n} from \"@/components/ui/dialog\";\nimport { Input } from '@/components/ui/input';\nimport { Label } from '@/components/ui/label';\n\n// --- CÁC HÀM GỌI API ---\nconst fetchAdminOrders = async () => {\n  const response = await api.get('/api/admin/orders');\n  return response.data;\n};\n\nconst fetchTables = async () => {\n  const response = await api.get('/api/tables');\n  return response.data;\n};\n\nconst fetchMenuItems = async () => {\n  const response = await api.get('/api/menu/all');\n  return response.data;\n};\n\nconst createOrder = async (orderData) => {\n  const response = await api.post('/api/admin/orders/create', orderData);\n  return response.data;\n};\n\nconst updateOrderStatus = async ({ orderId, status }) => {\n  const response = await api.patch(`/api/admin/orders/${orderId}/status`, { status });\n  return response.data;\n};\n\n// --- COMPONENT CHÍNH ---\nexport default function ManageOrdersPage() {\n  const { t, i18n } = useTranslation();\n  const queryClient = useQueryClient();\n  const socket = useSocket();\n  const { toast } = useToast();\n  const { clearNotifications } = useNotification();\n  const [searchParams, setSearchParams] = useSearchParams();\n  const highlightOrderId = searchParams.get('highlightOrder');\n  \n  // State cho filters  \n  const [statusFilter, setStatusFilter] = useState(highlightOrderId ? \"SERVED\" : \"PENDING\");\n  const [tableFilter, setTableFilter] = useState(\"ALL\");\n  const [customerNameSearch, setCustomerNameSearch] = useState(\"\");\n  const [highlightedOrder, setHighlightedOrder] = useState(null);\n  const currentLang = i18n.language === 'ja' ? 'jp' : i18n.language;\n  const statusOptions = ['PENDING', 'COOKING', 'SERVED', 'PAID', 'CANCELLED'];\n  \n  // State cho tạo đơn thủ công\n  const [isCreateOrderOpen, setIsCreateOrderOpen] = useState(false);\n  const [selectedTableId, setSelectedTableId] = useState('');\n  const [customerName, setCustomerName] = useState('');\n  const [selectedItems, setSelectedItems] = useState([]); // [{item_id, quantity}]\n  \n  // --- LOGIC ĐỌC (READ) ---\n  const { data: allOrders, isLoading, isError } = useQuery({\n    queryKey: ['admin_orders'],\n    queryFn: fetchAdminOrders,\n  });\n\n  // Fetch danh sách bàn\n  const { data: tables = [] } = useQuery({\n    queryKey: ['tables'],\n    queryFn: fetchTables,\n  });\n\n  // Fetch danh sách món ăn\n  const { data: menuItems = [] } = useQuery({\n    queryKey: ['menu_items'],\n    queryFn: fetchMenuItems,\n  });\n\n  // Clear notifications khi vào trang này\n  useEffect(() => {\n    clearNotifications();\n  }, []); // Chỉ chạy một lần khi component mount\n\n  // Highlight order khi có highlightOrderId từ URL\n  useEffect(() => {\n    if (highlightOrderId && allOrders) {\n      const order = allOrders.find(o => o.id === parseInt(highlightOrderId));\n      if (order) {\n        // Set filter to show the order\n        setStatusFilter(order.status);\n        setHighlightedOrder(parseInt(highlightOrderId));\n        \n        // Scroll to order after a short delay\n        setTimeout(() => {\n          const element = document.getElementById(`order-${highlightOrderId}`);\n          if (element) {\n            element.scrollIntoView({ behavior: 'smooth', block: 'center' });\n          }\n        }, 300);\n        \n        // Clear highlight after 5 seconds\n        setTimeout(() => {\n          setHighlightedOrder(null);\n          setSearchParams({});\n        }, 5000);\n      }\n    }\n  }, [highlightOrderId, allOrders, setSearchParams]);\n\n  // --- LOGIC \"NGHE\" (SOCKET.IO) ---\n  useEffect(() => {\n    if (!socket) return; \n\n    const handleNewOrder = (newOrder) => {\n      if (!newOrder || !newOrder.id) {\n        console.error('Đơn hàng không hợp lệ:', newOrder);\n        return;\n      }\n      \n      // Cập nhật cache ngay lập tức với đơn hàng mới\n      queryClient.setQueryData(['admin_orders'], (oldOrders) => {\n        if (!oldOrders) return [newOrder];\n        // Kiểm tra xem đơn đã tồn tại chưa (tránh duplicate)\n        const exists = oldOrders.some(order => order.id === newOrder.id);\n        if (exists) {\n          // Nếu đã tồn tại, cập nhật\n          return oldOrders.map(order => \n            order.id === newOrder.id ? newOrder : order\n          );\n        }\n        // Nếu chưa tồn tại, thêm vào đầu danh sách\n        return [newOrder, ...oldOrders];\n      });\n      \n      // Hiển thị toast notification\n      toast({\n        title: t('orders_page.toasts.new_order_title'),\n        description: t('orders_page.toasts.new_order_desc', {\n          table: newOrder.table?.name || t('orders_page.na'),\n          customer: newOrder.customerName || t('orders_page.na'),\n        }),\n        duration: 5000,\n      });\n    };\n    \n    const handleUpdateOrder = (updatedOrder) => {\n      if (!updatedOrder || !updatedOrder.id) {\n        console.error('Đơn hàng cập nhật không hợp lệ:', updatedOrder);\n        return;\n      }\n      \n      // Cập nhật cache với đơn hàng đã được cập nhật\n      queryClient.setQueryData(['admin_orders'], (oldOrders) => {\n        if (!oldOrders) return oldOrders;\n        return oldOrders.map(order => \n          order.id === updatedOrder.id ? updatedOrder : order\n        );\n      });\n    };\n    \n    // Đăng ký listeners\n    socket.on('new_order_received', handleNewOrder);\n    socket.on('order_updated_for_admin', handleUpdateOrder);\n\n    return () => {\n      socket.off('new_order_received', handleNewOrder);\n      socket.off('order_updated_for_admin', handleUpdateOrder);\n    };\n  }, [socket, queryClient, toast]);\n\n  // --- LOGIC TẠO ĐƠN HÀNG THỦ CÔNG ---\n  const createOrderMutation = useMutation({\n    mutationFn: createOrder,\n    onSuccess: () => {\n      toast({\n        title: t('orders_page.toasts.create_success_title'),\n        description: t('orders_page.toasts.create_success_desc'),\n      });\n      queryClient.invalidateQueries({ queryKey: ['admin_orders'] });\n      setIsCreateOrderOpen(false);\n      // Reset form\n      setSelectedTableId('');\n      setCustomerName('');\n      setSelectedItems([]);\n    },\n    onError: (err) => {\n      toast({\n        title: t('orders_page.toasts.error_title'),\n        description: err.response?.data?.message || t('orders_page.toasts.create_error_desc'),\n        variant: \"destructive\",\n      });\n    },\n  });\n\n  // --- LOGIC \"CÔNG NHÂN\" (UPDATE) ---\n  const updateStatusMutation = useMutation({\n    mutationFn: updateOrderStatus,\n    // Optimistic update: Cập nhật UI ngay lập tức trước khi server phản hồi\n    onMutate: async ({ orderId, status }) => {\n      // Hủy các query đang chạy để tránh ghi đè optimistic update\n      await queryClient.cancelQueries({ queryKey: ['admin_orders'] });\n      \n      // Lưu snapshot của data hiện tại để rollback nếu lỗi\n      const previousOrders = queryClient.getQueryData(['admin_orders']);\n      \n      // Lấy thông tin đơn hàng để hiển thị trong toast\n      const currentOrder = previousOrders?.find(order => order.id === orderId);\n      \n      // Optimistic update: Cập nhật status ngay lập tức\n      queryClient.setQueryData(['admin_orders'], (old) => {\n        if (!old) return old;\n        return old.map(order => \n          order.id === orderId \n            ? { ...order, status, updatedAt: new Date().toISOString() }\n            : order\n        );\n      });\n      \n      return { previousOrders, currentOrder };\n    },\n    onSuccess: (data, variables, context) => {\n      // Invalidate queries để đảm bảo data đồng bộ với server\n      queryClient.invalidateQueries({ queryKey: ['admin_orders'] });\n      \n      // Hiển thị toast notification dựa trên trạng thái mới\n      const order = context?.currentOrder;\n      const fallbackValue = t('orders_page.na');\n      const customerInfo = order?.customerName || fallbackValue;\n      const tableInfo = order?.table?.name || fallbackValue;\n      \n      const statusKey = variables.status?.toLowerCase();\n      const toastTitle = t(`orders_page.toasts.status.${statusKey}.title`, {\n        defaultValue: t('orders_page.toasts.status.default.title'),\n      });\n      const toastDescription = t(`orders_page.toasts.status.${statusKey}.desc`, {\n        defaultValue: t('orders_page.toasts.status.default.desc', {\n          customer: customerInfo,\n          table: tableInfo,\n        }),\n        customer: customerInfo,\n        table: tableInfo,\n      });\n\n      toast({\n        title: toastTitle,\n        description: toastDescription,\n        duration: 5000,\n      });\n    },\n    onError: (err, variables, context) => {\n      // Rollback nếu có lỗi\n      if (context?.previousOrders) {\n        queryClient.setQueryData(['admin_orders'], context.previousOrders);\n      }\n      toast({\n        title: t('orders_page.toasts.error_title'),\n        description: err.response?.data?.message || t('orders_page.toasts.update_error_desc'),\n        variant: \"destructive\",\n      });\n    },\n  });\n\n  // --- LOGIC \"LỌC\" & \"NHÓM\" ---\n  const { filteredAndGroupedOrders, tableList, orderCounts } = useMemo(() => {\n    if (!allOrders) return { filteredAndGroupedOrders: {}, tableList: [], orderCounts: {} };\n    \n    // Lọc theo status\n    let filtered = allOrders.filter(order => {\n      if (statusFilter === 'CANCELLED') {\n        return order.status === 'CANCELLED' || order.status === 'DENIED';\n      }\n      return order.status === statusFilter;\n    });\n    \n    // Lọc theo bàn nếu có\n    if (tableFilter !== \"ALL\") {\n      filtered = filtered.filter(order => order.table?.name === tableFilter);\n    }\n    \n    // Lọc theo tên khách hàng nếu có\n    if (customerNameSearch.trim() !== \"\") {\n      const searchTerm = customerNameSearch.trim().toLowerCase();\n      filtered = filtered.filter(order => \n        order.customerName?.toLowerCase().includes(searchTerm)\n      );\n    }\n    \n    // Sắp xếp theo thời gian tạo (mới nhất trước)\n    filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));\n    \n    // Nhóm theo Bàn\n    const grouped = filtered.reduce((acc, order) => {\n      const tableName = order.table?.name || t('orders_page.unknown_table');\n      if (!acc[tableName]) {\n        acc[tableName] = [];\n      }\n      acc[tableName].push(order);\n      return acc;\n    }, {});\n    \n    // Lấy danh sách bàn và đếm số đơn\n    const tables = [...new Set(allOrders.map(o => o.table?.name).filter(Boolean))];\n    const counts = tables.reduce((acc, tableName) => {\n      acc[tableName] = allOrders.filter(o => \n        o.table?.name === tableName && o.status === statusFilter\n      ).length;\n      return acc;\n    }, {});\n    \n    return {\n      filteredAndGroupedOrders: grouped, \n      tableList: tables.sort(),\n      orderCounts: counts\n    };\n  }, [allOrders, statusFilter, tableFilter, customerNameSearch, i18n.language, t]);\n\n  // --- HÀM XỬ LÝ TẠO ĐƠN HÀNG ---\n  const handleAddItem = (itemId) => {\n    const existingItem = selectedItems.find(item => item.item_id === itemId);\n    if (existingItem) {\n      setSelectedItems(selectedItems.map(item =>\n        item.item_id === itemId\n          ? { ...item, quantity: item.quantity + 1 }\n          : item\n      ));\n    } else {\n      setSelectedItems([...selectedItems, { item_id: itemId, quantity: 1 }]);\n    }\n  };\n\n  const handleRemoveItem = (itemId) => {\n    setSelectedItems(selectedItems.filter(item => item.item_id !== itemId));\n  };\n\n  const handleUpdateQuantity = (itemId, quantity) => {\n    if (quantity <= 0) {\n      handleRemoveItem(itemId);\n      return;\n    }\n    setSelectedItems(selectedItems.map(item =>\n      item.item_id === itemId\n        ? { ...item, quantity: parseInt(quantity) }\n        : item\n    ));\n  };\n\n  const handleSubmitOrder = (e) => {\n    e.preventDefault();\n    if (!selectedTableId || !customerName || selectedItems.length === 0) {\n      toast({\n        title: t('orders_page.toasts.error_title'),\n        description: t('orders_page.form.validation_error'),\n        variant: \"destructive\",\n      });\n      return;\n    }\n\n    createOrderMutation.mutate({\n      table_id: selectedTableId,\n      customer_name: customerName,\n      items: selectedItems,\n    });\n  };\n\n  // Tính tổng tiền\n  const totalAmount = useMemo(() => {\n    return selectedItems.reduce((total, selectedItem) => {\n      const menuItem = menuItems.find(item => item.id === selectedItem.item_id);\n      if (menuItem) {\n        return total + (menuItem.price * selectedItem.quantity);\n      }\n      return total;\n    }, 0);\n  }, [selectedItems, menuItems]);\n  \n  if (isLoading) return <div className=\"flex justify-center p-8\"><Loader2 className=\"h-8 w-8 animate-spin\" /></div>;\n  if (isError) return <div className=\"p-4 text-red-500\">{t('orders_page.loading_error')}</div>;\n\n  // --- RENDER ---\n  return (\n    <div className=\"p-4 md:p-8\">\n      {/* FILTER BAR */}\n      <div className=\"flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6\">\n        <h1 className=\"text-3xl font-bold\">{t('orders_page.title')}</h1>\n        \n        <div className=\"flex flex-wrap items-center gap-3\">\n          {/* Tìm kiếm theo tên khách hàng */}\n          <div className=\"flex items-center gap-2\">\n            <span className=\"text-sm font-medium\">{t('orders_page.search_label')}</span>\n            <div className=\"relative\">\n              <Search className=\"absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground\" />\n              <Input\n                placeholder={t('orders_page.search_placeholder')}\n                value={customerNameSearch}\n                onChange={(e) => setCustomerNameSearch(e.target.value)}\n                className=\"w-[200px] pl-8\"\n              />\n            </div>\n          </div>\n\n          <div className=\"flex items-center gap-2\">\n            <span className=\"text-sm font-medium\">{t('orders_page.table_label')}</span>\n            <Select value={tableFilter} onValueChange={setTableFilter}>\n              <SelectTrigger className=\"w-[150px]\">\n                <SelectValue />\n              </SelectTrigger>\n              <SelectContent>\n                <SelectItem value=\"ALL\">{t('orders_page.all_tables')}</SelectItem>\n                {tableList.map(tableName => (\n                  <SelectItem key={tableName} value={tableName}>\n                    {tableName} ({orderCounts[tableName] || 0})\n                  </SelectItem>\n                ))}\n              </SelectContent>\n            </Select>\n          </div>\n          \n          <div className=\"flex items-center gap-2\">\n            <span className=\"text-sm font-medium\">{t('orders_page.status_label')}</span>\n            <Select value={statusFilter} onValueChange={setStatusFilter}>\n              <SelectTrigger className=\"w-[180px]\">\n                <SelectValue />\n              </SelectTrigger>\n              <SelectContent>\n                {statusOptions.map((status) => (\n                  <SelectItem key={status} value={status}>\n                    {translateOrderStatus(status, currentLang).text}\n                  </SelectItem>\n                ))}\n              </SelectContent>\n            </Select>\n          </div>\n\n          {/* Nút tạo đơn thủ công */}\n          <Dialog \n            open={isCreateOrderOpen} \n            onOpenChange={(open) => {\n              setIsCreateOrderOpen(open);\n              if (!open) {\n                // Reset form khi đóng\n                setSelectedTableId('');\n                setCustomerName('');\n                setSelectedItems([]);\n              }\n            }}\n          >\n            <DialogTrigger asChild>\n              <Button>\n                <Plus className=\"mr-2 h-4 w-4\" />\n                {t('orders_page.manual_button')}\n              </Button>\n            </DialogTrigger>\n            <DialogContent className=\"max-w-3xl max-h-[90vh] overflow-y-auto\">\n              <DialogHeader>\n                <DialogTitle>{t('orders_page.manual_dialog_title')}</DialogTitle>\n              </DialogHeader>\n              <form onSubmit={handleSubmitOrder} className=\"space-y-4 mt-4\">\n                {/* Chọn bàn */}\n                <div className=\"space-y-2\">\n                  <Label htmlFor=\"table\">{t('orders_page.form.table')}</Label>\n                  <Select value={selectedTableId} onValueChange={setSelectedTableId} required>\n                    <SelectTrigger>\n                      <SelectValue placeholder={t('orders_page.form.table_placeholder')} />\n                    </SelectTrigger>\n                    <SelectContent>\n                      {tables.filter(table => table.status !== 'HIDDEN').map(table => (\n                        <SelectItem key={table.id} value={table.id.toString()}>\n                          {table.name} ({t('orders_page.form.table_capacity', { capacity: table.capacity })})\n                        </SelectItem>\n                      ))}\n                    </SelectContent>\n                  </Select>\n                </div>\n\n                {/* Tên khách hàng */}\n                <div className=\"space-y-2\">\n                  <Label htmlFor=\"customerName\">{t('orders_page.form.customer')}</Label>\n                  <Input\n                    id=\"customerName\"\n                    value={customerName}\n                    onChange={(e) => setCustomerName(e.target.value)}\n                    placeholder={t('orders_page.form.customer_placeholder')}\n                    required\n                  />\n                </div>\n\n                {/* Chọn món ăn */}\n                <div className=\"space-y-2\">\n                  <Label>{t('orders_page.form.menu')}</Label>\n                  <div className=\"border rounded-lg p-4 max-h-[300px] overflow-y-auto\">\n                    {menuItems.filter(item => item.status === 'AVAILABLE').length === 0 ? (\n                      <p className=\"text-sm text-muted-foreground text-center py-4\">\n                        {t('orders_page.form.no_menu_items')}\n                      </p>\n                    ) : (\n                      <div className=\"space-y-2\">\n                        {menuItems\n                          .filter(item => item.status === 'AVAILABLE')\n                          .map(item => {\n                            const selectedItem = selectedItems.find(si => si.item_id === item.id);\n                            const quantity = selectedItem?.quantity || 0;\n                            return (\n                              <div key={item.id} className=\"flex items-center justify-between p-2 border rounded-md\">\n                                <div className=\"flex items-center gap-3 flex-1\">\n                                  <Avatar className=\"h-10 w-10 rounded-md\">\n                                    <AvatarImage src={item.imageUrl} alt={item.name} />\n                                    <AvatarFallback>{item.name[0]}</AvatarFallback>\n                                  </Avatar>\n                                  <div className=\"flex-1\">\n                                    <p className=\"font-medium\">{item.name}</p>\n                                    <p className=\"text-sm text-muted-foreground\">\n                                      {item.price.toLocaleString('vi-VN')}đ\n                                    </p>\n                                  </div>\n                                </div>\n                                {quantity > 0 ? (\n                                  <div className=\"flex items-center gap-2\">\n                                    <Button\n                                      type=\"button\"\n                                      variant=\"outline\"\n                                      size=\"sm\"\n                                      onClick={() => handleUpdateQuantity(item.id, quantity - 1)}\n                                    >\n                                      -\n                                    </Button>\n                                    <Input\n                                      type=\"number\"\n                                      min=\"1\"\n                                      value={quantity}\n                                      onChange={(e) => handleUpdateQuantity(item.id, parseInt(e.target.value) || 0)}\n                                      className=\"w-16 text-center\"\n                                    />\n                                    <Button\n                                      type=\"button\"\n                                      variant=\"outline\"\n                                      size=\"sm\"\n                                      onClick={() => handleUpdateQuantity(item.id, quantity + 1)}\n                                    >\n                                      +\n                                    </Button>\n                                  </div>\n                                ) : (\n                                  <Button\n                                    type=\"button\"\n                                    variant=\"outline\"\n                                    size=\"sm\"\n                                    onClick={() => handleAddItem(item.id)}\n                                  >\n                                    {t('orders_page.form.add_item')}\n                                  </Button>\n                                )}\n                              </div>\n                            );\n                          })}\n                      </div>\n                    )}\n                  </div>\n                </div>\n\n                {/* Tổng tiền */}\n                {selectedItems.length > 0 && (\n                  <div className=\"border-t pt-4\">\n                    <div className=\"flex justify-between items-center\">\n                      <span className=\"text-lg font-semibold\">{t('orders_page.form.total')}</span>\n                      <span className=\"text-2xl font-bold text-primary\">\n                        {totalAmount.toLocaleString('vi-VN')}đ\n                      </span>\n                    </div>\n                  </div>\n                )}\n\n                {/* Nút submit */}\n                <div className=\"flex justify-end gap-2 pt-4\">\n                  <Button\n                    type=\"button\"\n                    variant=\"outline\"\n                    onClick={() => setIsCreateOrderOpen(false)}\n                  >\n                    {t('common.cancel')}\n                  </Button>\n                  <Button\n                    type=\"submit\"\n                    disabled={createOrderMutation.isLoading || selectedItems.length === 0}\n                  >\n                    {createOrderMutation.isLoading ? (\n                      <>\n                        <Loader2 className=\"mr-2 h-4 w-4 animate-spin\" />\n                        {t('orders_page.form.submitting')}\n                      </>\n                    ) : (\n                      t('orders_page.form.submit')\n                    )}\n                  </Button>\n                </div>\n              </form>\n            </DialogContent>\n          </Dialog>\n        </div>\n      </div>\n\n      {/* BẢNG ĐƠN HÀNG */}\n      <div className=\"rounded-lg overflow-hidden border border-border/60 dark:border-border/30\">\n        <Table className=\"[&_tr]:border-border/70 dark:[&_tr]:border-border/40\">\n          <TableHeader>\n            <TableRow>\n              <TableHead className=\"w-[40px]\"></TableHead>\n              <TableHead>{t('orders_page.table.table_header')}</TableHead>\n              <TableHead>{t('orders_page.table.customer_header')}</TableHead>\n              <TableHead>{t('orders_page.table.time_header')}</TableHead>\n              <TableHead>{t('orders_page.table.handler_header')}</TableHead>\n              <TableHead>{t('orders_page.table.items_header')}</TableHead>\n              <TableHead>{t('orders_page.table.total_header')}</TableHead>\n              <TableHead>{t('orders_page.table.status_header')}</TableHead>\n              <TableHead className=\"text-right\">{t('orders_page.table.actions_header')}</TableHead>\n            </TableRow>\n          </TableHeader>\n          <TableBody>\n            {Object.keys(filteredAndGroupedOrders).length === 0 ? (\n              <TableRow>\n                <TableCell colSpan={9} className=\"text-center h-24 text-muted-foreground\">\n                  {t('orders_page.table.no_orders')}\n                </TableCell>\n              </TableRow>\n            ) : (\n              Object.keys(filteredAndGroupedOrders).map(tableName => {\n                const orders = filteredAndGroupedOrders[tableName];\n                return (\n                  <React.Fragment key={tableName}>\n                    {/* GROUP HEADER - Hiển thị tên bàn và số đơn */}\n                    <TableRow className=\"bg-muted/50 hover:bg-muted/50\">\n                      <TableCell colSpan={9} className=\"font-semibold py-2\">\n                        <div className=\"flex items-center gap-2\">\n                          <span>📋 {tableName}</span>\n                          <Badge variant=\"secondary\" className=\"ml-2\">\n                            {t('orders_page.table.orders_count', { count: orders.length })}\n                          </Badge>\n                        </div>\n                      </TableCell>\n                    </TableRow>\n                    \n                    {/* CÁC ĐƠN HÀNG TRONG BÀN */}\n                    {orders.map(order => (\n                      <OrderRow \n                        key={order.id} \n                        order={order} \n                        onStatusChange={(newStatus) => updateStatusMutation.mutate({ orderId: order.id, status: newStatus })}\n                        isLoading={updateStatusMutation.isLoading}\n                        isHighlighted={highlightedOrder === order.id}\n                      />\n                    ))}\n                  </React.Fragment>\n                );\n              })\n            )}\n          </TableBody>\n        </Table>\n      </div>\n    </div>\n  );\n}\n\n// --- COMPONENT CON: HÀNG ĐƠN HÀNG ---\nconst OrderRow = ({ order, onStatusChange, isLoading, isHighlighted }) => {\n  const [isOpen, setIsOpen] = useState(false);\n  const [showDetailsDialog, setShowDetailsDialog] = useState(false);\n  const [showPrintDialog, setShowPrintDialog] = useState(false);\n  const printRef = useRef(null);\n  const { toast } = useToast();\n  const { t, i18n } = useTranslation();\n\n  // Logic In - mở dialog preview\n  const handlePrint = () => {\n    setShowPrintDialog(true);\n  };\n\n  const reactToPrintFn = useReactToPrint({\n    contentRef: printRef,\n    documentTitle: t('orders_page.receipt.document_title', { id: order.id }),\n    onAfterPrint: () => {\n      toast({\n        title: t('orders_page.toasts.print_success_title'),\n        description: t('orders_page.toasts.print_success_desc', { id: order.id }),\n        duration: 3000,\n      });\n      setShowPrintDialog(false);\n    },\n  });\n\n\n  // Hàm lấy màu badge\n  const getStatusBadgeVariant = (status) => {\n    switch (status) {\n      case 'PENDING': return 'default';\n      case 'COOKING': return 'secondary';\n      case 'SERVED': return 'default';\n      case 'PAID': return 'default';\n      case 'CANCELLED': return 'destructive';\n      case 'DENIED': return 'destructive';\n      default: return 'outline';\n    }\n  };\n  \n  // Hàm lấy 2 chữ cái đầu\n  const getInitials = (name) => name?.split(' ').map((n) => n[0]).join('').toUpperCase() || t('orders_page.initials_placeholder');\n\n  // Lấy translation cho status\n  let currentLang = i18n.language || 'vi';\n  if (currentLang === 'ja') currentLang = 'jp';\n  const statusTranslation = translateOrderStatus(order.status, currentLang);\n\n  return (\n    <Collapsible asChild open={isOpen} onOpenChange={setIsOpen}>\n      <>\n        {/* HÀNG CHÍNH: THÔNG TIN ĐƠN HÀNG */}\n        <TableRow \n          id={`order-${order.id}`}\n          className={cn(\n            \"cursor-pointer hover:bg-muted/50 transition-all\",\n            isHighlighted && \"bg-yellow-100 dark:bg-yellow-900/30 animate-pulse\"\n          )}\n        >\n          <TableCell>\n            <CollapsibleTrigger asChild>\n              <Button variant=\"ghost\" size=\"icon\">\n                <ChevronDown className={cn(\"h-4 w-4 transition-transform\", isOpen && \"rotate-180\")} />\n              </Button>\n            </CollapsibleTrigger>\n          </TableCell>\n          <TableCell className=\"font-medium\">{order.table?.name || t('orders_page.na')}</TableCell>\n          <TableCell>{order.customerName}</TableCell>\n          <TableCell>\n            <div className=\"flex flex-col gap-1\">\n              <div className=\"flex items-center gap-1\">\n                <Clock className=\"h-3 w-3 text-muted-foreground\" />\n                <span className=\"text-xs text-muted-foreground\">{t('orders_page.row.created_label')}</span>\n                <span className=\"text-sm\">{format(new Date(order.createdAt), 'HH:mm dd/MM/yyyy')}</span>\n              </div>\n              {order.updatedAt && new Date(order.updatedAt).getTime() !== new Date(order.createdAt).getTime() && (\n                <div className=\"flex items-center gap-1\">\n                  <Clock className=\"h-3 w-3 text-primary\" />\n                  <span className=\"text-xs text-muted-foreground\">{t('orders_page.row.updated_label')}</span>\n                  <span className=\"text-sm font-medium text-primary\">\n                    {format(new Date(order.updatedAt), 'HH:mm dd/MM/yyyy')}\n                  </span>\n                </div>\n              )}\n            </div>\n          </TableCell>\n          <TableCell>\n            {order.staff ? (\n              <div className=\"flex items-center gap-2\">\n                <Avatar className=\"h-6 w-6\">\n                  <AvatarImage src={order.staff.avatarUrl} alt={order.staff.name} />\n                  <AvatarFallback className=\"text-xs\">\n                    {order.staff.name?.charAt(0).toUpperCase() || t('orders_page.row.staff_initial')}\n                  </AvatarFallback>\n                </Avatar>\n                <span className=\"text-sm\">{order.staff.name}</span>\n              </div>\n            ) : (\n              <span className=\"text-sm text-muted-foreground\">{t('orders_page.row.no_handler')}</span>\n            )}\n          </TableCell>\n          <TableCell>\n            <Badge variant=\"outline\">\n              {t('orders_page.row.items_badge', { count: order.details?.length || 0 })}\n            </Badge>\n          </TableCell>\n          <TableCell className=\"font-bold text-lg\">\n            {order.totalAmount?.toLocaleString('vi-VN')}đ\n          </TableCell>\n          <TableCell>\n            <Badge variant={getStatusBadgeVariant(order.status)}>\n              {statusTranslation.text}\n            </Badge>\n          </TableCell>\n          <TableCell className=\"text-right\">\n            <div className=\"flex items-center justify-end gap-1\">\n              {/* Nút xem chi tiết */}\n              <Dialog open={showDetailsDialog} onOpenChange={setShowDetailsDialog}>\n                <DialogTrigger asChild>\n                  <Button variant=\"ghost\" size=\"icon\" onClick={(e) => e.stopPropagation()}>\n                    <Eye className=\"h-4 w-4\" />\n                  </Button>\n                </DialogTrigger>\n                <DialogContent className=\"max-w-2xl max-h-[80vh] overflow-y-auto\">\n                  <DialogHeader>\n                    <DialogTitle>{t('orders_page.details.title', { id: order.id })}</DialogTitle>\n                  </DialogHeader>\n                  <div className=\"space-y-4 mt-4\">\n                    <div className=\"grid grid-cols-2 gap-4\">\n                      <div>\n                        <p className=\"text-sm text-muted-foreground\">{t('orders_page.details.table')}</p>\n                        <p className=\"font-medium\">{order.table?.name || t('orders_page.na')}</p>\n                      </div>\n                      <div>\n                        <p className=\"text-sm text-muted-foreground\">{t('orders_page.details.customer')}</p>\n                        <p className=\"font-medium\">{order.customerName}</p>\n                      </div>\n                      <div>\n                        <p className=\"text-sm text-muted-foreground\">{t('orders_page.details.created')}</p>\n                        <p className=\"font-medium\">{format(new Date(order.createdAt), 'HH:mm dd/MM/yyyy')}</p>\n                      </div>\n                      <div>\n                        <p className=\"text-sm text-muted-foreground\">{t('orders_page.details.updated')}</p>\n                        <p className=\"font-medium\">\n                          {order.updatedAt && new Date(order.updatedAt).getTime() !== new Date(order.createdAt).getTime() \n                            ? format(new Date(order.updatedAt), 'HH:mm dd/MM/yyyy')\n                            : t('orders_page.details.not_updated')}\n                        </p>\n                      </div>\n                      <div>\n                        <p className=\"text-sm text-muted-foreground\">{t('orders_page.details.handler')}</p>\n                        {order.staff ? (\n                          <div className=\"flex items-center gap-2 mt-1\">\n                            <Avatar className=\"h-6 w-6\">\n                              <AvatarImage src={order.staff.avatarUrl} alt={order.staff.name} />\n                              <AvatarFallback className=\"text-xs\">\n                                {order.staff.name?.charAt(0).toUpperCase() || t('orders_page.row.staff_initial')}\n                              </AvatarFallback>\n                            </Avatar>\n                            <p className=\"font-medium\">{order.staff.name}</p>\n                          </div>\n                        ) : (\n                          <p className=\"font-medium text-muted-foreground\">{t('orders_page.row.no_handler')}</p>\n                        )}\n                      </div>\n        <div>\n                        <p className=\"text-sm text-muted-foreground\">{t('orders_page.details.status')}</p>\n                        <Badge variant={getStatusBadgeVariant(order.status)}>\n                          {statusTranslation.text}\n                        </Badge>\n                      </div>\n        </div>\n                    <div className=\"border-t pt-4\">\n                      <p className=\"text-sm font-semibold mb-2\">{t('orders_page.details.items_title')}</p>\n                      <div className=\"space-y-2\">\n                        {order.details?.map((detail, index) => (\n                          <div key={detail.id} className=\"flex items-center gap-3 p-2 rounded-md bg-muted/50\">\n                            <span className=\"text-sm text-muted-foreground w-6\">{index + 1}.</span>\n            <Avatar className=\"h-10 w-10 rounded-md\">\n              <AvatarImage src={detail.menuItem?.imageUrl} alt={detail.menuItem?.name} />\n                              <AvatarFallback>{getInitials(detail.menuItem?.name)}</AvatarFallback>\n            </Avatar>\n                            <div className=\"flex-grow\">\n                              <span className=\"font-semibold\">{detail.menuItem?.name}</span>\n                              <p className=\"text-sm text-muted-foreground\">\n                                {detail.priceAtOrder?.toLocaleString('vi-VN')}đ x {detail.quantity}\n                              </p>\n                            </div>\n                            <span className=\"font-medium\">\n                              {(detail.priceAtOrder * detail.quantity).toLocaleString('vi-VN')}đ\n                            </span>\n          </div>\n        ))}\n                      </div>\n                    </div>\n                    <div className=\"border-t pt-4 flex justify-between items-center\">\n                      <span className=\"text-lg font-bold\">{t('orders_page.details.total_label')}</span>\n                      <span className=\"text-2xl font-bold text-primary\">\n                        {order.totalAmount?.toLocaleString('vi-VN')}đ\n                      </span>\n                    </div>\n                  </div>\n                </DialogContent>\n              </Dialog>\n\n              {/* Dropdown menu hành động - Ẩn khi đơn đã hủy */}\n              {order.status !== 'CANCELLED' && (\n              <DropdownMenu>\n                <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>\n                  <Button variant=\"ghost\" size=\"icon\">\n                    <MoreHorizontal className=\"h-4 w-4\" />\n                  </Button>\n                </DropdownMenuTrigger>\n                <DropdownMenuContent align=\"end\">\n                  {order.status === 'PENDING' && (\n                    <>\n                      <DropdownMenuItem onClick={() => onStatusChange('COOKING')}>\n                        {t('orders_page.actions.confirm')}\n                      </DropdownMenuItem>\n                      <DropdownMenuSeparator />\n                      <DropdownMenuItem \n                        onClick={() => onStatusChange('CANCELLED')} \n                        className=\"text-red-500\"\n                      >\n                        {t('orders_page.actions.cancel')}\n                      </DropdownMenuItem>\n                    </>\n                  )}\n                  {order.status === 'COOKING' && (\n                    <DropdownMenuItem onClick={() => onStatusChange('SERVED')}>\n                      {t('orders_page.actions.mark_served')}\n                    </DropdownMenuItem>\n                  )}\n                  {order.status === 'SERVED' && (\n                    <>\n                      <DropdownMenuItem onClick={handlePrint}>\n                        {t('orders_page.actions.print_receipt')}\n                      </DropdownMenuItem>\n                      <DropdownMenuSeparator />\n                      <DropdownMenuItem onClick={() => onStatusChange('PAID')}>\n                        {t('orders_page.actions.mark_paid')}\n                      </DropdownMenuItem>\n                    </>\n                  )}\n                  {order.status === 'PAID' && (\n                    <DropdownMenuItem onClick={handlePrint}>\n                      <Printer className=\"mr-2 h-4 w-4\" />\n                      {t('orders_page.actions.print_receipt')}\n                    </DropdownMenuItem>\n                  )}\n                </DropdownMenuContent>\n              </DropdownMenu>\n              )}\n            </div>\n          </TableCell>\n        </TableRow>\n\n        {/* Dialog để in hóa đơn */}\n        <Dialog open={showPrintDialog} onOpenChange={setShowPrintDialog}>\n          <DialogContent className=\"max-w-2xl max-h-[95vh] overflow-y-auto print:overflow-visible\">\n            <DialogHeader className=\"print:hidden\">\n              <DialogTitle className=\"text-center text-xl font-bold\">\n                {t('orders_page.print_preview.dialog_title')}\n              </DialogTitle>\n            </DialogHeader>\n            \n            {/* Preview hóa đơn với border đẹp */}\n            <div className=\"flex justify-center my-4 print:my-0\">\n              <div className=\"border-2 border-dashed border-gray-300 rounded-lg p-4 print:border-none print:p-0\">\n                <div ref={printRef}>\n                  <BillReceipt order={order} />\n                </div>\n              </div>\n            </div>\n            \n            {/* Nút hành động */}\n            <div className=\"flex gap-3 justify-center pt-4 border-t print:hidden\">\n              <Button onClick={reactToPrintFn} size=\"lg\" className=\"flex-1 max-w-xs\">\n                <Printer className=\"mr-2 h-5 w-5\" />\n                {t('orders_page.print_preview.print_button')}\n              </Button>\n              <Button \n                variant=\"outline\" \n                onClick={() => setShowPrintDialog(false)}\n                size=\"lg\"\n                className=\"flex-1 max-w-xs\"\n              >\n                {t('orders_page.print_preview.close_button')}\n              </Button>\n            </div>\n          </DialogContent>\n        </Dialog>\n\n        {/* HÀNG CON: CHI TIẾT MÓN (Collapsible) */}\n        <CollapsibleContent asChild>\n          <TableRow className=\"bg-muted/30 hover:bg-muted/30\">\n            <TableCell colSpan={9} className=\"p-0\">\n              <div className=\"p-4 space-y-2\">\n        \n                <div className=\"grid grid-cols-1 md:grid-cols-2 gap-2\">\n                  {order.details?.map((detail, index) => (\n                    <div key={detail.id} className=\"flex items-center gap-3 p-3 rounded-md bg-background border\">\n                      <span className=\"text-sm text-muted-foreground w-6\">{index + 1}.</span>\n                      <Avatar className=\"h-12 w-12 rounded-md\">\n                        <AvatarImage src={detail.menuItem?.imageUrl} alt={detail.menuItem?.name} />\n                        <AvatarFallback>{getInitials(detail.menuItem?.name)}</AvatarFallback>\n                      </Avatar>\n                      <div className=\"flex-grow\">\n                        <span className=\"font-semibold\">{detail.menuItem?.name}</span>\n                        <p className=\"text-sm text-muted-foreground\">\n                          {detail.priceAtOrder?.toLocaleString('vi-VN')}đ x {detail.quantity}\n                        </p>\n                      </div>\n                      <span className=\"font-medium\">\n                        {(detail.priceAtOrder * detail.quantity).toLocaleString('vi-VN')}đ\n                      </span>\n                    </div>\n                  ))}\n                </div>\n              </div>\n            </TableCell>\n          </TableRow>\n        </CollapsibleContent>\n      </>\n    </Collapsible>\n  );\n};\n\n// --- COMPONENT HÓA ĐƠN ĐỂ IN ---\nconst BillReceipt = ({ order }) => {\n  const { t } = useTranslation();\n  const fallbackValue = t('orders_page.na');\n\n  return (\n    <div style={{ padding: '30px', fontFamily: 'monospace', maxWidth: '80mm', margin: '0 auto' }}>\n      <div style={{ textAlign: 'center', marginBottom: '20px' }}>\n        <h1 style={{ fontSize: '24px', margin: '0' }}>{t('orders_page.receipt.title')}</h1>\n        <h2 style={{ fontSize: '20px', margin: '5px 0' }}>{t('orders_page.receipt.restaurant_name')}</h2>\n        <p style={{ margin: '5px 0' }}>{t('orders_page.receipt.address')}</p>\n        <p style={{ margin: '5px 0' }}>{t('orders_page.receipt.phone')}</p>\n        <hr style={{ border: '1px dashed #000' }} />\n      </div>\n\n      <div style={{ marginBottom: '15px' }}>\n        <p style={{ margin: '5px 0' }}><strong>{t('orders_page.receipt.invoice_number')}</strong> {order.id}</p>\n        <p style={{ margin: '5px 0' }}><strong>{t('orders_page.receipt.table')}</strong> {order.table?.name || fallbackValue}</p>\n        <p style={{ margin: '5px 0' }}><strong>{t('orders_page.receipt.customer')}</strong> {order.customerName || fallbackValue}</p>\n        <p style={{ margin: '5px 0' }}><strong>{t('orders_page.receipt.time')}</strong> {format(new Date(order.createdAt), 'HH:mm dd/MM/yyyy')}</p>\n        {order.staff && (\n          <p style={{ margin: '5px 0' }}><strong>{t('orders_page.receipt.staff')}</strong> {order.staff.name}</p>\n        )}\n        <hr style={{ border: '1px dashed #000' }} />\n      </div>\n\n      <div style={{ marginBottom: '15px' }}>\n        <table style={{ width: '100%', borderCollapse: 'collapse' }}>\n          <thead>\n            <tr style={{ borderBottom: '1px solid #000' }}>\n              <th style={{ textAlign: 'left', padding: '5px' }}>{t('orders_page.receipt.table_header_item')}</th>\n              <th style={{ textAlign: 'center', padding: '5px' }}>{t('orders_page.receipt.table_header_qty')}</th>\n              <th style={{ textAlign: 'right', padding: '5px' }}>{t('orders_page.receipt.table_header_price')}</th>\n              <th style={{ textAlign: 'right', padding: '5px' }}>{t('orders_page.receipt.table_header_total')}</th>\n            </tr>\n          </thead>\n          <tbody>\n            {order.details?.map((detail) => (\n              <tr key={detail.id} style={{ borderBottom: '1px dotted #ccc' }}>\n                <td style={{ padding: '8px 5px' }}>{detail.menuItem?.name}</td>\n                <td style={{ textAlign: 'center', padding: '8px 5px' }}>{detail.quantity}</td>\n                <td style={{ textAlign: 'right', padding: '8px 5px' }}>\n                  {detail.priceAtOrder?.toLocaleString('vi-VN')}đ\n                </td>\n                <td style={{ textAlign: 'right', padding: '8px 5px' }}>\n                  {(detail.priceAtOrder * detail.quantity).toLocaleString('vi-VN')}đ\n                </td>\n              </tr>\n            ))}\n          </tbody>\n        </table>\n        <hr style={{ border: '1px dashed #000' }} />\n      </div>\n\n      <div style={{ marginBottom: '20px' }}>\n        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '18px', fontWeight: 'bold' }}>\n          <span>{t('orders_page.receipt.grand_total')}</span>\n          <span>{order.totalAmount?.toLocaleString('vi-VN')}đ</span>\n        </div>\n      </div>\n\n      <div style={{ textAlign: 'center', marginTop: '30px' }}>\n        <p style={{ margin: '5px 0' }}>{t('orders_page.receipt.thank_you')}</p>\n        <p style={{ margin: '5px 0' }}>{t('orders_page.receipt.see_you')}</p>\n      </div>\n    </div>\n  );\n};\n",
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\pages\\ManageStaff.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\pages\\ManageTables.jsx",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\services\\api.js",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\services\\dashboardService.js",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\src\\store\\authStore.js",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\tailwind.config.js",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "D:\\QR Ordering System\\admin\\vite.config.js",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    }
+]

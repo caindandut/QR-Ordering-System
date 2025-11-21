@@ -56,31 +56,15 @@ export default function CustomerHeader() {
     navigate('/');
   };
 
-  const NavLink = ({ to, icon: Icon, children }) => (
-    <Link to={to}>
-      <Button
-        variant={pathname === to ? 'secondary' : 'ghost'} 
-        className="justify-center w-full md:w-auto"
-      >
-        <Icon className="h-5 w-5 md:mr-2" />
-        <span className="hidden md:inline-block">{children}</span>
-        {/* Chỉ hiện Badge (số lượng) cho Giỏ hàng */}
-        {to === '/order/cart' && totalItems > 0 && (
-          <Badge className="ml-2 hidden md:inline-block">{totalItems}</Badge>
-        )}
-      </Button>
-    </Link>
-  );
-
   return (
     <header className="flex items-center justify-between p-4 border-b border-border sticky top-0 bg-background z-10">
       
       <div className="flex items-center gap-4">
         <h1 className="text-xl font-bold">{t('header.restaurant_name')}</h1>
         <div className="hidden md:flex items-center gap-2">
-          <NavLink to="/order" icon={BookOpen}>{t('header.menu')}</NavLink>
-          <NavLink to="/order/cart" icon={ShoppingCart}>{t('header.cart')}</NavLink>
-          <NavLink to="/order/status" icon={ClipboardList}>{t('header.orders')}</NavLink>
+          <NavLink to="/order" icon={BookOpen} pathname={pathname} totalItems={totalItems}>{t('header.menu')}</NavLink>
+          <NavLink to="/order/cart" icon={ShoppingCart} pathname={pathname} totalItems={totalItems}>{t('header.cart')}</NavLink>
+          <NavLink to="/order/status" icon={ClipboardList} pathname={pathname} totalItems={totalItems}>{t('header.orders')}</NavLink>
         </div>
       </div>
       
@@ -119,3 +103,19 @@ export default function CustomerHeader() {
     </header>
   );
 }
+
+const NavLink = ({ to, icon: Icon, children, pathname, totalItems }) => (
+  <Link to={to}>
+    <Button
+      variant={pathname === to ? 'secondary' : 'ghost'} 
+      className="justify-center w-full md:w-auto"
+    >
+      <Icon className="h-5 w-5 md:mr-2" />
+      <span className="hidden md:inline-block">{children}</span>
+      {/* Chỉ hiện Badge (số lượng) cho Giỏ hàng */}
+      {to === '/order/cart' && totalItems > 0 && (
+        <Badge className="ml-2 hidden md:inline-block">{totalItems}</Badge>
+      )}
+    </Button>
+  </Link>
+);

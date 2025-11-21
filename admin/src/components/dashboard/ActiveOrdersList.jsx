@@ -111,7 +111,7 @@ export default function ActiveOrdersList() {
         title: 'Thành công',
         description: 'Đơn hàng đã được duyệt',
       });
-    } catch (error) {
+    } catch {
       toast({
         title: 'Lỗi',
         description: 'Không thể duyệt đơn hàng',
@@ -130,7 +130,7 @@ export default function ActiveOrdersList() {
         title: 'Thành công',
         description: 'Đơn hàng đã bị từ chối',
       });
-    } catch (error) {
+    } catch {
       toast({
         title: 'Lỗi',
         description: 'Không thể từ chối đơn hàng',
@@ -149,7 +149,7 @@ export default function ActiveOrdersList() {
         title: 'Thành công',
         description: 'Đơn hàng đã được đánh dấu là đã phục vụ',
       });
-    } catch (error) {
+    } catch {
       toast({
         title: 'Lỗi',
         description: 'Không thể cập nhật trạng thái',

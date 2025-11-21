@@ -12,7 +12,6 @@ export const SocketContext = createContext();
 export const SocketProvider = ({ children }) => {
   // Dùng state để trigger re-render khi socket được tạo
   const [socket, setSocket] = useState(null);
-  const [connected, setConnected] = useState(false);
   const socketRef = useRef(null);
 
   // 6. Kết nối khi "Provider" được render
@@ -35,18 +34,15 @@ export const SocketProvider = ({ children }) => {
       // Listen to connection events
       newSocket.on('connect', () => {
         console.log('✅ Socket.IO connected successfully!', newSocket.id);
-        setConnected(true);
       });
 
       newSocket.on('disconnect', () => {
         console.log('❌ Socket.IO disconnected');
-        setConnected(false);
       });
 
       // Lắng nghe các sự kiện kết nối/lỗi
       newSocket.on('connect_error', (err) => {
         console.error('Lỗi kết nối Socket.IO (Admin):', err.message);
-        setConnected(false);
       });
     }
 
@@ -62,7 +58,6 @@ export const SocketProvider = ({ children }) => {
         currentSocket.disconnect();
         socketRef.current = null;
         setSocket(null);
-        setConnected(false);
       }
     };
   }, []); // 👈 Mảng rỗng `[]` = Chỉ chạy 1 LẦN DUY NHẤT khi mount

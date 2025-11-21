@@ -11,27 +11,30 @@ import { useNotificationSound } from '../hooks/useNotificationSound';
 import { useToast } from '@/hooks/use-toast';
 
 // NavItem (sử dụng theme colors)
-const NavItem = ({ to, icon: Icon, children, onClick, badge }) => (
-  <NavLink
-    to={to}
-    end={to === '/'}
-    className={({ isActive }) =>
-      cn(
-        'flex items-center gap-2 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-foreground hover:bg-accent relative',
-        isActive && 'bg-secondary text-foreground font-semibold'
-      )
-    }
-    onClick={onClick}
-  >
-    <Icon className="h-4 w-4" />
-    {children}
-    {badge > 0 && (
-      <span className="ml-auto bg-red-500 text-white text-xs rounded-full h-5 min-w-[20px] px-1.5 flex items-center justify-center font-semibold">
-        {badge}
-      </span>
-    )}
-  </NavLink>
-);
+const NavItem = ({ to, icon, children, onClick, badge }) => {
+  const Icon = icon;
+  return (
+    <NavLink
+      to={to}
+      end={to === '/'}
+      className={({ isActive }) =>
+        cn(
+          'flex items-center gap-2 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-foreground hover:bg-accent relative',
+          isActive && 'bg-secondary text-foreground font-semibold'
+        )
+      }
+      onClick={onClick}
+    >
+      <Icon className="h-4 w-4" />
+      {children}
+      {badge > 0 && (
+        <span className="ml-auto bg-red-500 text-white text-xs rounded-full h-5 min-w-[20px] px-1.5 flex items-center justify-center font-semibold">
+          {badge}
+        </span>
+      )}
+    </NavLink>
+  );
+};
 
 export default function Sidebar({ onLinkClick, isMobileSheet = false }) {
   const user = useAuthStore((state) => state.user);
@@ -40,17 +43,17 @@ export default function Sidebar({ onLinkClick, isMobileSheet = false }) {
   const { play } = useNotificationSound();
   const { toast } = useToast();
 
-  // Fetch pending orders count
-  const fetchPendingCount = async () => {
-    try {
-      const response = await api.get('/api/admin/orders/pending-count');
-      setPendingCount(response.data.count);
-    } catch (error) {
-      console.error('Failed to fetch pending count:', error);
-    }
-  };
-
   useEffect(() => {
+    // Fetch pending orders count
+    const fetchPendingCount = async () => {
+      try {
+        const response = await api.get('/api/admin/orders/pending-count');
+        setPendingCount(response.data.count);
+      } catch (error) {
+        console.error('Failed to fetch pending count:', error);
+      }
+    };
+
     fetchPendingCount();
 
     // Socket.IO listener for new orders
@@ -83,7 +86,7 @@ export default function Sidebar({ onLinkClick, isMobileSheet = false }) {
       });
     });
 
-    socket.on('orderStatusChanged', (data) => {
+    socket.on('orderStatusChanged', () => {
       // Refetch count when order status changes
       fetchPendingCount();
     });
@@ -91,7 +94,7 @@ export default function Sidebar({ onLinkClick, isMobileSheet = false }) {
     return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [play, toast]);
   return (
     <div className="h-full border-r border-border dark:border-white/10 bg-card w-64">
       <div className="flex h-full max-h-screen flex-col gap-2">

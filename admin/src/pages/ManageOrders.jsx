@@ -730,7 +730,6 @@ const OrderRow = ({ order, onStatusChange, isLoading, isHighlighted }) => {
       case 'COOKING': return 'secondary';
       case 'SERVED': return 'default';
       case 'PAID': return 'default';
-      case 'PAID': return 'default';
       case 'CANCELLED': return 'destructive';
       case 'DENIED': return 'destructive';
       default: return 'outline';

@@ -7,7 +7,7 @@ export const useNotificationSound = () => {
       .then(() => {
         console.log('🔊 Playing custom MP3 sound');
       })
-      .catch((error) => {
+      .catch(() => {
         // Ưu tiên 2: Fallback sang Web Audio API (Melody dễ chịu hơn)
         console.log('MP3 not found or blocked, playing fallback melody');
         playFallbackMelody();
