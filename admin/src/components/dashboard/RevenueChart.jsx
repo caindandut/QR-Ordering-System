@@ -1,4 +1,13 @@
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
+import { ChevronDown } from 'lucide-react';
 import {
   LineChart,
   Line,
@@ -11,16 +20,41 @@ import {
 import { format } from 'date-fns';
 
 /**
- * RevenueChart - Component hiển thị biểu đồ doanh thu 7 ngày
+ * RevenueChart - Component hiển thị biểu đồ doanh thu với filter thời gian
  * @param {Array} data - Mảng dữ liệu [{date: 'YYYY-MM-DD', revenue: number}]
+ * @param {string} period - Khoảng thời gian hiện tại ('week' hoặc 'month')
+ * @param {Function} onPeriodChange - Callback khi thay đổi period
  */
-export default function RevenueChart({ data }) {
+export default function RevenueChart({ data, period = 'week', onPeriodChange }) {
+  const periodLabels = {
+    week: 'Tuần này',
+    month: 'Tháng này',
+  };
+
   // Không render nếu không có dữ liệu
   if (!data || data.length === 0) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Doanh thu 7 ngày qua</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle>Doanh thu</CardTitle>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  {periodLabels[period]}
+                  <ChevronDown className="ml-2 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => onPeriodChange('week')}>
+                  Tuần này
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onPeriodChange('month')}>
+                  Tháng này
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="text-muted-foreground text-center py-8">
@@ -54,7 +88,25 @@ export default function RevenueChart({ data }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Doanh thu 7 ngày qua</CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle>Doanh thu</CardTitle>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                {periodLabels[period]}
+                <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => onPeriodChange('week')}>
+                Tuần này
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onPeriodChange('month')}>
+                Tháng này
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </CardHeader>
       <CardContent>
         <div style={{ width: '100%', height: 300 }}>

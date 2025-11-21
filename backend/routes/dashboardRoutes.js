@@ -101,22 +101,37 @@ router.get('/stats', async (req, res) => {
 });
 
 // GET /api/dashboard/revenue-chart
-// Lấy dữ liệu doanh thu 7 ngày gần nhất
+// Lấy dữ liệu doanh thu theo khoảng thời gian
 router.get('/revenue-chart', async (req, res) => {
   try {
-    // 1. Xác định khoảng thời gian 7 ngày
+    const { period = 'week' } = req.query; // 'week' hoặc 'month'
+    
+    // 1. Xác định khoảng thời gian
     const today = new Date();
     today.setHours(23, 59, 59, 999); // Cuối ngày hôm nay
     
-    const sevenDaysAgo = new Date(today);
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
-    sevenDaysAgo.setHours(0, 0, 0, 0);
+    let startDate;
+    let numDays;
+    
+    if (period === 'month') {
+      // Lấy 30 ngày gần nhất
+      startDate = new Date(today);
+      startDate.setDate(today.getDate() - 29);
+      startDate.setHours(0, 0, 0, 0);
+      numDays = 30;
+    } else {
+      // Mặc định: 7 ngày (tuần)
+      startDate = new Date(today);
+      startDate.setDate(today.getDate() - 6);
+      startDate.setHours(0, 0, 0, 0);
+      numDays = 7;
+    }
 
-    // 2. Lấy tất cả orders trong 7 ngày với status PAID
+    // 2. Lấy tất cả orders trong khoảng thời gian với status PAID
     const orders = await prisma.order.findMany({
       where: {
         createdAt: {
-          gte: sevenDaysAgo,
+          gte: startDate,
           lte: today,
         },
         status: 'PAID',
@@ -130,9 +145,9 @@ router.get('/revenue-chart', async (req, res) => {
     // 3. Tạo map theo ngày
     const revenueMap = {};
     
-    // Khởi tạo 7 ngày với revenue = 0
-    for (let i = 0; i < 7; i++) {
-      const date = new Date(sevenDaysAgo);
+    // Khởi tạo các ngày với revenue = 0
+    for (let i = 0; i < numDays; i++) {
+      const date = new Date(startDate);
       date.setDate(date.getDate() + i);
       const dateKey = date.toISOString().split('T')[0]; // Format: YYYY-MM-DD
       revenueMap[dateKey] = 0;

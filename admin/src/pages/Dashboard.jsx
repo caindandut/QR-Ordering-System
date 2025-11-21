@@ -21,11 +21,17 @@ export default function DashboardPage() {
   
   const [chartData, setChartData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [revenuePeriod, setRevenuePeriod] = useState('week'); // 'week' hoặc 'month'
 
   // Fetch dữ liệu khi component mount
   useEffect(() => {
     fetchDashboardData();
   }, []);
+
+  // Fetch lại revenue chart khi period thay đổi
+  useEffect(() => {
+    fetchRevenueData();
+  }, [revenuePeriod]);
 
   const fetchDashboardData = async () => {
     setLoading(true);
@@ -33,7 +39,7 @@ export default function DashboardPage() {
       // Gọi song song 2 API
       const [statsData, revenueData] = await Promise.all([
         dashboardService.fetchDashboardStats(),
-        dashboardService.fetchRevenueChart(),
+        dashboardService.fetchRevenueChart(revenuePeriod),
       ]);
 
       setStats(statsData);
@@ -48,6 +54,19 @@ export default function DashboardPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const fetchRevenueData = async () => {
+    try {
+      const revenueData = await dashboardService.fetchRevenueChart(revenuePeriod);
+      setChartData(revenueData);
+    } catch (error) {
+      console.error('Error fetching revenue data:', error);
+    }
+  };
+
+  const handlePeriodChange = (newPeriod) => {
+    setRevenuePeriod(newPeriod);
   };
 
   // Format số tiền VNĐ
@@ -99,7 +118,11 @@ export default function DashboardPage() {
       </div>
 
       {/* 2. Khu vực Biểu đồ */}
-      <RevenueChart data={chartData} />
+      <RevenueChart 
+        data={chartData} 
+        period={revenuePeriod}
+        onPeriodChange={handlePeriodChange}
+      />
       
       {/* 3. Khu vực Đơn hàng đang xử lý & Top Items - Side by side trên desktop, Stack trên mobile */}
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4">

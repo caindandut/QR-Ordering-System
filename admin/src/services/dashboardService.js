@@ -6,9 +6,11 @@ export const fetchDashboardStats = async () => {
   return response.data;
 };
 
-// Lấy dữ liệu biểu đồ doanh thu 7 ngày
-export const fetchRevenueChart = async () => {
-  const response = await api.get('/api/dashboard/revenue-chart');
+// Lấy dữ liệu biểu đồ doanh thu
+export const fetchRevenueChart = async (period = 'week') => {
+  const response = await api.get('/api/dashboard/revenue-chart', {
+    params: { period }
+  });
   return response.data;
 };
 
