@@ -60,13 +60,13 @@ export default function TableMap() {
   const getStatusColor = (status) => {
     switch (status) {
       case 'AVAILABLE':
-        return 'bg-green-100 border-green-500 hover:bg-green-200';
+        return 'bg-green-100 border-green-500 hover:bg-green-200 dark:bg-green-950/30 dark:border-green-600 dark:hover:bg-green-900/40';
       case 'OCCUPIED':
-        return 'bg-red-100 border-red-500 hover:bg-red-200 cursor-pointer';
+        return 'bg-red-100 border-red-500 hover:bg-red-200 cursor-pointer dark:bg-red-950/30 dark:border-red-600 dark:hover:bg-red-900/40';
       case 'HIDDEN':
-        return 'bg-gray-100 border-gray-400';
+        return 'bg-gray-100 border-gray-400 dark:bg-gray-800/50 dark:border-gray-600';
       default:
-        return 'bg-gray-100 border-gray-300';
+        return 'bg-gray-100 border-gray-300 dark:bg-gray-800/50 dark:border-gray-600';
     }
   };
 
@@ -177,7 +177,7 @@ export default function TableMap() {
                     </Badge>
 
                     {table.status === 'OCCUPIED' && table.currentOrder && (
-                      <div className="w-full mt-2 pt-2 border-t border-gray-300">
+                      <div className="w-full mt-2 pt-2 border-t border-gray-300 dark:border-gray-600">
                         <div className="text-xs text-center">
                           <div className="font-medium truncate">
                             {table.currentOrder.customerName}

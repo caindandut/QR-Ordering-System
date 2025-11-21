@@ -72,7 +72,7 @@ export default function TopItemsTable() {
             </p>
           </div>
         ) : (
-          <div className="rounded-md border">
+          <div className="rounded-md border dark:border-white/10">
             <Table>
               <TableHeader>
                 <TableRow>

@@ -67,7 +67,7 @@ export default function Header() {
   };
 
   return (
-    <header className="flex h-16 items-center border-b border-border bg-background px-4 md:px-6 gap-4">
+    <header className="flex h-16 items-center border-b border-border dark:border-white/10 bg-background px-4 md:px-6 gap-4">
       {/* Nút Hamburger (Chỉ hiện trên Mobile) */}
       <div className="md:hidden">
         <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>

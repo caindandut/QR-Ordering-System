@@ -93,7 +93,7 @@ export default function Sidebar({ onLinkClick, isMobileSheet = false }) {
     };
   }, []);
   return (
-    <div className="h-full border-r border-border bg-card w-64">
+    <div className="h-full border-r border-border dark:border-white/10 bg-card w-64">
       <div className="flex h-full max-h-screen flex-col gap-2">
         
         <div className="flex h-16 items-center justify-between border-b border-border px-6">
