@@ -35,6 +35,14 @@ export const markAsServed = async (orderId) => {
   return response.data;
 };
 
+// Lấy danh sách món bán chạy
+export const fetchTopItems = async (period = 'today', limit = 10) => {
+  const response = await api.get('/api/dashboard/top-items', {
+    params: { period, limit }
+  });
+  return response.data;
+};
+
 const dashboardService = {
   fetchDashboardStats,
   fetchRevenueChart,
@@ -42,6 +50,8 @@ const dashboardService = {
   approveOrder,
   denyOrder,
   markAsServed,
+  fetchTopItems,
 };
 
 export default dashboardService;
+

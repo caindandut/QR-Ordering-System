@@ -224,4 +224,98 @@ router.get('/active-orders', async (req, res) => {
   }
 });
 
+// GET /api/dashboard/top-items
+// Lấy danh sách món ăn bán chạy nhất
+router.get('/top-items', async (req, res) => {
+  try {
+    const { period = 'today', limit = 10 } = req.query;
+    
+    // 1. Xác định khoảng thời gian
+    const now = new Date();
+    let startDate;
+    
+    switch (period) {
+      case 'today':
+        startDate = new Date(now);
+        startDate.setHours(0, 0, 0, 0);
+        break;
+      case 'week':
+        startDate = new Date(now);
+        startDate.setDate(now.getDate() - 7);
+        startDate.setHours(0, 0, 0, 0);
+        break;
+      case 'month':
+        startDate = new Date(now);
+        startDate.setMonth(now.getMonth() - 1);
+        startDate.setHours(0, 0, 0, 0);
+        break;
+      default:
+        startDate = new Date(now);
+        startDate.setHours(0, 0, 0, 0);
+    }
+    
+    // 2. Lấy tất cả OrderDetails trong khoảng thời gian
+    // Chỉ tính các orders đã PAID
+    const orderDetails = await prisma.orderDetail.findMany({
+      where: {
+        order: {
+          status: 'PAID',
+          createdAt: {
+            gte: startDate,
+          },
+        },
+      },
+      include: {
+        menuItem: {
+          select: {
+            id: true,
+            name: true,
+            imageUrl: true,
+            category: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    
+    // 3. Group by menuItemId và tính toán
+    const itemsMap = {};
+    
+    orderDetails.forEach(detail => {
+      const itemId = detail.menuItemId;
+      
+      if (!itemsMap[itemId]) {
+        itemsMap[itemId] = {
+          menuItemId: itemId,
+          name: detail.menuItem.name,
+          imageUrl: detail.menuItem.imageUrl,
+          category: detail.menuItem.category?.name || 'Khác',
+          quantitySold: 0,
+          revenue: 0,
+        };
+      }
+      
+      itemsMap[itemId].quantitySold += detail.quantity;
+      itemsMap[itemId].revenue += detail.priceAtOrder * detail.quantity;
+    });
+    
+    // 4. Chuyển thành array và sắp xếp
+    const topItems = Object.values(itemsMap)
+      .sort((a, b) => b.quantitySold - a.quantitySold)
+      .slice(0, parseInt(limit));
+    
+    res.status(200).json(topItems);
+    
+  } catch (error) {
+    console.error('Top items error:', error);
+    res.status(500).json({
+      message: 'Lỗi khi lấy danh sách món bán chạy',
+      error: error.message
+    });
+  }
+});
+
 export default router;

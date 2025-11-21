@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import StatsCard from '@/components/dashboard/StatsCard';
 import RevenueChart from '@/components/dashboard/RevenueChart';
 import ActiveOrdersList from '@/components/dashboard/ActiveOrdersList';
+import TopItemsTable from '@/components/dashboard/TopItemsTable';
 import dashboardService from '@/services/dashboardService';
 import { DollarSign, ShoppingCart, Users, TrendingUp } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -100,8 +101,11 @@ export default function DashboardPage() {
       {/* 2. Khu vực Biểu đồ */}
       <RevenueChart data={chartData} />
       
-      {/*  3. Khu vực Đơn hàng đang xử lý */}
-      <ActiveOrdersList />
+      {/* 3. Khu vực Đơn hàng đang xử lý & Top Items - Side by side trên desktop, Stack trên mobile */}
+      <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <ActiveOrdersList />
+        <TopItemsTable />
+      </div>
     </div>
   );
 }
