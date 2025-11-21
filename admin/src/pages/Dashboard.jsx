@@ -18,18 +18,20 @@ export default function DashboardPage() {
     todayOrders: 0,
     occupiedTables: 0,
     topItem: null,
+    yesterdayRevenue: 0,
+    yesterdayOrders: 0,
+    revenueChangePercent: 0,
+    ordersChangeDelta: 0,
   });
   
   const [chartData, setChartData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [revenuePeriod, setRevenuePeriod] = useState('week'); // 'week' hoặc 'month'
+  const [revenuePeriod, setRevenuePeriod] = useState('week');
 
-  // Fetch dữ liệu khi component mount
   useEffect(() => {
     fetchDashboardData();
   }, []);
 
-  // Fetch lại revenue chart khi period thay đổi
   useEffect(() => {
     fetchRevenueData();
   }, [revenuePeriod]);
@@ -37,7 +39,6 @@ export default function DashboardPage() {
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
-      // Gọi song song 2 API
       const [statsData, revenueData] = await Promise.all([
         dashboardService.fetchDashboardStats(),
         dashboardService.fetchRevenueChart(revenuePeriod),
@@ -70,9 +71,24 @@ export default function DashboardPage() {
     setRevenuePeriod(newPeriod);
   };
 
-  // Format số tiền VNĐ
   const formatCurrency = (amount) => {
     return `${amount.toLocaleString('vi-VN')}đ`;
+  };
+
+  const getTrend = (current, previous) => {
+    if (current > previous) return 'up';
+    if (current < previous) return 'down';
+    return 'neutral';
+  };
+
+  const formatPercentage = (percent) => {
+    const sign = percent > 0 ? '+' : '';
+    return `${sign}${percent}%`;
+  };
+
+  const formatDelta = (delta) => {
+    const sign = delta > 0 ? '+' : '';
+    return `${sign}${delta}`;
   };
 
   if (loading) {
@@ -83,17 +99,29 @@ export default function DashboardPage() {
     );
   }
 
+  // Tính trend và comparison text
+  const revenueTrend = getTrend(stats.todayRevenue, stats.yesterdayRevenue);
+  const ordersTrend = getTrend(stats.todayOrders, stats.yesterdayOrders);
+
+  const revenueComparison = stats.revenueChangePercent !== undefined 
+    ? `${formatPercentage(stats.revenueChangePercent)} so với hôm qua`
+    : '';
+  const ordersComparison = stats.ordersChangeDelta !== undefined 
+    ? `${formatDelta(stats.ordersChangeDelta)} đơn`
+    : '';
+
   return (
     <div className="flex flex-col gap-4">
       <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
       
-      {/* 1. Khu vực Thẻ Thống kê */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatsCard
           title="Doanh thu hôm nay"
           value={formatCurrency(stats.todayRevenue)}
           icon={DollarSign}
           description="Tổng từ các đơn đã thanh toán"
+          trend={revenueTrend}
+          comparisonText={revenueComparison}
         />
         
         <StatsCard
@@ -101,6 +129,8 @@ export default function DashboardPage() {
           value={stats.todayOrders}
           icon={ShoppingCart}
           description="Tất cả đơn hàng trong ngày"
+          trend={ordersTrend}
+          comparisonText={ordersComparison}
         />
         
         <StatsCard
@@ -118,20 +148,17 @@ export default function DashboardPage() {
         />
       </div>
 
-      {/* 2. Khu vực Biểu đồ */}
       <RevenueChart 
         data={chartData} 
         period={revenuePeriod}
         onPeriodChange={handlePeriodChange}
       />
       
-      {/* 3. Khu vực Đơn hàng đang xử lý & Top Items - Side by side trên desktop, Stack trên mobile */}
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4">
         <ActiveOrdersList />
         <TopItemsTable />
       </div>
 
-      {/* 4. Khu vực Sơ đồ Bàn */}
       <div className="mt-8">
         <TableMap />
       </div>

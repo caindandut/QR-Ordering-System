@@ -83,12 +83,46 @@ router.get('/stats', async (req, res) => {
       };
     }
 
-    // 5. Trả về kết quả
+    // 5. Tính dữ liệu hôm qua để so sánh
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    const yesterdayOrders = await prisma.order.findMany({
+      where: {
+        createdAt: {
+          gte: yesterday,
+          lt: today,
+        },
+      },
+      select: {
+        status: true,
+        totalAmount: true,
+      },
+    });
+
+    const yesterdayRevenue = yesterdayOrders
+      .filter(order => order.status === 'PAID')
+      .reduce((sum, order) => sum + order.totalAmount, 0);
+
+    const yesterdayOrdersCount = yesterdayOrders.length;
+
+    // 6. Tính % thay đổi
+    const revenueChangePercent = yesterdayRevenue > 0 
+      ? ((todayRevenue - yesterdayRevenue) / yesterdayRevenue * 100)
+      : (todayRevenue > 0 ? 100 : 0);
+
+    const ordersChangeDelta = todayOrdersCount - yesterdayOrdersCount;
+
+    // 7. Trả về kết quả
     res.status(200).json({
       todayRevenue,
       todayOrders: todayOrdersCount,
       occupiedTables,
       topItem,
+      yesterdayRevenue,
+      yesterdayOrders: yesterdayOrdersCount,
+      revenueChangePercent: Math.round(revenueChangePercent * 10) / 10, // Round to 1 decimal
+      ordersChangeDelta,
     });
 
   } catch (error) {
