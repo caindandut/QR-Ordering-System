@@ -213,12 +213,18 @@ Sau khi thêm tất cả biến môi trường, bạn nên có:
 
 ### Bước 5: Deploy
 
-1. Click **"Create Web Service"**
+1. Click **"Create Web Service"** (hoặc **"Manual Deploy"** nếu đã có service)
 2. Render sẽ tự động:
    - Clone code từ repository
-   - Chạy build command
+   - Chạy build command: `npm install && npx prisma generate`
    - Deploy service
 3. Chờ quá trình build và deploy hoàn tất (thường mất 3-5 phút)
+
+**⚠️ Lưu ý về Migration:**
+- Build command **KHÔNG** chạy `prisma migrate deploy` (vì database đã có schema)
+- Nếu bạn cần chạy migration mới sau này, có thể:
+  - Dùng Render Shell để chạy migration thủ công
+  - Hoặc thêm script vào package.json và chạy qua Render dashboard
 
 ### Bước 6: Kiểm tra Deployment
 
@@ -251,14 +257,46 @@ Sau khi thêm tất cả biến môi trường, bạn nên có:
 - Nếu vẫn lỗi, thử build command: `npm install --production=false && npx prisma generate`
 
 #### 3. **Lỗi Prisma Migration Failed**
-**Triệu chứng:** `Error: P1001: Can't reach database server` hoặc migration errors
+
+##### 3a. Lỗi P3005: "The database schema is not empty"
+**Triệu chứng:** 
+```
+Error: P3005
+The database schema is not empty. Read more about how to baseline an existing production database
+```
+
+**Nguyên nhân:** Database đã có schema (bảng) nhưng Prisma chưa biết migration nào đã chạy.
+
+**Giải pháp (đã được fix):**
+- ✅ Đã bỏ `prisma migrate deploy` khỏi build command
+- Build command hiện tại: `npm install && npx prisma generate`
+- Migration sẽ không chạy tự động trong build
+
+**Nếu bạn muốn baseline migration (đánh dấu migration đã chạy):**
+
+1. **Cách 1: Baseline thủ công (khuyến nghị)**
+   - Kết nối vào database local hoặc qua Render Shell
+   - Chạy lệnh:
+     ```bash
+     npx prisma migrate resolve --applied 20251103114934_init
+     ```
+   - Lệnh này đánh dấu migration `20251103114934_init` đã được chạy
+
+2. **Cách 2: Dùng Prisma Studio hoặc SQL**
+   - Tạo bảng `_prisma_migrations` nếu chưa có
+   - Insert record cho migration đã chạy
+
+**Lưu ý:** Nếu database đã có đầy đủ schema, bạn không cần chạy migration nữa. Chỉ cần generate Prisma Client là đủ.
+
+##### 3b. Lỗi P1001: "Can't reach database server"
+**Triệu chứng:** `Error: P1001: Can't reach database server`
 
 **Giải pháp:**
 - ✅ **QUAN TRỌNG**: Phải set `DATABASE_URL` trong Environment Variables TRƯỚC KHI deploy
 - Kiểm tra DATABASE_URL có đúng format và có `?sslaccept=strict` không
 - Đảm bảo database `qr_ordering` đã được tạo trên TiDB
 - Kiểm tra password đã được thay thế (không còn `<PASSWORD>`)
-- Nếu migration vẫn fail, có thể tạm thời bỏ `&& npx prisma migrate deploy` khỏi build command và chạy migration thủ công sau
+- Kiểm tra TiDB có cho phép kết nối từ IP của Render không (có thể cần whitelist)
 
 #### 4. **Lỗi Node Version**
 **Triệu chứng:** Version không tương thích
