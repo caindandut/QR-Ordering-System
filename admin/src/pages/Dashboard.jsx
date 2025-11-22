@@ -12,7 +12,7 @@ import { DollarSign, ShoppingCart, Users, TrendingUp } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function DashboardPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { toast } = useToast();
   
   const [stats, setStats] = useState({
@@ -51,8 +51,8 @@ export default function DashboardPage() {
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
       toast({
-        title: 'Lỗi',
-        description: 'Không thể tải dữ liệu dashboard. Vui lòng thử lại.',
+        title: t('dashboard.error_title'),
+        description: t('dashboard.error_load_data'),
         variant: 'destructive',
       });
     } finally {
@@ -122,47 +122,47 @@ export default function DashboardPage() {
   const ordersTrend = getTrend(stats.todayOrders, stats.yesterdayOrders);
 
   const revenueComparison = stats.revenueChangePercent !== undefined 
-    ? `${formatPercentage(stats.revenueChangePercent)} so với hôm qua`
+    ? t('dashboard.revenue_comparison', { percent: formatPercentage(stats.revenueChangePercent) })
     : '';
   const ordersComparison = stats.ordersChangeDelta !== undefined 
-    ? `${formatDelta(stats.ordersChangeDelta)} đơn`
+    ? t('dashboard.orders_comparison', { delta: formatDelta(stats.ordersChangeDelta) })
     : '';
 
   return (
     <div className="flex flex-col gap-4 animate-in fade-in duration-500">
-      <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+      <h1 className="text-3xl font-bold text-foreground">{t('dashboard.title')}</h1>
       
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatsCard
-          title="Doanh thu hôm nay"
+          title={t('dashboard.today_revenue')}
           value={formatCurrency(stats.todayRevenue)}
           icon={DollarSign}
-          description="Tổng từ các đơn đã thanh toán"
+          description={t('dashboard.today_revenue_desc')}
           trend={revenueTrend}
           comparisonText={revenueComparison}
         />
         
         <StatsCard
-          title="Đơn hàng hôm nay"
+          title={t('dashboard.today_orders')}
           value={stats.todayOrders}
           icon={ShoppingCart}
-          description="Tất cả đơn hàng trong ngày"
+          description={t('dashboard.today_orders_desc')}
           trend={ordersTrend}
           comparisonText={ordersComparison}
         />
         
         <StatsCard
-          title="Bàn đang phục vụ"
+          title={t('dashboard.occupied_tables')}
           value={stats.occupiedTables}
           icon={Users}
-          description="Số bàn hiện có khách"
+          description={t('dashboard.occupied_tables_desc')}
         />
         
         <StatsCard
-          title="Món bán chạy"
-          value={stats.topItem?.name || 'Chưa có dữ liệu'}
+          title={t('dashboard.top_item')}
+          value={stats.topItem ? (i18n.language === 'jp' ? (stats.topItem.name_jp || stats.topItem.name) : stats.topItem.name) : t('dashboard.no_data')}
           icon={TrendingUp}
-          description={stats.topItem ? `Đã bán ${stats.topItem.totalSold} phần` : ''}
+          description={stats.topItem ? t('dashboard.top_item_sold', { count: stats.topItem.totalSold }) : ''}
         />
       </div>
 

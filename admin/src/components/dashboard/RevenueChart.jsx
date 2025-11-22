@@ -17,6 +17,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { format } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 
 /**
  * RevenueChart - Component hiển thị biểu đồ doanh thu với filter thời gian
@@ -25,9 +26,11 @@ import { format } from 'date-fns';
  * @param {Function} onPeriodChange - Callback khi thay đổi period
  */
 export default function RevenueChart({ data, period = 'week', onPeriodChange }) {
+  const { t, i18n } = useTranslation();
+  
   const periodLabels = {
-    week: 'Tuần này',
-    month: 'Tháng này',
+    week: t('dashboard.revenue_chart.week'),
+    month: t('dashboard.revenue_chart.month'),
   };
 
   // Không render nếu không có dữ liệu
@@ -36,7 +39,7 @@ export default function RevenueChart({ data, period = 'week', onPeriodChange }) 
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>Doanh thu</CardTitle>
+            <CardTitle>{t('dashboard.revenue_chart.title')}</CardTitle>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm">
@@ -46,10 +49,10 @@ export default function RevenueChart({ data, period = 'week', onPeriodChange }) 
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={() => onPeriodChange('week')}>
-                  Tuần này
+                  {t('dashboard.revenue_chart.week')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => onPeriodChange('month')}>
-                  Tháng này
+                  {t('dashboard.revenue_chart.month')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -57,7 +60,7 @@ export default function RevenueChart({ data, period = 'week', onPeriodChange }) 
         </CardHeader>
         <CardContent>
           <div className="text-muted-foreground text-center py-8">
-            Không có dữ liệu
+            {t('dashboard.revenue_chart.no_data')}
           </div>
         </CardContent>
       </Card>
@@ -88,7 +91,7 @@ export default function RevenueChart({ data, period = 'week', onPeriodChange }) 
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle>Doanh thu</CardTitle>
+          <CardTitle>{t('dashboard.revenue_chart.title')}</CardTitle>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
@@ -98,10 +101,10 @@ export default function RevenueChart({ data, period = 'week', onPeriodChange }) 
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => onPeriodChange('week')}>
-                Tuần này
+                {t('dashboard.revenue_chart.week')}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onPeriodChange('month')}>
-                Tháng này
+                {t('dashboard.revenue_chart.month')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -122,12 +125,12 @@ export default function RevenueChart({ data, period = 'week', onPeriodChange }) 
               />
               <Tooltip 
                 formatter={formatTooltip}
-                labelFormatter={(label) => `Ngày ${label}`}
+                labelFormatter={(label) => t('dashboard.revenue_chart.tooltip_date', { date: label })}
               />
               <Line 
                 type="monotone" 
                 dataKey="doanhThu"
-                name="Doanh thu"
+                name={t('dashboard.revenue_chart.tooltip_revenue')}
                 stroke="#8884d8" 
                 strokeWidth={2}
                 dot={{ fill: '#8884d8', r: 4 }}

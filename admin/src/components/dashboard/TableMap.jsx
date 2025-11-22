@@ -12,11 +12,13 @@ import { Badge } from '@/components/ui/badge';
 import { Utensils, Users, Loader2 } from 'lucide-react';
 import TableDetailsModal from './TableDetailsModal';
 import { io } from 'socket.io-client';
+import { useTranslation } from 'react-i18next';
 
 export default function TableMap() {
   const [selectedTable, setSelectedTable] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [tables, setTables] = useState([]);
+  const { t, i18n } = useTranslation();
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['tables'],
@@ -86,11 +88,11 @@ export default function TableMap() {
   const getStatusLabel = (status) => {
     switch (status) {
       case 'AVAILABLE':
-        return 'Trống';
+        return t('dashboard.table_map.status_available');
       case 'OCCUPIED':
-        return 'Đang phục vụ';
+        return t('dashboard.table_map.status_occupied');
       case 'HIDDEN':
-        return 'Ẩn';
+        return t('dashboard.table_map.status_hidden');
       default:
         return status;
     }
@@ -100,7 +102,7 @@ export default function TableMap() {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Sơ đồ Bàn Ăn</CardTitle>
+          <CardTitle>{t('dashboard.table_map.title')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex justify-center items-center h-64">
@@ -115,11 +117,11 @@ export default function TableMap() {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Sơ đồ Bàn Ăn</CardTitle>
+          <CardTitle>{t('dashboard.table_map.title')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center text-red-500 p-8">
-            Lỗi: Không thể tải dữ liệu bàn ăn
+            {t('dashboard.table_map.error')}
           </div>
         </CardContent>
       </Card>
@@ -132,16 +134,16 @@ export default function TableMap() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Utensils className="h-5 w-5 text-primary" />
-            Sơ đồ Bàn Ăn
+            {t('dashboard.table_map.title')}
           </CardTitle>
           <CardDescription>
-            Nhấn vào bàn đang phục vụ để xem chi tiết đơn hàng
+            {t('dashboard.table_map.description')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           {!tables || tables.length === 0 ? (
             <div className="text-center text-muted-foreground p-8">
-              Chưa có bàn nào được cấu hình
+              {t('dashboard.table_map.empty')}
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -169,7 +171,7 @@ export default function TableMap() {
 
                     <div className="flex items-center gap-1 text-xs text-muted-foreground">
                       <Users className="h-3 w-3" />
-                      <span>{table.capacity} người</span>
+                      <span>{t('dashboard.table_map.capacity', { count: table.capacity })}</span>
                     </div>
 
                     <Badge variant={getStatusBadgeVariant(table.status)}>

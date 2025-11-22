@@ -17,15 +17,19 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Users, Clock } from 'lucide-react';
 import { format } from 'date-fns';
-import { vi } from 'date-fns/locale';
+import { vi, ja } from 'date-fns/locale';
 import { translateOrderStatus } from '@/lib/translations';
+import { useTranslation } from 'react-i18next';
 
 export default function TableDetailsModal({ isOpen, onClose, table }) {
+  const { t, i18n } = useTranslation();
+  
   if (!table || !table.currentOrder) {
     return null;
   }
 
   const order = table.currentOrder;
+  const locale = i18n.language === 'jp' ? ja : vi;
 
   const getStatusVariant = (status) => {
     switch (status) {
@@ -48,37 +52,37 @@ export default function TableDetailsModal({ isOpen, onClose, table }) {
             <span>{table.name}</span>
             <Badge variant="outline" className="ml-2">
               <Users className="h-3 w-3 mr-1" />
-              {table.capacity} chỗ
+              {t('dashboard.table_details.capacity', { count: table.capacity })}
             </Badge>
           </DialogTitle>
           <DialogDescription>
-            Chi tiết đơn hàng hiện tại
+            {t('dashboard.table_details.title')}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4 p-4 border rounded-lg bg-muted/30">
             <div>
-              <div className="text-sm text-muted-foreground">Khách hàng</div>
+              <div className="text-sm text-muted-foreground">{t('dashboard.table_details.customer')}</div>
               <div className="font-semibold">{order.customerName}</div>
             </div>
             <div>
-              <div className="text-sm text-muted-foreground">Thời gian đặt</div>
+              <div className="text-sm text-muted-foreground">{t('dashboard.table_details.order_time')}</div>
               <div className="flex items-center gap-1">
                 <Clock className="h-3 w-3" />
                 <span className="text-sm">
-                  {format(new Date(order.createdAt), 'HH:mm - dd/MM/yyyy', { locale: vi })}
+                  {format(new Date(order.createdAt), 'HH:mm - dd/MM/yyyy', { locale: locale })}
                 </span>
               </div>
             </div>
             <div>
-              <div className="text-sm text-muted-foreground">Trạng thái</div>
+              <div className="text-sm text-muted-foreground">{t('dashboard.table_details.status')}</div>
               <Badge variant={getStatusVariant(order.status)}>
-                {translateOrderStatus(order.status, 'vi').text}
+                {translateOrderStatus(order.status, i18n.language === 'jp' ? 'jp' : 'vi').text}
               </Badge>
             </div>
             <div>
-              <div className="text-sm text-muted-foreground">Tổng tiền</div>
+              <div className="text-sm text-muted-foreground">{t('dashboard.table_details.total')}</div>
               <div className="font-bold text-primary">
                 {order.totalAmount.toLocaleString('vi-VN')}đ
               </div>
@@ -86,15 +90,15 @@ export default function TableDetailsModal({ isOpen, onClose, table }) {
           </div>
 
           <div>
-            <h4 className="font-semibold mb-3">Danh sách món ăn</h4>
+            <h4 className="font-semibold mb-3">{t('dashboard.table_details.items_title')}</h4>
             <div className="rounded-md border">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Món ăn</TableHead>
-                    <TableHead className="text-center">SL</TableHead>
-                    <TableHead className="text-right">Đơn giá</TableHead>
-                    <TableHead className="text-right">Thành tiền</TableHead>
+                    <TableHead>{t('dashboard.table_details.table_item')}</TableHead>
+                    <TableHead className="text-center">{t('dashboard.table_details.table_qty')}</TableHead>
+                    <TableHead className="text-right">{t('dashboard.table_details.table_price')}</TableHead>
+                    <TableHead className="text-right">{t('dashboard.table_details.table_subtotal')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -131,7 +135,7 @@ export default function TableDetailsModal({ isOpen, onClose, table }) {
           </div>
 
           <div className="flex justify-between items-center p-4 border rounded-lg bg-primary/5">
-            <span className="font-semibold text-lg">Tổng cộng</span>
+            <span className="font-semibold text-lg">{t('dashboard.table_details.grand_total')}</span>
             <span className="font-bold text-2xl text-primary">
               {order.totalAmount.toLocaleString('vi-VN')}đ
             </span>

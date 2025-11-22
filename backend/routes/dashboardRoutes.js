@@ -73,6 +73,7 @@ router.get('/stats', async (req, res) => {
         select: {
           id: true,
           name: true,
+          name_jp: true,
           imageUrl: true,
         },
       });
@@ -319,10 +320,12 @@ router.get('/top-items', async (req, res) => {
           select: {
             id: true,
             name: true,
+            name_jp: true,
             imageUrl: true,
             category: {
               select: {
                 name: true,
+                name_jp: true,
               },
             },
           },
@@ -340,8 +343,10 @@ router.get('/top-items', async (req, res) => {
         itemsMap[itemId] = {
           menuItemId: itemId,
           name: detail.menuItem.name,
+          name_jp: detail.menuItem.name_jp,
           imageUrl: detail.menuItem.imageUrl,
           category: detail.menuItem.category?.name || 'Khác',
+          category_jp: detail.menuItem.category?.name_jp || detail.menuItem.category?.name || 'Khác',
           quantitySold: 0,
           revenue: 0,
         };

@@ -11,6 +11,7 @@ import OrderCard from './OrderCard';
 import dashboardService from '@/services/dashboardService';
 import { useToast } from '@/hooks/use-toast';
 import { SocketContext } from '@/context/SocketContext.jsx';
+import { useTranslation } from 'react-i18next';
 
 /**
  * ActiveOrdersList - Component hiển thị danh sách orders đang xử lý
@@ -22,6 +23,7 @@ export default function ActiveOrdersList() {
   const [statusFilter, setStatusFilter] = useState('all');
   const { toast } = useToast();
   const socket = useContext(SocketContext);
+  const { t } = useTranslation();
 
   // Fetch orders
   const fetchOrders = async () => {
@@ -36,8 +38,8 @@ export default function ActiveOrdersList() {
     } catch (error) {
       console.error('Error fetching active orders:', error);
       toast({
-        title: 'Lỗi',
-        description: 'Không thể tải danh sách đơn hàng',
+        title: t('dashboard.active_orders.error_title'),
+        description: t('dashboard.active_orders.error_load'),
         variant: 'destructive',
       });
     } finally {
@@ -65,8 +67,11 @@ export default function ActiveOrdersList() {
       // playNotificationSound();
       
       toast({
-        title: 'Đơn hàng mới',
-        description: `${newOrder.table?.name} - ${newOrder.customerName}`,
+        title: t('dashboard.active_orders.new_order_title'),
+        description: t('dashboard.active_orders.new_order_desc', { 
+          table: newOrder.table?.name || `Bàn ${newOrder.tableId}`, 
+          customer: newOrder.customerName 
+        }),
       });
     };
 
@@ -108,13 +113,13 @@ export default function ActiveOrdersList() {
       setActionLoading(true);
       await dashboardService.approveOrder(orderId);
       toast({
-        title: 'Thành công',
-        description: 'Đơn hàng đã được duyệt',
+        title: t('dashboard.active_orders.approve_success_title'),
+        description: t('dashboard.active_orders.approve_success_desc'),
       });
     } catch {
       toast({
-        title: 'Lỗi',
-        description: 'Không thể duyệt đơn hàng',
+        title: t('dashboard.active_orders.error_title'),
+        description: t('dashboard.active_orders.approve_error_desc'),
         variant: 'destructive',
       });
     } finally {
@@ -127,13 +132,13 @@ export default function ActiveOrdersList() {
       setActionLoading(true);
       await dashboardService.denyOrder(orderId);
       toast({
-        title: 'Thành công',
-        description: 'Đơn hàng đã bị từ chối',
+        title: t('dashboard.active_orders.deny_success_title'),
+        description: t('dashboard.active_orders.deny_success_desc'),
       });
     } catch {
       toast({
-        title: 'Lỗi',
-        description: 'Không thể từ chối đơn hàng',
+        title: t('dashboard.active_orders.error_title'),
+        description: t('dashboard.active_orders.deny_error_desc'),
         variant: 'destructive',
       });
     } finally {
@@ -146,13 +151,13 @@ export default function ActiveOrdersList() {
       setActionLoading(true);
       await dashboardService.markAsServed(orderId);
       toast({
-        title: 'Thành công',
-        description: 'Đơn hàng đã được đánh dấu là đã phục vụ',
+        title: t('dashboard.active_orders.served_success_title'),
+        description: t('dashboard.active_orders.served_success_desc'),
       });
     } catch {
       toast({
-        title: 'Lỗi',
-        description: 'Không thể cập nhật trạng thái',
+        title: t('dashboard.active_orders.error_title'),
+        description: t('dashboard.active_orders.served_error_desc'),
         variant: 'destructive',
       });
     } finally {
@@ -164,18 +169,18 @@ export default function ActiveOrdersList() {
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle>Đơn hàng đang xử lý</CardTitle>
+          <CardTitle>{t('dashboard.active_orders.title')}</CardTitle>
           
           {/* Filter */}
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Lọc theo trạng thái" />
+              <SelectValue placeholder={t('dashboard.active_orders.filter_placeholder')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Tất cả</SelectItem>
-              <SelectItem value="pending">Chờ duyệt</SelectItem>
-              <SelectItem value="cooking">Đang nấu</SelectItem>
-              <SelectItem value="served">Đã phục vụ</SelectItem>
+              <SelectItem value="all">{t('dashboard.active_orders.filter_all')}</SelectItem>
+              <SelectItem value="pending">{t('dashboard.active_orders.filter_pending')}</SelectItem>
+              <SelectItem value="cooking">{t('dashboard.active_orders.filter_cooking')}</SelectItem>
+              <SelectItem value="served">{t('dashboard.active_orders.filter_served')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -184,11 +189,11 @@ export default function ActiveOrdersList() {
       <CardContent>
         {loading ? (
           <div className="text-center py-8 text-muted-foreground">
-            Đang tải...
+            {t('dashboard.active_orders.loading')}
           </div>
         ) : orders.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
-            Không có đơn hàng nào
+            {t('dashboard.active_orders.empty')}
           </div>
         ) : (
           <div className="grid gap-4 lg:grid-cols-2">

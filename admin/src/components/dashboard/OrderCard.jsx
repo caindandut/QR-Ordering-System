@@ -3,7 +3,9 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Clock, User, Utensils } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-import { vi } from 'date-fns/locale';
+import { vi, ja } from 'date-fns/locale';
+import { useTranslation } from 'react-i18next';
+import { translateOrderStatus } from '@/lib/translations';
 
 /**
  * OrderCard - Component hiển thị thông tin một đơn hàng
@@ -14,23 +16,31 @@ import { vi } from 'date-fns/locale';
  * @param {Boolean} loading - Trạng thái đang xử lý
  */
 export default function OrderCard({ order, onApprove, onDeny, onServed, loading }) {
+  const { t, i18n } = useTranslation();
+  
   // Get status badge color
   const getStatusBadge = (status) => {
+    const currentLang = i18n.language === 'jp' ? 'jp' : 'vi';
+    const statusTranslation = translateOrderStatus(status, currentLang);
     const statusMap = {
-      PENDING: { label: 'Chờ duyệt', className: 'bg-yellow-500' },
-      COOKING: { label: 'Đang nấu', className: 'bg-blue-500' },
-      SERVED: { label: 'Đã phục vụ', className: 'bg-green-500' },
-      DENIED: { label: 'Đã từ chối', className: 'bg-red-500' },
-      CANCELLED: { label: 'Đã hủy', className: 'bg-red-500' },
-      PAID: { label: 'Đã thanh toán', className: 'bg-gray-500' },
+      PENDING: { className: 'bg-yellow-500' },
+      COOKING: { className: 'bg-blue-500' },
+      SERVED: { className: 'bg-green-500' },
+      DENIED: { className: 'bg-red-500' },
+      CANCELLED: { className: 'bg-red-500' },
+      PAID: { className: 'bg-gray-500' },
     };
-    return statusMap[status] || { label: status, className: 'bg-gray-500' };
+    return { 
+      label: statusTranslation.text, 
+      className: statusMap[status]?.className || 'bg-gray-500' 
+    };
   };
 
   const statusInfo = getStatusBadge(order.status);
+  const locale = i18n.language === 'jp' ? ja : vi;
   const timeAgo = formatDistanceToNow(new Date(order.createdAt), {
     addSuffix: true,
-    locale: vi,
+    locale: locale,
   });
 
   return (
@@ -39,7 +49,7 @@ export default function OrderCard({ order, onApprove, onDeny, onServed, loading 
         <div className="flex items-start justify-between">
           <div className="space-y-1">
             <CardTitle className="text-lg">
-              {order.table?.name || `Bàn ${order.tableId}`}
+              {order.table?.name || t('dashboard.order_card.table', { id: order.tableId })}
             </CardTitle>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <User className="h-3 w-3" />
@@ -55,7 +65,7 @@ export default function OrderCard({ order, onApprove, onDeny, onServed, loading 
         <div className="space-y-2">
           <div className="flex items-center gap-1 text-sm font-medium">
             <Utensils className="h-3 w-3" />
-            <span>Món ăn:</span>
+            <span>{t('dashboard.order_card.items')}</span>
           </div>
           <div className="space-y-1 pl-4">
             {order.details?.map((detail, index) => (
@@ -93,7 +103,7 @@ export default function OrderCard({ order, onApprove, onDeny, onServed, loading 
                 onClick={() => onApprove(order.id)}
                 disabled={loading}
               >
-                Duyệt
+                {t('dashboard.order_card.approve')}
               </Button>
               <Button
                 size="sm"
@@ -102,7 +112,7 @@ export default function OrderCard({ order, onApprove, onDeny, onServed, loading 
                 onClick={() => onDeny(order.id)}
                 disabled={loading}
               >
-                Từ chối
+                {t('dashboard.order_card.deny')}
               </Button>
             </>
           )}
@@ -114,7 +124,7 @@ export default function OrderCard({ order, onApprove, onDeny, onServed, loading 
               onClick={() => onServed(order.id)}
               disabled={loading}
             >
-              Đánh dấu đã phục vụ
+              {t('dashboard.order_card.mark_served')}
             </Button>
           )}
           {order.status === 'SERVED' && (
@@ -124,7 +134,7 @@ export default function OrderCard({ order, onApprove, onDeny, onServed, loading 
               className="w-full"
               disabled
             >
-              Chờ thanh toán
+              {t('dashboard.order_card.waiting_payment')}
             </Button>
           )}
         </div>
