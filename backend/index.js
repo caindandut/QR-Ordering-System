@@ -42,6 +42,15 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/admin/orders', adminOrderRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
+// Health check endpoint for Render
+app.get('/', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    message: 'QR Ordering System API is running',
+    timestamp: new Date().toISOString()
+  });
+});
+
 const httpServer = createServer(app);
 
 export const io = new Server(httpServer, {
