@@ -8,15 +8,16 @@ import {
 import { Button } from '@/components/ui/button';
 import { ChevronDown } from 'lucide-react';
 import {
-  LineChart,
-  Line,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  Area,
+  AreaChart,
 } from 'recharts';
 import { format } from 'date-fns';
+import { vi, ja } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -68,15 +69,33 @@ export default function RevenueChart({ data, period = 'week', onPeriodChange }) 
   }
 
   // Format dữ liệu cho biểu đồ
+  const locale = i18n.language === 'jp' ? ja : vi;
   const chartData = data.map((item) => ({
     name: format(new Date(item.date), 'dd/MM'), // Hiển thị ngắn gọn: 20/11
-    doanhThu: item.revenue, // Đổi key sang tiếng Việt
+    doanhThu: item.revenue,
     fullDate: item.date, // Giữ lại cho tooltip
+    dateObj: new Date(item.date), // Để format trong tooltip
   }));
 
-  // Custom formatter cho tooltip
-  const formatTooltip = (value) => {
-    return `${value.toLocaleString('vi-VN')}đ`;
+  // Custom Tooltip component
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      const formattedDate = format(data.dateObj, 'EEEE, dd MMMM yyyy', { locale });
+      const revenue = payload[0].value;
+      
+      return (
+        <div className="bg-background border border-border rounded-lg shadow-lg p-3">
+          <p className="text-sm font-semibold text-foreground mb-1">
+            {formattedDate}
+          </p>
+          <p className="text-base font-bold text-primary">
+            {t('dashboard.revenue_chart.tooltip_revenue')}: {revenue.toLocaleString('vi-VN')}đ
+          </p>
+        </div>
+      );
+    }
+    return null;
   };
 
   // Custom formatter cho trục Y (hiển thị triệu đồng)
@@ -111,32 +130,39 @@ export default function RevenueChart({ data, period = 'week', onPeriodChange }) 
         </div>
       </CardHeader>
       <CardContent>
-        <div style={{ width: '100%', height: 300 }}>
+        <div style={{ width: '100%', height: 350 }}>
           <ResponsiveContainer>
-            <LineChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" />
+            <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+              <defs>
+                <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#8884d8" stopOpacity={0.3}/>
+                  <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" opacity={0.3} />
               <XAxis 
                 dataKey="name" 
+                stroke="hsl(var(--muted-foreground))"
                 style={{ fontSize: '12px' }}
+                tickLine={false}
               />
               <YAxis 
                 tickFormatter={formatYAxis}
+                stroke="hsl(var(--muted-foreground))"
                 style={{ fontSize: '12px' }}
+                tickLine={false}
               />
-              <Tooltip 
-                formatter={formatTooltip}
-                labelFormatter={(label) => t('dashboard.revenue_chart.tooltip_date', { date: label })}
-              />
-              <Line 
-                type="monotone" 
+              <Tooltip content={<CustomTooltip />} />
+              <Area
+                type="monotone"
                 dataKey="doanhThu"
-                name={t('dashboard.revenue_chart.tooltip_revenue')}
-                stroke="#8884d8" 
-                strokeWidth={2}
-                dot={{ fill: '#8884d8', r: 4 }}
-                activeDot={{ r: 6 }}
+                stroke="#8884d8"
+                strokeWidth={3}
+                fill="url(#colorRevenue)"
+                dot={{ fill: '#8884d8', r: 4, strokeWidth: 2, stroke: '#fff' }}
+                activeDot={{ r: 7, strokeWidth: 2, stroke: '#fff', fill: '#8884d8' }}
               />
-            </LineChart>
+            </AreaChart>
           </ResponsiveContainer>
         </div>
       </CardContent>
