@@ -61,13 +61,14 @@ export default function StaffForm({ onSubmit, isLoading, initialData = null }) {
     mutationFn: uploadImage,
     onSuccess: (data) => {
       setAvatarUrl(data.imageUrl);
-      toast({ title: t('staff_page.upload_success') });
+      toast({ title: t('staff_page.upload_success'), duration: 5000 });
     },
     onError: () => {
       toast({
         title: t('staff_page.upload_error_title'),
         description: t('staff_page.upload_error_desc'),
         variant: "destructive",
+        duration: 5000,
       });
     },
   });

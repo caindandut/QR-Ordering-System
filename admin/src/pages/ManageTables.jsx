@@ -147,7 +147,7 @@ export default function ManageTablesPage() {
       toast({
         title: t('tables_page.success_add_title'),
         description: t('tables_page.success_add_desc'),
-        duration: 3000
+        duration: 5000
       });
       // 5a. BÁO CHO `useQuery` BIẾT DỮ LIỆU ĐÃ CŨ
       queryClient.invalidateQueries({ queryKey: ['tables'] });
@@ -160,6 +160,7 @@ export default function ManageTablesPage() {
         title: t('tables_page.error_title'),
         description: error.response?.data?.message || t('tables_page.error_add_desc'),
         variant: "destructive",
+        duration: 5000,
       });
     },
   });
@@ -170,7 +171,7 @@ export default function ManageTablesPage() {
       toast({ 
         title: t('tables_page.success_update_title'),
         description: t('tables_page.success_update_desc'),
-        duration: 3000 
+        duration: 5000 
       });
       queryClient.invalidateQueries({ queryKey: ['tables'] });
       setIsDialogOpen(false); // Đóng Dialog
@@ -180,6 +181,7 @@ export default function ManageTablesPage() {
         title: t('tables_page.error_title'),
         description: error.response?.data?.message || t('tables_page.error_update_desc'),
         variant: "destructive",
+        duration: 5000,
       });
     },
   });
@@ -189,7 +191,7 @@ export default function ManageTablesPage() {
   const deleteTableMutation = useMutation({
     mutationFn: deleteTable,
     onSuccess: () => {
-      toast({ title: t('tables_page.success_delete_title'), description: t('tables_page.success_delete_desc') });
+      toast({ title: t('tables_page.success_delete_title'), description: t('tables_page.success_delete_desc'), duration: 5000 });
       // 4. "Ảo thuật": Tự làm mới bảng
       queryClient.invalidateQueries({ queryKey: ['tables'] });
       setTableToDelete(null); // Đóng Alert Dialog
@@ -199,6 +201,7 @@ export default function ManageTablesPage() {
         title: t('tables_page.error_title'),
         description: error.response?.data?.message || t('tables_page.error_delete_desc'),
         variant: "destructive",
+        duration: 5000,
       });
       setTableToDelete(null); // Đóng Alert Dialog
     },
@@ -243,7 +246,7 @@ export default function ManageTablesPage() {
     // 2b. Tên file khi lưu PDF
     documentTitle: `QR-Ban-${qrCodeTable?.name || 'qr-code'}`,
     // 2c. (Tùy chọn) Thông báo sau khi in
-    onAfterPrint: () => toast({ title: t('tables_page.print_success') }),
+    onAfterPrint: () => toast({ title: t('tables_page.print_success'), duration: 5000 }),
   });
 
   // --- LOGIC SOCKET.IO CHO REAL-TIME ---

@@ -100,6 +100,7 @@ export default function OrderStatusPage() {
         title: t('status_page.payment.toast_error_title'),
         description: err.response?.data?.message || t('status_page.payment.toast_error_desc'),
         variant: 'destructive',
+        duration: 5000,
       });
     },
   });
@@ -121,7 +122,7 @@ export default function OrderStatusPage() {
       toast({
         title: t('status_page.cancel.toast_success_title'),
         description: t('status_page.cancel.toast_success_desc'),
-        duration: 4000,
+        duration: 5000,
       });
     },
     onError: (err) => {
@@ -129,6 +130,7 @@ export default function OrderStatusPage() {
         title: t('status_page.cancel.toast_error_title'),
         description: err.response?.data?.message || t('status_page.cancel.toast_error_desc'),
         variant: 'destructive',
+        duration: 5000,
       });
     },
   });

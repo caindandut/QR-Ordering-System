@@ -38,7 +38,7 @@ export default function AccountPage() {
     // 3. "ẢO THUẬT" (onSuccess)
     onSuccess: (data) => {
       // `data` là { user: {...} } trả về từ API
-      toast({ title: t('account_page.success_update_title'), description: t('account_page.success_update_desc') });
+      toast({ title: t('account_page.success_update_title'), description: t('account_page.success_update_desc'), duration: 5000 });
       
       // 3a. Cập nhật "bộ não" (Zustand)
       //    -> Header sẽ tự động cập nhật tên mới
@@ -53,6 +53,7 @@ export default function AccountPage() {
         title: t('account_page.error_title'),
         description: error.response?.data?.message || t('account_page.error_update_desc'),
         variant: "destructive",
+        duration: 5000,
       });
     },
   });
@@ -60,7 +61,7 @@ export default function AccountPage() {
   const changePasswordMutation = useMutation({
     mutationFn: changePassword,
     onSuccess: (data) => {
-      toast({ title: t('account_page.success_password_title'), description: data.message });
+      toast({ title: t('account_page.success_password_title'), description: data.message, duration: 5000 });
       // (Không cần invalidateQueries vì không ảnh hưởng Bảng)
       // (Chúng ta cần 1 cách để reset form con)
     },
@@ -69,6 +70,7 @@ export default function AccountPage() {
         title: t('account_page.error_password_title'),
         description: error.response?.data?.message || t('account_page.error_password_desc'),
         variant: "destructive",
+        duration: 5000,
       });
     },
   });

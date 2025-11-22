@@ -81,7 +81,7 @@ export default function ManageCategoriesPage() {
   const addCategoryMutation = useMutation({
     mutationFn: createCategory,
     onSuccess: () => {
-      toast({ title: t('categories_page.success_add_title'), description: t('categories_page.success_add_desc') });
+      toast({ title: t('categories_page.success_add_title'), description: t('categories_page.success_add_desc'), duration: 5000 });
       queryClient.invalidateQueries({ queryKey: ['categories'] });
       setIsFormOpen(false);
     },
@@ -90,6 +90,7 @@ export default function ManageCategoriesPage() {
         title: t('categories_page.error_title'),
         description: error.response?.data?.message || t('categories_page.error_add_desc'),
         variant: "destructive",
+        duration: 5000,
       });
     },
   });
@@ -98,7 +99,7 @@ export default function ManageCategoriesPage() {
   const updateCategoryMutation = useMutation({
     mutationFn: updateCategory,
     onSuccess: () => {
-      toast({ title: t('categories_page.success_update_title'), description: t('categories_page.success_update_desc') });
+      toast({ title: t('categories_page.success_update_title'), description: t('categories_page.success_update_desc'), duration: 5000 });
       queryClient.invalidateQueries({ queryKey: ['categories'] });
       setIsFormOpen(false);
     },
@@ -107,6 +108,7 @@ export default function ManageCategoriesPage() {
         title: t('categories_page.error_title'),
         description: error.response?.data?.message || t('categories_page.error_update_desc'),
         variant: "destructive",
+        duration: 5000,
       });
     },
   });
@@ -115,7 +117,7 @@ export default function ManageCategoriesPage() {
   const deleteCategoryMutation = useMutation({
     mutationFn: deleteCategory,
     onSuccess: () => {
-      toast({ title: t('categories_page.success_delete_title'), description: t('categories_page.success_delete_desc') });
+      toast({ title: t('categories_page.success_delete_title'), description: t('categories_page.success_delete_desc'), duration: 5000 });
       queryClient.invalidateQueries({ queryKey: ['categories'] });
       setCategoryToDelete(null);
     },
@@ -124,6 +126,7 @@ export default function ManageCategoriesPage() {
         title: t('categories_page.error_title'),
         description: error.response?.data?.message || t('categories_page.error_delete_desc'),
         variant: "destructive",
+        duration: 5000,
       });
       setCategoryToDelete(null);
     },

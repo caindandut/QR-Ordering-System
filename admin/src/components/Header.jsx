@@ -45,6 +45,7 @@ export default function Header() {
       toast({
         title: t('header.logout_success_title'),
         description: t('header.logout_success_desc'),
+        duration: 5000,
       });
 
     } catch (error) {
@@ -54,6 +55,7 @@ export default function Header() {
         title: t('header.logout_error_title'),
         description: t('header.logout_error_desc'),
         variant: "destructive",
+        duration: 5000,
       });
     }
     

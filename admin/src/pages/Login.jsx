@@ -47,7 +47,7 @@ export default function LoginPage() {
       toast({
         title: t('login_page.success_title'),
         description: t('login_page.success_desc'),
-        duration: 3000
+        duration: 5000
       });
       navigate('/'); // (Trang '/' là Dashboard của chúng ta)
     } else {
@@ -65,7 +65,8 @@ export default function LoginPage() {
       toast({
         title: t('login_page.error_title'),
         description: errorMessage,
-        variant: "destructive"
+        variant: "destructive",
+        duration: 5000
       });
       // setError(result.error);
     }

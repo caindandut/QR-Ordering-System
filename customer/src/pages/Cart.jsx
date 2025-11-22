@@ -47,6 +47,7 @@ export default function CartPage() {
       toast({
         title: t('cart_page.order_success_title'),
         description: t('cart_page.order_success_desc'),
+        duration: 5000,
       });
       
       // 6a. XÓA SẠCH giỏ hàng
@@ -60,6 +61,7 @@ export default function CartPage() {
         title: t('cart_page.order_failed_title'),
         description: error.message || t('cart_page.order_failed_desc'),
         variant: "destructive",
+        duration: 5000,
       });
     },
   });

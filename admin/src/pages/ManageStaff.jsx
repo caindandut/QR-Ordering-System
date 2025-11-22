@@ -64,7 +64,7 @@ export default function ManageStaffPage() {
   const addStaffMutation = useMutation({
     mutationFn: createStaff,
     onSuccess: () => {
-      toast({ title: t('staff_page.success_add_title'), description: t('staff_page.success_add_desc') });
+      toast({ title: t('staff_page.success_add_title'), description: t('staff_page.success_add_desc'), duration: 5000 });
       queryClient.invalidateQueries({ queryKey: ['staff'] });
       setIsFormOpen(false);
     },
@@ -73,6 +73,7 @@ export default function ManageStaffPage() {
         title: t('staff_page.error_title'),
         description: error.response?.data?.message || t('staff_page.error_add_desc'),
         variant: "destructive",
+        duration: 5000,
       });
     },
   });
@@ -81,7 +82,7 @@ export default function ManageStaffPage() {
   const updateStaffMutation = useMutation({
     mutationFn: updateStaff,
     onSuccess: () => {
-      toast({ title: t('staff_page.success_update_title'), description: t('staff_page.success_update_desc') });
+      toast({ title: t('staff_page.success_update_title'), description: t('staff_page.success_update_desc'), duration: 5000 });
       queryClient.invalidateQueries({ queryKey: ['staff'] }); 
       setIsFormOpen(false);
     },
@@ -90,6 +91,7 @@ export default function ManageStaffPage() {
         title: t('staff_page.error_title'),
         description: error.response?.data?.message || t('staff_page.error_update_desc'),
         variant: "destructive",
+        duration: 5000,
       });
     },
   });
@@ -98,7 +100,7 @@ export default function ManageStaffPage() {
   const deleteStaffMutation = useMutation({
     mutationFn: deleteStaff,
     onSuccess: () => {
-      toast({ title: t('staff_page.success_delete_title'), description: t('staff_page.success_delete_desc') });
+      toast({ title: t('staff_page.success_delete_title'), description: t('staff_page.success_delete_desc'), duration: 5000 });
       queryClient.invalidateQueries({ queryKey: ['staff'] });
       setStaffToDelete(null);
     },
@@ -107,6 +109,7 @@ export default function ManageStaffPage() {
         title: t('staff_page.error_title'),
         description: error.response?.data?.message || t('staff_page.error_delete_desc'),
         variant: "destructive",
+        duration: 5000,
       });
       setStaffToDelete(null);
     },

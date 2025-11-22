@@ -93,13 +93,14 @@ export default function MenuForm({ onSubmit, isLoading, initialData = null }) {
     onSuccess: (data) => {
       // Bước 4c: Khi upload thành công, set URL vào state
       setImageUrl(data.imageUrl);
-      toast({ title: t('menu_page.upload_success_title'), description: t('menu_page.upload_success_desc') });
+      toast({ title: t('menu_page.upload_success_title'), description: t('menu_page.upload_success_desc'), duration: 5000 });
     },
     onError: () => {
       toast({
         title: t('menu_page.upload_error_title'),
         description: t('menu_page.upload_error_desc'),
         variant: "destructive",
+        duration: 5000,
       });
     },
   });

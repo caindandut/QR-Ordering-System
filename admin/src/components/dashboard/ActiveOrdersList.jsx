@@ -41,6 +41,7 @@ export default function ActiveOrdersList() {
         title: t('dashboard.active_orders.error_title'),
         description: t('dashboard.active_orders.error_load'),
         variant: 'destructive',
+        duration: 5000,
       });
     } finally {
       setLoading(false);
@@ -72,6 +73,7 @@ export default function ActiveOrdersList() {
           table: newOrder.table?.name || `Bàn ${newOrder.tableId}`, 
           customer: newOrder.customerName 
         }),
+        duration: 5000,
       });
     };
 
@@ -115,12 +117,14 @@ export default function ActiveOrdersList() {
       toast({
         title: t('dashboard.active_orders.approve_success_title'),
         description: t('dashboard.active_orders.approve_success_desc'),
+        duration: 5000,
       });
     } catch {
       toast({
         title: t('dashboard.active_orders.error_title'),
         description: t('dashboard.active_orders.approve_error_desc'),
         variant: 'destructive',
+        duration: 5000,
       });
     } finally {
       setActionLoading(false);
@@ -134,12 +138,14 @@ export default function ActiveOrdersList() {
       toast({
         title: t('dashboard.active_orders.deny_success_title'),
         description: t('dashboard.active_orders.deny_success_desc'),
+        duration: 5000,
       });
     } catch {
       toast({
         title: t('dashboard.active_orders.error_title'),
         description: t('dashboard.active_orders.deny_error_desc'),
         variant: 'destructive',
+        duration: 5000,
       });
     } finally {
       setActionLoading(false);
@@ -153,12 +159,14 @@ export default function ActiveOrdersList() {
       toast({
         title: t('dashboard.active_orders.served_success_title'),
         description: t('dashboard.active_orders.served_success_desc'),
+        duration: 5000,
       });
     } catch {
       toast({
         title: t('dashboard.active_orders.error_title'),
         description: t('dashboard.active_orders.served_error_desc'),
         variant: 'destructive',
+        duration: 5000,
       });
     } finally {
       setActionLoading(false);

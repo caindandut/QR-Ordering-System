@@ -48,10 +48,10 @@ export default function ProfileForm({ onSubmit, isLoading }) {
     mutationFn: uploadImage,
     onSuccess: (data) => {
       setAvatarUrl(data.imageUrl); // Cập nhật state của Form
-      toast({ title: t('account_page.upload_success') });
+      toast({ title: t('account_page.upload_success'), duration: 5000 });
     },
     onError: () => {
-        toast({ title: t('account_page.upload_error'), variant: "destructive" });
+        toast({ title: t('account_page.upload_error'), variant: "destructive", duration: 5000 });
     },
   });
 

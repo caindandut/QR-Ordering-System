@@ -72,6 +72,7 @@ export default function Sidebar({ onLinkClick, isMobileSheet = false }) {
           title: "Đơn hàng mới! 🔔",
           description: `${order.table?.name} - ${order.customerName}`,
           variant: "default",
+          duration: 5000,
         });
       }
     });
@@ -83,6 +84,7 @@ export default function Sidebar({ onLinkClick, isMobileSheet = false }) {
         title: "Yêu cầu thanh toán! 💸",
         description: `${data.tableName} - ${data.customerName}`,
         variant: "warning",
+        duration: 5000,
       });
     });
 

@@ -92,7 +92,7 @@ export default function ManageMenuPage() {
   const addMenuMutation = useMutation({
     mutationFn: createMenuItem,
     onSuccess: () => {
-      toast({ title: t('menu_page.success_add_title'), description: t('menu_page.success_add_desc') });
+      toast({ title: t('menu_page.success_add_title'), description: t('menu_page.success_add_desc'), duration: 5000 });
       // "CÂU THẦN CHÚ" LÀM MỚI
       queryClient.invalidateQueries({ queryKey: ['menuItems'] });
       setIsFormOpen(false); // Đóng Modal
@@ -102,6 +102,7 @@ export default function ManageMenuPage() {
         title: t('menu_page.error_title'),
         description: error.response?.data?.message || t('menu_page.error_add_desc'),
         variant: "destructive",
+        duration: 5000,
       });
     },
   });
@@ -110,7 +111,7 @@ export default function ManageMenuPage() {
   const updateMenuMutation = useMutation({
     mutationFn: updateMenuItem,
     onSuccess: () => {
-      toast({ title: t('menu_page.success_update_title'), description: t('menu_page.success_update_desc') });
+      toast({ title: t('menu_page.success_update_title'), description: t('menu_page.success_update_desc'), duration: 5000 });
       // "CÂU THẦN CHÚ" LÀM MỚI
       queryClient.invalidateQueries({ queryKey: ['menuItems'] });
       setIsFormOpen(false); // Đóng Modal
@@ -120,6 +121,7 @@ export default function ManageMenuPage() {
         title: t('menu_page.error_title'),
         description: error.response?.data?.message || t('menu_page.error_update_desc'),
         variant: "destructive",
+        duration: 5000,
       });
     },
   });
@@ -129,7 +131,7 @@ export default function ManageMenuPage() {
   const deleteMenuMutation = useMutation({
     mutationFn: deleteMenuItem,
     onSuccess: () => {
-      toast({ title: t('menu_page.success_delete_title'), description: t('menu_page.success_delete_desc') });
+      toast({ title: t('menu_page.success_delete_title'), description: t('menu_page.success_delete_desc'), duration: 5000 });
       // "Ảo thuật": Tự làm mới bảng
       queryClient.invalidateQueries({ queryKey: ['menuItems'] });
       setItemToDelete(null); // Đóng Alert Dialog
@@ -139,6 +141,7 @@ export default function ManageMenuPage() {
         title: t('menu_page.error_title'),
         description: error.response?.data?.message || t('menu_page.error_delete_desc'),
         variant: "destructive",
+        duration: 5000,
       });
       setItemToDelete(null);
     },

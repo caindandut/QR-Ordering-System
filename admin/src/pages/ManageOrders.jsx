@@ -211,6 +211,7 @@ export default function ManageOrdersPage() {
       toast({
         title: t('orders_page.toasts.create_success_title'),
         description: t('orders_page.toasts.create_success_desc'),
+        duration: 5000,
       });
       queryClient.invalidateQueries({ queryKey: ['admin_orders'] });
       setIsCreateOrderOpen(false);
@@ -224,6 +225,7 @@ export default function ManageOrdersPage() {
         title: t('orders_page.toasts.error_title'),
         description: err.response?.data?.message || t('orders_page.toasts.create_error_desc'),
         variant: "destructive",
+        duration: 5000,
       });
     },
   });
@@ -292,6 +294,7 @@ export default function ManageOrdersPage() {
         title: t('orders_page.toasts.error_title'),
         description: err.response?.data?.message || t('orders_page.toasts.update_error_desc'),
         variant: "destructive",
+        duration: 5000,
       });
     },
   });
@@ -383,11 +386,12 @@ export default function ManageOrdersPage() {
   const handleSubmitOrder = (e) => {
     e.preventDefault();
     if (!selectedTableId || !customerName || selectedItems.length === 0) {
-      toast({
-        title: t('orders_page.toasts.error_title'),
-        description: t('orders_page.form.validation_error'),
-        variant: "destructive",
-      });
+        toast({
+          title: t('orders_page.toasts.error_title'),
+          description: t('orders_page.form.validation_error'),
+          variant: "destructive",
+          duration: 5000,
+        });
       return;
     }
 
@@ -586,7 +590,7 @@ export default function ManageOrdersPage() {
       </div>
 
       {/* FILTER SECTION */}
-      <div className="bg-card border border-border rounded-lg p-3 sm:p-4 space-y-3 sm:space-y-0 sm:space-x-3 sm:flex sm:items-end sm:flex-wrap gap-3">
+      <div className="space-y-3 sm:space-y-0 sm:space-x-3 sm:flex sm:items-end sm:flex-wrap gap-3">
         {/* Search Bar - Full width on mobile */}
         <div className="flex-1 min-w-full sm:min-w-[250px]">
           <Label htmlFor="search" className="text-xs sm:text-sm font-medium mb-2 block">
@@ -726,7 +730,7 @@ const OrderRow = ({ order, onStatusChange, isLoading, isHighlighted }) => {
       toast({
         title: t('orders_page.toasts.print_success_title'),
         description: t('orders_page.toasts.print_success_desc', { id: order.id }),
-        duration: 3000,
+        duration: 5000,
       });
       setShowPrintDialog(false);
     },

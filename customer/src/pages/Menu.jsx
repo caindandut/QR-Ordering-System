@@ -83,6 +83,7 @@ export default function MenuPage() {
     toast({
       title: t('menu_page.added_to_cart_title'),
       description: t('menu_page.added_to_cart_desc', { name: itemName }),
+      duration: 5000,
     });
   };
 

@@ -54,6 +54,7 @@ export default function DashboardPage() {
         title: t('dashboard.error_title'),
         description: t('dashboard.error_load_data'),
         variant: 'destructive',
+        duration: 5000,
       });
     } finally {
       setLoading(false);
