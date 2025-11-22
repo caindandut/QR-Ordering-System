@@ -55,7 +55,15 @@ router.post('/', async (req, res) => {
         role, // (ADMIN hoặc STAFF)
         avatarUrl,
       },
-      select: { }
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        avatarUrl: true,
+        phone: true,
+        role: true,
+        createdAt: true,
+      }
     });
     
     res.status(201).json(newStaff);

@@ -1,135 +1,88 @@
-// Đây là file schema.prisma
-// 1. Cấu hình kết nối
-datasource db {
-  provider = "mysql" // Chúng ta dùng MySQL
-  url      = env("DATABASE_URL") // Lấy link kết nối từ file .env (bảo mật)
-}
-
-// 2. Cấu hình Prisma Client (để Node.js gọi)
 generator client {
   provider = "prisma-client-js"
 }
 
-// 3. Định nghĩa các bảng (models)
-
-// Bảng lưu vai trò (để nhất quán dữ liệu)
-enum Role {
-  ADMIN // Quyền cao nhất
-  STAFF // Nhân viên
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
-// Model USER (Nhân viên & Admin)
 model User {
-  id          Int      @id @default(autoincrement()) // Khóa chính, tự tăng
-  email       String   @unique // Dùng để đăng nhập, không trùng
-  password    String   // Sẽ được mã hóa (hash)
-  name        String
-  avatarUrl   String?  // Dấu ? nghĩa là 'nullable' (có thể không có)
-  phone       String?
-  role        Role     @default(STAFF) // Mặc định là Nhân viên
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
-  // Mối quan hệ: 1 User có thể xử lý nhiều Order
-  handledOrders Order[]
-  
-  // Mối quan hệ: 1 User có thể có 1 Token
-  token UserToken?
-}
-
-// Model TABLE (Bàn ăn)
-model Table {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique // Tên bàn (vd: "Bàn 1", "VIP 2")
-  capacity  Int      // Sức chứa
-  status    String   @default("AVAILABLE") // Trạng thái: AVAILABLE, OCCUPIED, HIDDEN
-  
-  // Mối quan hệ: 1 Bàn có thể có nhiều Order
-  orders Order[]
-}
-
-// Model CATEGORY (Danh mục món)
-model Category {
-  id      Int      @id @default(autoincrement())
-  name    String   // Tên Tiếng Việt
-  name_jp String   // Tên Tiếng Nhật
-  
-  // Mối quan hệ: 1 Category có nhiều Món ăn
-  items MenuItem[]
-}
-
-// Model MENUITEM (Món ăn)
-model MenuItem {
-  id            Int      @id @default(autoincrement())
+  id            Int        @id @default(autoincrement())
+  email         String     @unique
+  password      String
   name          String
-  name_jp       String
-  description   String?
+  avatarUrl     String?
+  phone         String?
+  role          Role       @default(STAFF)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  handledOrders Order[]
+  token         UserToken?
+}
+
+model Table {
+  id       Int     @id @default(autoincrement())
+  name     String  @unique
+  capacity Int
+  status   String  @default("AVAILABLE")
+  orders   Order[]
+}
+
+model Category {
+  id      Int        @id @default(autoincrement())
+  name    String
+  name_jp String
+  items   MenuItem[]
+}
+
+model MenuItem {
+  id             Int           @id @default(autoincrement())
+  name           String
+  name_jp        String
+  description    String?
   description_jp String?
-  price         Int      // Giá tiền (lưu Int cho VNĐ, vd: 20000)
-  imageUrl      String   // Link ảnh (sẽ upload lên Cloudinary)
-  status        String   @default("AVAILABLE") // Trạng thái: AVAILABLE, UNAVAILABLE, HIDDEN
-  
-  categoryId Int // Khóa ngoại
-  
-  // Mối quan hệ: 1 Món ăn thuộc 1 Category
-  category Category @relation(fields: [categoryId], references: [id])
-  
-  // Mối quan hệ: 1 Món ăn có thể nằm trong nhiều Chi tiết Đơn hàng
-  orderDetails OrderDetail[]
+  price          Int
+  imageUrl       String
+  status         String        @default("AVAILABLE")
+  categoryId     Int
+  category       Category      @relation(fields: [categoryId], references: [id])
+  orderDetails   OrderDetail[]
 }
 
-// Model ORDER (Đơn hàng - Thông tin chung)
 model Order {
-  id           Int      @id @default(autoincrement())
-  customerName String   // Tên khách hàng (nhập khi quét QR)
-  status       String   @default("PENDING") // PENDING, COOKING, DENIED, SERVED, PAID
-  totalAmount  Int      // Tổng tiền (sẽ được tính toán)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  
-  tableId Int // Khóa ngoại
-  staffId Int? // Khóa ngoại (người xử lý), có thể null
-  
-  // Mối quan hệ: 1 Order thuộc 1 Bàn
-  table Table @relation(fields: [tableId], references: [id])
-  
-  // Mối quan hệ: 1 Order được xử lý bởi 1 Nhân viên
-  staff User? @relation(fields: [staffId], references: [id])
-  
-  // Mối quan hệ: 1 Order có nhiều Chi tiết Món ăn
-  details OrderDetail[]
+  id           Int           @id @default(autoincrement())
+  customerName String
+  status       String        @default("PENDING")
+  totalAmount  Int
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  tableId      Int
+  staffId      Int?
+  table        Table         @relation(fields: [tableId], references: [id])
+  staff        User?         @relation(fields: [staffId], references: [id])
+  details      OrderDetail[]
 }
 
-// Model ORDERDETAIL (Chi tiết đơn hàng - Bảng trung gian)
-// TẠI SAO CẦN BẢNG NÀY?
-// Vì 1 Order có NHIỀU MenuItem (Phở, Bia)
-// Và 1 MenuItem (Phở) có thể nằm trong NHIỀU Order
-// Đây là quan hệ Nhiều-Nhiều (N-N), bắt buộc phải có bảng trung gian.
 model OrderDetail {
-  id           Int @id @default(autoincrement())
-  quantity     Int // Số lượng
-  priceAtOrder Int // Lưu lại giá tại thời điểm đặt (RẤT QUAN TRỌNG)
-                     // (Phòng khi admin đổi giá món ăn trong tương lai)
-                     
-  orderId     Int // Khóa ngoại
-  menuItemId  Int // Khóa ngoại
-  
-  // Mối quan hệ: 1 Chi tiết thuộc 1 Order
-  order Order @relation(fields: [orderId], references: [id])
-  
-  // Mối quan hệ: 1 Chi tiết ứng với 1 Món ăn
-  menuItem MenuItem @relation(fields: [menuItemId], references: [id])
+  id           Int      @id @default(autoincrement())
+  quantity     Int
+  priceAtOrder Int
+  orderId      Int
+  menuItemId   Int
+  order        Order    @relation(fields: [orderId], references: [id])
+  menuItem     MenuItem @relation(fields: [menuItemId], references: [id])
 }
 
-// Model USERTOKEN (Lưu Refresh Token)
-// TẠI SAO CẦN BẢNG NÀY?
-// Để quản lý Refresh Token. Khi user Logout/Đổi mật khẩu,
-// ta sẽ xóa token trong bảng này để token cũ hết hạn.
 model UserToken {
   id     Int    @id @default(autoincrement())
-  token  String @unique // Refresh Token
-  userId Int    @unique // Khóa ngoại, 1 user chỉ có 1 token
-  
-  // Mối quan hệ: 1 Token thuộc 1 User
-  user User @relation(fields: [userId], references: [id])
+  token  String @unique
+  userId Int    @unique
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+enum Role {
+  ADMIN
+  STAFF
 }
