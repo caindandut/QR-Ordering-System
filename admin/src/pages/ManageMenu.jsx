@@ -21,7 +21,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { PlusCircle, Edit, Trash2, Search } from 'lucide-react';
+import { PlusCircle, Edit, Trash2, Search, Loader2 } from 'lucide-react';
 import { translateMenuStatus } from '@/lib/translations'; // 👈 Import từ file dịch
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -194,7 +194,13 @@ export default function ManageMenuPage() {
   }, [menuItems, searchTerm, lang]);
 
   // Early returns phải đặt SAU tất cả các hooks
-  if (isLoading) return <div>{t('menu_page.loading')}</div>;
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
   if (isError) return <div>{t('menu_page.error', { message: error.message })}</div>;
   
   return (

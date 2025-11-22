@@ -35,7 +35,7 @@ import {
   AlertDialogTitle
 } from '@/components/ui/alert-dialog';
 import { useToast } from "@/hooks/use-toast"; // 👈 Import toast
-import { PlusCircle, Edit, Trash2, QrCode, Check, Printer, Copy, Grid3x3, List, MoreHorizontal, Eye, EyeOff } from 'lucide-react';
+import { PlusCircle, Edit, Trash2, QrCode, Check, Printer, Copy, Grid3x3, List, MoreHorizontal, Eye, EyeOff, Loader2 } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -353,7 +353,11 @@ export default function ManageTablesPage() {
 
   // --- XỬ LÝ TRẠNG THÁI LOADING/ERROR ---
   if (isLoading) {
-    return <div>{t('tables_page.loading')}</div>;
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
   }
   if (isError) {
     return <div>{t('tables_page.error', { message: error.message })}</div>;
