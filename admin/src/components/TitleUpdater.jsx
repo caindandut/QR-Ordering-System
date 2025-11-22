@@ -14,7 +14,7 @@ const titleKeyMap = {
   '/login': 'titles.login',
 };
 
-export const TitleUpdater = () => {
+const TitleUpdater = () => {
   const location = useLocation();
   const { t, i18n } = useTranslation();
 
@@ -27,4 +27,6 @@ export const TitleUpdater = () => {
 
   return null; // Component này không render gì
 };
+
+export default TitleUpdater;
 

@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import { Toaster } from "@/components/ui/toaster";
-import { TitleUpdater } from '@/components/TitleUpdater';
+import TitleUpdater from '@/components/TitleUpdater';
 
 // Khung này chỉ đơn giản là render "chỗ giữ chỗ"
 // Tác dụng: Để bọc toàn bộ ứng dụng, sau này dùng để
