@@ -34,23 +34,23 @@ export default function TopItemsTable() {
 
   return (
     <Card>
-      <CardHeader>
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <CardHeader className="p-3 sm:p-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
           <div>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-primary" />
+            <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+              <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
               {t('dashboard.top_items.title')}
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-xs sm:text-sm">
               {t('dashboard.top_items.description')}
             </CardDescription>
           </div>
           
           <Tabs value={period} onValueChange={setPeriod}>
-            <TabsList>
-              <TabsTrigger value="today">{t('dashboard.top_items.today')}</TabsTrigger>
-              <TabsTrigger value="week">{t('dashboard.top_items.week')}</TabsTrigger>
-              <TabsTrigger value="month">{t('dashboard.top_items.month')}</TabsTrigger>
+            <TabsList className="grid grid-cols-3 w-full sm:w-auto">
+              <TabsTrigger value="today" className="text-xs sm:text-sm">{t('dashboard.top_items.today')}</TabsTrigger>
+              <TabsTrigger value="week" className="text-xs sm:text-sm">{t('dashboard.top_items.week')}</TabsTrigger>
+              <TabsTrigger value="month" className="text-xs sm:text-sm">{t('dashboard.top_items.month')}</TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
@@ -73,7 +73,7 @@ export default function TopItemsTable() {
             </p>
           </div>
         ) : (
-          <div className="rounded-md border dark:border-white/10">
+          <div className="rounded-md border dark:border-white/10 overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>

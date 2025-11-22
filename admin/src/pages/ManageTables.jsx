@@ -367,17 +367,19 @@ export default function ManageTablesPage() {
 
   // --- RENDER (HIỂN THỊ) ---
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-foreground">{t('tables_page.title')}</h1>
+    <div className="space-y-4 sm:space-y-6">
+      {/* HEADER SECTION */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h1 className="text-2xl sm:text-3xl font-bold">{t('tables_page.title')}</h1>
         
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 w-full sm:w-auto">
           {/* Toggle View Mode */}
-          <div className="flex items-center border rounded-lg p-1">
+          <div className="flex items-center border border-border rounded-lg p-1 bg-background">
             <Button
               variant={viewMode === 'grid' ? 'default' : 'ghost'}
               size="sm"
               onClick={() => setViewMode('grid')}
+              className="h-8"
             >
               <Grid3x3 className="h-4 w-4" />
             </Button>
@@ -385,13 +387,14 @@ export default function ManageTablesPage() {
               variant={viewMode === 'list' ? 'default' : 'ghost'}
               size="sm"
               onClick={() => setViewMode('list')}
+              className="h-8"
             >
               <List className="h-4 w-4" />
             </Button>
           </div>
           
           {/* Nút "Thêm" bây giờ gọi hàm riêng */}
-          <Button onClick={handleOpenAddDialog}>
+          <Button onClick={handleOpenAddDialog} className="flex-1 sm:flex-initial">
             <PlusCircle className="mr-2 h-4 w-4" />
             {t('tables_page.add_new')}
           </Button>
@@ -399,45 +402,45 @@ export default function ManageTablesPage() {
       </div>
 
       {/* Thống kê bàn */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+          <CardHeader className="pb-1.5 p-3">
+            <CardTitle className="text-xs font-medium text-muted-foreground">
               {t('tables_page.stats.total')}
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.total}</div>
+          <CardContent className="p-3 pt-0">
+            <div className="text-lg sm:text-xl font-bold">{stats.total}</div>
           </CardContent>
         </Card>
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+          <CardHeader className="pb-1.5 p-3">
+            <CardTitle className="text-xs font-medium text-muted-foreground">
               {t('tables_page.stats.available')}
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">{stats.available}</div>
+          <CardContent className="p-3 pt-0">
+            <div className="text-lg sm:text-xl font-bold text-green-600">{stats.available}</div>
           </CardContent>
         </Card>
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+          <CardHeader className="pb-1.5 p-3">
+            <CardTitle className="text-xs font-medium text-muted-foreground">
               {t('tables_page.stats.occupied')}
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-600">{stats.occupied}</div>
+          <CardContent className="p-3 pt-0">
+            <div className="text-lg sm:text-xl font-bold text-red-600">{stats.occupied}</div>
           </CardContent>
         </Card>
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+          <CardHeader className="pb-1.5 p-3">
+            <CardTitle className="text-xs font-medium text-muted-foreground">
               {t('tables_page.stats.hidden')}
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-gray-600">{stats.hidden}</div>
+          <CardContent className="p-3 pt-0">
+            <div className="text-lg sm:text-xl font-bold text-gray-600">{stats.hidden}</div>
           </CardContent>
         </Card>
       </div>
@@ -668,7 +671,7 @@ export default function ManageTablesPage() {
       {/* --- HIỂN THỊ GRID HOẶC LIST --- */}
       {viewMode === 'grid' ? (
         // Grid View
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
           {tables.map((table) => (
             <TableCard
               key={table.id}
@@ -680,8 +683,8 @@ export default function ManageTablesPage() {
         </div>
       ) : (
         // List View (bảng)
-        <div className="border border-border rounded-lg">
-          <Table>
+        <div className="border border-border rounded-lg overflow-x-auto">
+          <Table className="min-w-[600px]">
           <TableHeader>
             <TableRow>
               <TableHead>{t('tables_page.columns.id')}</TableHead>

@@ -16,9 +16,9 @@ export default function AdminLayout() {
         </div>
 
         {/* Phần nội dung chính */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col min-w-0">
           <Header />
-          <main className="flex-1 p-4 overflow-auto bg-background">
+          <main className="flex-1 p-2 sm:p-4 md:p-6 overflow-auto bg-background">
             <Outlet />
           </main>
         </div>

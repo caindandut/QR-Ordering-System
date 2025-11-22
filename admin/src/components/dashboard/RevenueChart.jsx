@@ -129,9 +129,9 @@ export default function RevenueChart({ data, period = 'week', onPeriodChange }) 
           </DropdownMenu>
         </div>
       </CardHeader>
-      <CardContent>
-        <div style={{ width: '100%', height: 350 }}>
-          <ResponsiveContainer>
+      <CardContent className="p-2 sm:p-6">
+        <div className="w-full h-[250px] sm:h-[350px]">
+          <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">

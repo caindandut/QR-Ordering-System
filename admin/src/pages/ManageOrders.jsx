@@ -414,78 +414,30 @@ export default function ManageOrdersPage() {
 
   // --- RENDER ---
   return (
-    <div className="p-4 md:p-8">
-      {/* FILTER BAR */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-        <h1 className="text-3xl font-bold">{t('orders_page.title')}</h1>
+    <div className="space-y-4 sm:space-y-6">
+      {/* HEADER SECTION */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h1 className="text-2xl sm:text-3xl font-bold">{t('orders_page.title')}</h1>
         
-        <div className="flex flex-wrap items-center gap-3">
-          {/* Tìm kiếm theo tên khách hàng */}
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium">{t('orders_page.search_label')}</span>
-            <div className="relative">
-              <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder={t('orders_page.search_placeholder')}
-                value={customerNameSearch}
-                onChange={(e) => setCustomerNameSearch(e.target.value)}
-                className="w-[200px] pl-8"
-              />
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium">{t('orders_page.table_label')}</span>
-            <Select value={tableFilter} onValueChange={setTableFilter}>
-              <SelectTrigger className="w-[150px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="ALL">{t('orders_page.all_tables')}</SelectItem>
-                {tableList.map(tableName => (
-                  <SelectItem key={tableName} value={tableName}>
-                    {tableName} ({orderCounts[tableName] || 0})
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium">{t('orders_page.status_label')}</span>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {statusOptions.map((status) => (
-                  <SelectItem key={status} value={status}>
-                    {translateOrderStatus(status, currentLang).text}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Nút tạo đơn thủ công */}
-          <Dialog 
-            open={isCreateOrderOpen} 
-            onOpenChange={(open) => {
-              setIsCreateOrderOpen(open);
-              if (!open) {
-                // Reset form khi đóng
-                setSelectedTableId('');
-                setCustomerName('');
-                setSelectedItems([]);
-              }
-            }}
-          >
-            <DialogTrigger asChild>
-              <Button>
-                <Plus className="mr-2 h-4 w-4" />
-                {t('orders_page.manual_button')}
-              </Button>
-            </DialogTrigger>
+        {/* Nút tạo đơn thủ công */}
+        <Dialog 
+          open={isCreateOrderOpen} 
+          onOpenChange={(open) => {
+            setIsCreateOrderOpen(open);
+            if (!open) {
+              // Reset form khi đóng
+              setSelectedTableId('');
+              setCustomerName('');
+              setSelectedItems([]);
+            }
+          }}
+        >
+          <DialogTrigger asChild>
+            <Button className="w-full sm:w-auto">
+              <Plus className="mr-2 h-4 w-4" />
+              {t('orders_page.manual_button')}
+            </Button>
+          </DialogTrigger>
             <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>{t('orders_page.manual_dialog_title')}</DialogTitle>
@@ -630,13 +582,71 @@ export default function ManageOrdersPage() {
                 </div>
               </form>
             </DialogContent>
-          </Dialog>
+        </Dialog>
+      </div>
+
+      {/* FILTER SECTION */}
+      <div className="bg-card border border-border rounded-lg p-3 sm:p-4 space-y-3 sm:space-y-0 sm:space-x-3 sm:flex sm:items-end sm:flex-wrap gap-3">
+        {/* Search Bar - Full width on mobile */}
+        <div className="flex-1 min-w-full sm:min-w-[250px]">
+          <Label htmlFor="search" className="text-xs sm:text-sm font-medium mb-2 block">
+            {t('orders_page.search_label')}
+          </Label>
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              id="search"
+              placeholder={t('orders_page.search_placeholder')}
+              value={customerNameSearch}
+              onChange={(e) => setCustomerNameSearch(e.target.value)}
+              className="pl-9 w-full"
+            />
+          </div>
+        </div>
+
+        {/* Status Filter */}
+        <div className="flex-1 sm:flex-initial min-w-[150px] sm:min-w-[180px]">
+          <Label className="text-xs sm:text-sm font-medium mb-2 block">
+            {t('orders_page.status_label')}
+          </Label>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {statusOptions.map((status) => (
+                <SelectItem key={status} value={status}>
+                  {translateOrderStatus(status, currentLang).text}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Table Filter */}
+        <div className="flex-1 sm:flex-initial min-w-[150px]">
+          <Label className="text-xs sm:text-sm font-medium mb-2 block">
+            {t('orders_page.table_label')}
+          </Label>
+          <Select value={tableFilter} onValueChange={setTableFilter}>
+            <SelectTrigger className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">{t('orders_page.all_tables')}</SelectItem>
+              {tableList.map(tableName => (
+                <SelectItem key={tableName} value={tableName}>
+                  {tableName} ({orderCounts[tableName] || 0})
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
       {/* BẢNG ĐƠN HÀNG */}
-      <div className="rounded-lg overflow-hidden border border-border/60 dark:border-border/30">
-        <Table className="[&_tr]:border-border/70 dark:[&_tr]:border-border/40">
+      <div className="rounded-lg overflow-hidden border border-border/60 dark:border-border/30 overflow-x-auto">
+        <Table className="[&_tr]:border-border/70 dark:[&_tr]:border-border/40 min-w-[800px]">
           <TableHeader>
             <TableRow>
               <TableHead className="w-[40px]"></TableHead>

@@ -67,7 +67,7 @@ export default function Header() {
   };
 
   return (
-    <header className="flex h-16 items-center border-b border-border dark:border-white/10 bg-background px-4 md:px-6 gap-4">
+    <header className="flex h-14 sm:h-16 items-center border-b border-border dark:border-white/10 bg-background px-2 sm:px-4 md:px-6 gap-2 sm:gap-4">
       {/* Nút Hamburger (Chỉ hiện trên Mobile) */}
       <div className="md:hidden">
         <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
@@ -108,7 +108,7 @@ export default function Header() {
               <span className="sr-only">{t('header.notifications.button_label')}</span>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-80 max-h-96 overflow-y-auto" align="end">
+          <DropdownMenuContent className="w-[calc(100vw-2rem)] sm:w-80 max-h-96 overflow-y-auto" align="end">
             <DropdownMenuLabel className="flex items-center justify-between">
               <span>{t('header.notifications.title')}</span>
               {unreadCount > 0 && (

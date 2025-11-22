@@ -1,4 +1,4 @@
-import { useState } from 'react'; // 👈 Thêm useState
+import { useState, useMemo } from 'react'; // 👈 Thêm useState, useMemo
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'; // 👈 Thêm useMutation, useQueryClient
 import api from '../services/api';
 import { useToast } from "@/hooks/use-toast"; // 👈 Thêm toast
@@ -21,8 +21,10 @@ import {
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { PlusCircle, Edit, Trash2 } from 'lucide-react';
+import { PlusCircle, Edit, Trash2, Search } from 'lucide-react';
 import { translateMenuStatus } from '@/lib/translations'; // 👈 Import từ file dịch
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 // 👇 1. IMPORT CÁC "LINH KIỆN" MỚI
 import {
@@ -62,6 +64,9 @@ export default function ManageMenuPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingMenuItem, setEditingMenuItem] = useState(null);
   const [itemToDelete, setItemToDelete] = useState(null);
+  
+  // State cho search
+  const [searchTerm, setSearchTerm] = useState('');
 
   // --- HOOKS ---
   const queryClient = useQueryClient();
@@ -79,6 +84,7 @@ export default function ManageMenuPage() {
     queryKey: ['menuItems'],
     queryFn: fetchMenuItems,
   });
+
 
   // --- 👇 3. LOGIC GHI (CREATE & UPDATE) ---
   
@@ -166,25 +172,55 @@ export default function ManageMenuPage() {
     }
   };
 
-  // ... (Xử lý Loading/Error như cũ) ...
-  if (isLoading) return <div>{t('menu_page.loading')}</div>;
-  if (isError) return <div>{t('menu_page.error', { message: error.message })}</div>;
-
   // Hàm lấy 2 chữ cái đầu (cho Avatar Fallback)
   const getInitials = (name) => {
     return name?.split(' ').map((n) => n[0]).join('').toUpperCase() || 'MÓN';
   };
+
+  // Filter menu items by search term
+  const filteredMenuItems = useMemo(() => {
+    if (!menuItems) return [];
+    
+    // Filter by search term (tìm theo tên món)
+    if (searchTerm.trim()) {
+      const search = searchTerm.trim().toLowerCase();
+      return menuItems.filter(item => {
+        const name = (lang === 'jp' ? item.name_jp : item.name) || '';
+        return name.toLowerCase().includes(search);
+      });
+    }
+    
+    return menuItems;
+  }, [menuItems, searchTerm, lang]);
+
+  // Early returns phải đặt SAU tất cả các hooks
+  if (isLoading) return <div>{t('menu_page.loading')}</div>;
+  if (isError) return <div>{t('menu_page.error', { message: error.message })}</div>;
   
   return (
-    <div className="flex flex-col gap-4">
-      {/* --- TIÊU ĐỀ & NÚT THÊM --- */}
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-foreground">{t('menu_page.title')}</h1>
+    <div className="space-y-4 sm:space-y-6">
+      {/* HEADER SECTION */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h1 className="text-2xl sm:text-3xl font-bold">{t('menu_page.title')}</h1>
         {/* Nút "Thêm" gọi hàm `handleOpenAddDialog` */}
-        <Button onClick={handleOpenAddDialog}>
+        <Button onClick={handleOpenAddDialog} className="w-full sm:w-auto">
           <PlusCircle className="mr-2 h-4 w-4" />
           {t('menu_page.add_new')}
         </Button>
+      </div>
+
+      {/* SEARCH SECTION */}
+      <div className="max-w-md">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+          <Input
+            id="search"
+            placeholder={lang === 'jp' ? '料理名で検索...' : 'Tìm kiếm món ăn...'}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10 h-11 text-base"
+          />
+        </div>
       </div>
 
       {/* --- 👇 5. DIALOG (Modal) THÊM/SỬA --- */}
@@ -240,71 +276,95 @@ export default function ManageMenuPage() {
       </AlertDialog>
 
       {/* --- BẢNG DỮ LIỆU --- */}
-      <div className="border border-border rounded-lg">
-        <Table>
+      <div className="border border-border rounded-lg overflow-x-auto">
+        <Table className="min-w-[800px]">
           <TableHeader>
             <TableRow>
-              <TableHead>{t('common.image')}</TableHead>
-              <TableHead>{t('menu_page.dish_name')}</TableHead>
-              <TableHead>{t('common.price')}</TableHead>
-              <TableHead>{t('common.category')}</TableHead>
-              <TableHead>{t('common.status')}</TableHead>
-              <TableHead className="text-right">{t('common.action')}</TableHead>
+              <TableHead className="w-[80px]">{t('common.image')}</TableHead>
+              <TableHead className="min-w-[200px]">{t('menu_page.dish_name')}</TableHead>
+              <TableHead className="w-[120px]">{t('common.price')}</TableHead>
+              <TableHead className="min-w-[150px]">{t('common.category')}</TableHead>
+              <TableHead className="w-[120px]">{t('common.status')}</TableHead>
+              <TableHead className="text-right w-[120px]">{t('common.action')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {menuItems && menuItems.map((item) => {
+            {filteredMenuItems.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={6} className="text-center h-24 text-muted-foreground">
+                  {searchTerm.trim()
+                    ? (lang === 'jp' ? '料理が見つかりませんでした' : 'Không tìm thấy món ăn nào')
+                    : (lang === 'jp' ? 'まだ料理がありません' : 'Chưa có món ăn nào')}
+                </TableCell>
+              </TableRow>
+            ) : (
+              filteredMenuItems.map((item) => {
               const { text, variant } = translateMenuStatus(item.status, lang);
               return (
                 <TableRow key={item.id}>
                   <TableCell>
-                    <Avatar className="h-12 w-12 md:h-20 md:w-20 rounded-md">
+                    <Avatar className="h-12 w-12 sm:h-16 sm:w-16 rounded-md">
                       <AvatarImage 
-                      src={item.imageUrl} 
-                      alt={item.name} 
-                      className="object-cover"/>
-                      <AvatarFallback>
-                        {getInitials(item.name)}
+                        src={item.imageUrl} 
+                        alt={lang === 'jp' ? item.name_jp : item.name} 
+                        className="object-cover"
+                      />
+                      <AvatarFallback className="text-xs">
+                        {getInitials(lang === 'jp' ? item.name_jp : item.name)}
                       </AvatarFallback>
                     </Avatar>
                   </TableCell>
                   <TableCell className="font-medium">
-                    {lang === 'jp' ? item.name_jp : item.name}
+                    <div className="flex flex-col">
+                      <span className="font-semibold">{lang === 'jp' ? item.name_jp : item.name}</span>
+                      {item.description && (
+                        <span className="text-xs text-muted-foreground line-clamp-1 mt-1">
+                          {lang === 'jp' ? item.description_jp : item.description}
+                        </span>
+                      )}
+                    </div>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="font-semibold">
                     {item.price.toLocaleString('vi-VN')}đ
                   </TableCell>
                   <TableCell>
-                    {lang === 'jp' 
-                      ? (item.category?.name_jp || item.category?.name || 'N/A')
-                      : (item.category?.name || 'N/A')
-                    }
+                    <Badge variant="outline">
+                      {lang === 'jp' 
+                        ? (item.category?.name_jp || item.category?.name || 'N/A')
+                        : (item.category?.name || 'N/A')
+                      }
+                    </Badge>
                   </TableCell>
                   <TableCell>
                     <Badge variant={variant}>{text}</Badge>
                   </TableCell>
-                  <TableCell className="text-right space-x-2">
-                    {/* Nút "Sửa" gọi hàm `handleOpenEditDialog` */}
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleOpenEditDialog(item)}
-                    >
-                      <Edit className="h-4 w-4" />
-                      {/* Sửa */}
-                    </Button>
-                    <Button
-                     variant="destructive" 
-                     size="sm"
-                     onClick={() => setItemToDelete(item)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                      {/* Xóa */}
-                    </Button>
+                  <TableCell>
+                    <div className="flex items-center justify-end gap-2">
+                      {/* Nút "Sửa" gọi hàm `handleOpenEditDialog` */}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleOpenEditDialog(item)}
+                        className="h-8 w-8 p-0"
+                      >
+                        <Edit className="h-4 w-4" />
+                        <span className="sr-only">Sửa</span>
+                      </Button>
+                      <Button
+                        variant="destructive" 
+                        size="sm"
+                        onClick={() => setItemToDelete(item)}
+                        className="h-8 w-8 p-0"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        <span className="sr-only">Xóa</span>
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               );
-            })}
+            })
+            )}
           </TableBody>
         </Table>
       </div>

@@ -168,12 +168,12 @@ export default function ActiveOrdersList() {
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle>{t('dashboard.active_orders.title')}</CardTitle>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <CardTitle className="text-lg sm:text-xl">{t('dashboard.active_orders.title')}</CardTitle>
           
           {/* Filter */}
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-full sm:w-[180px]">
               <SelectValue placeholder={t('dashboard.active_orders.filter_placeholder')} />
             </SelectTrigger>
             <SelectContent>
@@ -196,7 +196,7 @@ export default function ActiveOrdersList() {
             {t('dashboard.active_orders.empty')}
           </div>
         ) : (
-          <div className="grid gap-4 lg:grid-cols-2">
+          <div className="grid gap-3 sm:gap-4 grid-cols-1 lg:grid-cols-2">
             {orders.map((order) => (
               <OrderCard
                 key={order.id}

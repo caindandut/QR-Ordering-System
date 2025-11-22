@@ -30,7 +30,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { useToast } from "@/hooks/use-toast";
-import { PlusCircle, Edit, Trash2 } from 'lucide-react';
+import { PlusCircle, Edit, Trash2, Loader2 } from 'lucide-react';
 import CategoryForm from '../components/CategoryForm'; // 👈 Import Form mới
 import { useTranslation } from 'react-i18next';
 
@@ -63,7 +63,8 @@ export default function ManageCategoriesPage() {
   
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language;
 
   // --- LOGIC ĐỌC (READ) ---
   const { 
@@ -153,15 +154,13 @@ export default function ManageCategoriesPage() {
     }
   };
 
-  if (isLoading) return <div>{t('categories_page.loading')}</div>;
-  if (isError) return <div>{t('categories_page.error', { message: error.message })}</div>;
 
   return (
-    <div className="flex flex-col gap-4">
-      {/* --- TIÊU ĐỀ & NÚT THÊM --- */}
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-foreground">{t('categories_page.title')}</h1>
-        <Button onClick={handleOpenAddDialog}>
+    <div className="space-y-4 sm:space-y-6">
+      {/* HEADER SECTION */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h1 className="text-2xl sm:text-3xl font-bold">{t('categories_page.title')}</h1>
+        <Button onClick={handleOpenAddDialog} className="w-full sm:w-auto">
           <PlusCircle className="mr-2 h-4 w-4" />
           {t('categories_page.add_new')}
         </Button>
@@ -215,46 +214,66 @@ export default function ManageCategoriesPage() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* --- BẢNG DỮ LIỆU --- */}
-      <div className="border border-border rounded-lg">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>ID</TableHead>
-              <TableHead>{t('common.name_vi')}</TableHead>
-              <TableHead>{t('common.name_jp')}</TableHead>
-              <TableHead className="text-right">{t('common.action')}</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {categories && categories.map((category) => (
-              <TableRow key={category.id}>
-                <TableCell>{category.id}</TableCell>
-                <TableCell className="font-medium">{category.name}</TableCell>
-                <TableCell>{category.name_jp}</TableCell>
-                <TableCell className="text-right space-x-2">
-                  {/* Nút Sửa */}
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleOpenEditDialog(category)}
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  {/* Nút Xóa */}
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => setCategoryToDelete(category)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </TableCell>
+      {/* CATEGORIES TABLE */}
+      {isLoading ? (
+        <div className="flex justify-center items-center h-64">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </div>
+      ) : isError ? (
+        <div className="text-center text-red-500 p-8">
+          {t('categories_page.error', { message: error.message })}
+        </div>
+      ) : (
+        <div className="border border-border rounded-lg overflow-x-auto">
+          <Table className="min-w-[600px]">
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-20">ID</TableHead>
+                <TableHead>{t('common.name_vi')}</TableHead>
+                <TableHead>{t('common.name_jp')}</TableHead>
+                <TableHead className="text-right w-32">{t('common.action')}</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+            </TableHeader>
+            <TableBody>
+              {!categories || categories.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={4} className="text-center h-24 text-muted-foreground">
+                    {lang === 'jp' ? 'まだカテゴリがありません' : 'Chưa có danh mục nào'}
+                  </TableCell>
+                </TableRow>
+              ) : (
+                categories.map((category) => (
+                  <TableRow key={category.id}>
+                    <TableCell className="font-medium">{category.id}</TableCell>
+                    <TableCell className="font-medium">{category.name}</TableCell>
+                    <TableCell>{category.name_jp}</TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleOpenEditDialog(category)}
+                          className="h-8 w-8 p-0"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => setCategoryToDelete(category)}
+                          className="h-8 w-8 p-0"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      )}
     </div>
   );
 }

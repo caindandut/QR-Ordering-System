@@ -129,10 +129,10 @@ export default function DashboardPage() {
     : '';
 
   return (
-    <div className="flex flex-col gap-4 animate-in fade-in duration-500">
-      <h1 className="text-3xl font-bold text-foreground">{t('dashboard.title')}</h1>
+    <div className="flex flex-col gap-3 sm:gap-4 animate-in fade-in duration-500">
+      <h1 className="text-2xl sm:text-3xl font-bold text-foreground">{t('dashboard.title')}</h1>
       
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         <StatsCard
           title={t('dashboard.today_revenue')}
           value={formatCurrency(stats.todayRevenue)}
@@ -172,12 +172,12 @@ export default function DashboardPage() {
         onPeriodChange={handlePeriodChange}
       />
       
-      <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="mt-4 sm:mt-6 lg:mt-8 grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
         <ActiveOrdersList />
         <TopItemsTable />
       </div>
 
-      <div className="mt-8">
+      <div className="mt-4 sm:mt-6 lg:mt-8">
         <TableMap />
       </div>
     </div>
