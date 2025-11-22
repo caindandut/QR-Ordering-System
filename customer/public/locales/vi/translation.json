@@ -151,5 +151,11 @@
         "light": "Sáng",
         "dark": "Tối",
         "system": "Hệ thống"
+    },
+    "titles": {
+        "home": "Trang chủ",
+        "menu": "Thực đơn",
+        "cart": "Giỏ hàng",
+        "status": "Trạng thái đơn hàng"
     }
 }

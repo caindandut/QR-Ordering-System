@@ -490,5 +490,15 @@
             "grand_total": "合計",
             "capacity": "{{count}} 席"
         }
+    },
+    "titles": {
+        "dashboard": "ダッシュボード",
+        "tables": "テーブル管理",
+        "orders": "注文管理",
+        "menu": "メニュー管理",
+        "categories": "カテゴリー管理",
+        "account": "アカウント",
+        "staff": "スタッフ管理",
+        "login": "ログイン"
     }
 }

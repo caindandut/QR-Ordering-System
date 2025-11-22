@@ -490,5 +490,15 @@
             "grand_total": "Tổng cộng",
             "capacity": "{{count}} chỗ"
         }
+    },
+    "titles": {
+        "dashboard": "Dashboard",
+        "tables": "Quản lý Bàn",
+        "orders": "Quản lý Đơn hàng",
+        "menu": "Quản lý Thực đơn",
+        "categories": "Quản lý Danh mục",
+        "account": "Tài khoản",
+        "staff": "Quản lý Nhân viên",
+        "login": "Đăng nhập"
     }
 }
