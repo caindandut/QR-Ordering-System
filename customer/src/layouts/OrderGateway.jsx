@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useToast } from '@/hooks/use-toast';
 import { LanguageToggle } from '@/components/LanguageToggle';
 import { ModeToggle } from '@/components/ModeToggle'; 
 
@@ -25,6 +26,7 @@ const checkTableOccupied = async (tableId) => {
 
 export default function OrderGateway() {
   const { t } = useTranslation();
+  const { toast } = useToast();
 
   const [searchParams] = useSearchParams();
   const urlTableId = searchParams.get('table_id');
@@ -89,6 +91,22 @@ export default function OrderGateway() {
     enabled: !!tableId,
   });
 
+  // Khôi phục session nếu đơn hàng là của khách hàng này
+  useEffect(() => {
+    if (!customerName && occupiedData?.isOccupied) {
+      const storedCustomerName = sessionStorage.getItem('customer_name');
+      
+      // Kiểm tra xem đơn hàng đang occupied có phải của khách hàng này không
+      const isMyOrder = storedCustomerName && occupiedData?.orders?.some(
+        order => order.customerName === storedCustomerName
+      );
+      
+      // Nếu đơn hàng là của khách hàng này, khôi phục session
+      if (isMyOrder && storedCustomerName) {
+        setCustomerName(storedCustomerName);
+      }
+    }
+  }, [customerName, occupiedData]);
 
  useEffect(() => {
     // CHỈ "GHI" (Write) vào Bộ nhớ NẾU nó đến từ URL
@@ -105,6 +123,24 @@ export default function OrderGateway() {
   const handleNameSubmit = (e) => {
     e.preventDefault();
     if (tempName) {
+      // Kiểm tra xem tên nhập vào có trùng với tên trong đơn hàng đang occupied không
+      const isMyOrder = occupiedData?.isOccupied && occupiedData?.orders?.some(
+        order => order.customerName === tempName
+      );
+      
+      // Nếu bàn đang occupied và tên không trùng, chặn
+      if (occupiedData?.isOccupied && !isMyOrder) {
+        // Hiển thị thông báo lỗi
+        toast({
+          title: t('gateway.occupied.title') || 'Bàn đã được sử dụng',
+          description: t('gateway.occupied.subtitle', { tableName: tableData?.name }) || 'Bàn này đã có khách hàng khác đặt món',
+          variant: "destructive",
+          duration: 5000,
+        });
+        return;
+      }
+      
+      // Nếu hợp lệ, lưu tên và tiếp tục
       sessionStorage.setItem('customer_name', tempName);
       setCustomerName(tempName);
     }
@@ -130,34 +166,46 @@ export default function OrderGateway() {
   }
 
   // Kiểm tra xem bàn có đang được sử dụng bởi khách khác không
-  // Chỉ chặn nếu CHƯA có session (chưa nhập tên)
+  // Logic mới: Chỉ chặn nếu bàn đang occupied VÀ đơn hàng KHÔNG phải của khách hàng này
   if (!customerName && occupiedData?.isOccupied) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-background p-4 relative">
-        {/* Nút toggle ngôn ngữ và dark mode ở góc trên bên phải */}
-        <div className="absolute top-4 right-4 flex items-center gap-2">
-          <LanguageToggle />
-          <ModeToggle />
-        </div>
-        
-        <div className="w-full max-w-md p-8 bg-card shadow-lg rounded-lg border border-border">
-          <div className="text-center space-y-4">
-            <div className="text-6xl">⚠️</div>
-            <h1 className="text-2xl font-bold text-red-600 dark:text-red-400">
-              {t('gateway.occupied.title')}
-            </h1>
-            <p className="text-lg text-muted-foreground">
-              {t('gateway.occupied.subtitle', { tableName: tableData?.name })}
-            </p>
-            <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mt-4">
-              <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                {t('gateway.occupied.hint')}
+    const storedCustomerName = sessionStorage.getItem('customer_name');
+    
+    // Kiểm tra xem đơn hàng đang occupied có phải của khách hàng này không
+    const isMyOrder = storedCustomerName && occupiedData?.orders?.some(
+      order => order.customerName === storedCustomerName
+    );
+    
+    // Nếu KHÔNG phải đơn hàng của khách hàng này, chặn
+    if (!isMyOrder) {
+      return (
+        <div className="flex items-center justify-center min-h-screen bg-background p-4 relative">
+          {/* Nút toggle ngôn ngữ và dark mode ở góc trên bên phải */}
+          <div className="absolute top-4 right-4 flex items-center gap-2">
+            <LanguageToggle />
+            <ModeToggle />
+          </div>
+          
+          <div className="w-full max-w-md p-8 bg-card shadow-lg rounded-lg border border-border">
+            <div className="text-center space-y-4">
+              <div className="text-6xl">⚠️</div>
+              <h1 className="text-2xl font-bold text-red-600 dark:text-red-400">
+                {t('gateway.occupied.title')}
+              </h1>
+              <p className="text-lg text-muted-foreground">
+                {t('gateway.occupied.subtitle', { tableName: tableData?.name })}
               </p>
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mt-4">
+                <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                  {t('gateway.occupied.hint')}
+                </p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    );
+      );
+    }
+    // Nếu là đơn hàng của khách hàng này, useEffect sẽ khôi phục session
+    // và component sẽ re-render với customerName đã được set
   }
 
   if (!customerName) {
