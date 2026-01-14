@@ -8,7 +8,7 @@ const router = express.Router();
 /**
  * Render trang HTML thông báo thanh toán thành công
  */
-function renderSuccessPage({ orderId, amount, transactionNo, bankCode, payDate }) {
+function renderSuccessPage({ orderId, amount, transactionNo, bankCode, payDate, redirectUrl }) {
   const formattedAmount = new Intl.NumberFormat('vi-VN').format(amount);
   const formattedDate = payDate && payDate.length === 14 
     ? `${payDate.slice(6, 8)}/${payDate.slice(4, 6)}/${payDate.slice(0, 4)} ${payDate.slice(8, 10)}:${payDate.slice(10, 12)}:${payDate.slice(12, 14)}`
@@ -187,9 +187,15 @@ function renderSuccessPage({ orderId, amount, transactionNo, bankCode, payDate }
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 10px;">
-            <button class="button" onclick="window.close()">Đóng cửa sổ</button>
-            <button class="button button-secondary" onclick="window.location.href='${process.env.FRONTEND_URL || 'http://localhost:5173'}/order/status'">Xem đơn hàng</button>
+            <button class="button" onclick="window.location.href='${redirectUrl}'">Xem đơn hàng</button>
+            <button class="button button-secondary" onclick="window.close()">Đóng cửa sổ</button>
         </div>
+        <script>
+            // Tự động redirect sau 3 giây nếu người dùng không click
+            setTimeout(function() {
+                window.location.href = '${redirectUrl}';
+            }, 3000);
+        </script>
 
         <div class="footer">
             Cảm ơn bạn đã sử dụng dịch vụ thanh toán VNPay
@@ -203,7 +209,7 @@ function renderSuccessPage({ orderId, amount, transactionNo, bankCode, payDate }
 /**
  * Render trang HTML thông báo thanh toán thất bại
  */
-function renderFailedPage({ orderId, responseCode }) {
+function renderFailedPage({ orderId, responseCode, redirectUrl }) {
   const errorMessages = {
     '07': 'Trừ tiền thành công. Giao dịch bị nghi ngờ (liên quan tới lừa đảo, giao dịch bất thường).',
     '09': 'Thẻ/Tài khoản chưa đăng ký dịch vụ InternetBanking',
@@ -388,8 +394,8 @@ function renderFailedPage({ orderId, responseCode }) {
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 10px;">
-            <button class="button" onclick="window.close()">Đóng cửa sổ</button>
-            <button class="button button-secondary" onclick="window.location.href='${process.env.FRONTEND_URL || 'http://localhost:5173'}/order/status'">Thử lại</button>
+            <button class="button" onclick="window.location.href='${redirectUrl}'">Thử lại</button>
+            <button class="button button-secondary" onclick="window.close()">Đóng cửa sổ</button>
         </div>
 
         <div class="footer">
@@ -404,7 +410,7 @@ function renderFailedPage({ orderId, responseCode }) {
 /**
  * Render trang HTML thông báo lỗi
  */
-function renderErrorPage({ message }) {
+function renderErrorPage({ message, redirectUrl }) {
   return `
 <!DOCTYPE html>
 <html lang="vi">
@@ -533,8 +539,8 @@ function renderErrorPage({ message }) {
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 10px;">
-            <button class="button" onclick="window.close()">Đóng cửa sổ</button>
-            <button class="button" onclick="window.location.href='${process.env.FRONTEND_URL || 'http://localhost:5173'}/order/status'" style="background: white; color: #f59e0b; border: 2px solid #f59e0b;">Về trang đơn hàng</button>
+            <button class="button" onclick="window.location.href='${redirectUrl}'" style="background: white; color: #f59e0b; border: 2px solid #f59e0b;">Về trang đơn hàng</button>
+            <button class="button button-secondary" onclick="window.close()">Đóng cửa sổ</button>
         </div>
 
         <div class="footer">
@@ -723,16 +729,11 @@ const handleCallback = async (req, res) => {
         paymentStatus: 'PAID',
       });
 
-      // Trả về trang HTML thông báo thành công ngay trên VNPay
-      console.log('✅ Payment successful, returning HTML page for order:', payment.orderId);
-      const html = renderSuccessPage({
-        orderId: payment.orderId,
-        amount: vnp_Amount,
-        transactionNo: vnp_TransactionNo,
-        bankCode: vnp_Params['vnp_BankCode'] || 'N/A',
-        payDate: vnp_Params['vnp_PayDate'] || 'N/A',
-      });
-      return res.status(200).type('html').send(html);
+      // Redirect 302 thẳng về trang success của customer app
+      console.log('✅ Payment successful, redirecting to customer success page for order:', payment.orderId);
+      const customerAppUrl = process.env.CUSTOMER_APP_URL || 'http://localhost:5174';
+      const redirectUrl = `${customerAppUrl}/payment/success?orderId=${payment.orderId}`;
+      return res.redirect(302, redirectUrl);
     } else {
       // Thanh toán thất bại
       await prisma.payment.update({
@@ -745,20 +746,19 @@ const handleCallback = async (req, res) => {
         }
       });
 
-      // Trả về trang HTML thông báo thất bại ngay trên VNPay
-      const html = renderFailedPage({
-        orderId: payment.orderId,
-        responseCode: vnp_ResponseCode,
-      });
-      return res.status(200).type('html').send(html);
+      // Redirect 302 thẳng về trang failed của customer app
+      const customerAppUrl = process.env.CUSTOMER_APP_URL || 'http://localhost:5174';
+      const redirectUrl = `${customerAppUrl}/payment/failed?orderId=${payment.orderId}&code=${vnp_ResponseCode}`;
+      return res.redirect(302, redirectUrl);
     }
 
   } catch (error) {
     console.error('Error processing payment callback:', error);
-    const html = renderErrorPage({
-      message: error.message || 'Đã xảy ra lỗi trong quá trình xử lý thanh toán.',
-    });
-    return res.status(200).type('html').send(html);
+    const customerAppUrl = process.env.CUSTOMER_APP_URL || 'http://localhost:5174';
+    const redirectUrl = `${customerAppUrl}/payment/error`;
+
+    // Redirect 302 thẳng về trang error của customer app
+    return res.redirect(302, redirectUrl);
   }
 };
 
@@ -777,6 +777,13 @@ router.get('/:orderId/status', async (req, res) => {
     const order = await prisma.order.findUnique({
       where: { id: orderId },
       include: {
+        details: {
+          include: {
+            menuItem: {
+              select: { name: true }
+            }
+          }
+        },
         payments: {
           orderBy: { createdAt: 'desc' },
           take: 1, // Lấy payment mới nhất
@@ -793,6 +800,12 @@ router.get('/:orderId/status', async (req, res) => {
       paymentStatus: order.paymentStatus,
       orderStatus: order.status,
       totalAmount: order.totalAmount,
+      items: order.details.map((detail) => ({
+        id: detail.id,
+        name: detail.menuItem?.name || 'Món ăn',
+        quantity: detail.quantity,
+        price: detail.priceAtOrder,
+      })),
       latestPayment: order.payments[0] || null,
     });
 

@@ -57,24 +57,51 @@ export default function PaymentSuccessPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           {paymentStatus && (
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">{t('payment.order_id')}:</span>
-                <span className="font-medium">#{paymentStatus.orderId}</span>
+            <>
+              {/* Mã đơn hàng */}
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">{t('payment.order_id')}:</span>
+                  <span className="font-medium">#{paymentStatus.orderId}</span>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">{t('payment.amount')}:</span>
-                <span className="font-medium">
-                  {paymentStatus.totalAmount?.toLocaleString('vi-VN')}đ
-                </span>
+
+              {/* Danh sách món ăn + số lượng + tiền (ngang hàng) */}
+              {Array.isArray(paymentStatus.items) && paymentStatus.items.length > 0 && (
+                <div className="mt-2 space-y-1 max-h-48 overflow-y-auto pr-1 border-t pt-3 text-sm text-muted-foreground">
+                  {paymentStatus.items.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex justify-between"
+                    >
+                      <span className="flex-1">
+                        {item.name}
+                        <span className="ml-1">x{item.quantity}</span>
+                      </span>
+                      <span className="font-medium">
+                        {(item.price * item.quantity).toLocaleString('vi-VN')}đ
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Tổng tiền + trạng thái */}
+              <div className="mt-3 space-y-1 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">{t('payment.amount')}:</span>
+                  <span className="font-medium">
+                    {paymentStatus.totalAmount?.toLocaleString('vi-VN')}đ
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">{t('payment.status')}:</span>
+                  <span className="font-medium text-green-600 dark:text-green-400">
+                    {t('payment.paid')}
+                  </span>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">{t('payment.status')}:</span>
-                <span className="font-medium text-green-600 dark:text-green-400">
-                  {t('payment.paid')}
-                </span>
-              </div>
-            </div>
+            </>
           )}
           <div className="pt-4 space-y-2">
             <Button 
