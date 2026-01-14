@@ -77,7 +77,11 @@
             "toast_success_title": "✅ 依頼が送信されました",
             "toast_success_desc": "スタッフが間もなくお伺いします。",
             "toast_error_title": "❌ エラー",
-            "toast_error_desc": "支払い依頼を送信できませんでした。"
+            "toast_error_desc": "支払い依頼を送信できませんでした。",
+            "pay_button": "お支払い",
+            "cash_button": "現金で支払う",
+            "cash_note": "少々お待ちください。スタッフがお伺いしてお支払いを承ります。",
+            "choose_method": "お支払い方法を選択"
         },
         "cancel": {
             "button": "この注文をキャンセル",

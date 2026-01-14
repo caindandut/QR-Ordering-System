@@ -77,7 +77,11 @@
             "toast_success_title": "✅ Yêu cầu đã được gửi",
             "toast_success_desc": "Nhân viên sẽ đến hỗ trợ bạn trong giây lát.",
             "toast_error_title": "❌ Lỗi",
-            "toast_error_desc": "Không thể gửi yêu cầu thanh toán."
+            "toast_error_desc": "Không thể gửi yêu cầu thanh toán.",
+            "pay_button": "Thanh toán",
+            "cash_button": "Thanh toán tiền mặt",
+            "cash_note": "Bạn vui lòng đợi một chút, nhân viên sẽ đến thanh toán cho bạn.",
+            "choose_method": "Chọn phương thức thanh toán"
         },
         "vnpay": {
             "pay_button": "Thanh toán VNPay",

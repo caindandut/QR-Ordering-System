@@ -58,10 +58,10 @@ export default function OrderStatusPage() {
 
   // State "sống" (như cũ)
   const [orderStatuses, setOrderStatuses] = useState({});
-  const [requestedPayments, setRequestedPayments] = useState({}); // Track yêu cầu thanh toán
   const [billData, setBillData] = useState(null); // Lưu dữ liệu hóa đơn hiện tại đang xem
   const [showBillDialog, setShowBillDialog] = useState(false); // Hiển thị dialog hóa đơn
-  const [orderBills, setOrderBills] = useState({}); // Lưu dữ liệu hóa đơn cho từng đơn hàng
+  const [selectedPaymentOrder, setSelectedPaymentOrder] = useState(null); // Đơn hàng đang chọn phương thức thanh toán
+  const [showCashNote, setShowCashNote] = useState(false); // Hiển thị ghi chú chờ nhân viên sau khi chọn tiền mặt
 
   // 👇 [SỬA] Đảm bảo tên biến là `initialOrders` (số nhiều)
   const { 
@@ -78,22 +78,6 @@ export default function OrderStatusPage() {
   const paymentRequestMutation = useMutation({
     mutationFn: requestPayment,
     onSuccess: (data, orderId) => {
-      setRequestedPayments(prev => ({...prev, [orderId]: true}));
-      
-      // Lưu dữ liệu hóa đơn cho đơn hàng này
-      const order = initialOrders?.find(o => o.id === orderId);
-      if (order) {
-        const billDataForOrder = {
-          orderId: order.id,
-          tableName: tableName,
-          customerName: customerName,
-          createdAt: order.createdAt,
-          details: order.details,
-          totalAmount: order.totalAmount,
-        };
-        setOrderBills(prev => ({...prev, [orderId]: billDataForOrder}));
-      }
-      
       toast({
         title: t('status_page.payment.toast_success_title'),
         description: t('status_page.payment.toast_success_desc'),
@@ -131,16 +115,6 @@ export default function OrderStatusPage() {
     mutationFn: cancelOrder,
     onSuccess: (_, orderId) => {
       setOrderStatuses(prev => ({ ...prev, [orderId]: 'CANCELLED' }));
-      setRequestedPayments(prev => {
-        const updated = { ...prev };
-        delete updated[orderId];
-        return updated;
-      });
-      setOrderBills(prev => {
-        const updated = { ...prev };
-        delete updated[orderId];
-        return updated;
-      });
       toast({
         title: t('status_page.cancel.toast_success_title'),
         description: t('status_page.cancel.toast_success_desc'),
@@ -239,13 +213,19 @@ export default function OrderStatusPage() {
     
   }, [initialOrders, toast]); // Thêm toast vào dependency array
 
-  // Hàm xem biên lai
-  const handleViewBill = (orderId) => {
-    const bill = orderBills[orderId];
-    if (bill) {
-      setBillData(bill);
-      setShowBillDialog(true);
-    }
+  // Hàm mở biên lai từ một đơn hàng cụ thể
+  const openBillForOrder = (order) => {
+    if (!order) return;
+    const bill = {
+      orderId: order.id,
+      tableName,
+      customerName,
+      createdAt: order.createdAt,
+      details: order.details,
+      totalAmount: order.totalAmount,
+    };
+    setBillData(bill);
+    setShowBillDialog(true);
   };
 
   const renderStatusUI = (status) => {
@@ -334,6 +314,98 @@ export default function OrderStatusPage() {
               <div className="px-4 pb-4">
                 <Button onClick={() => setShowBillDialog(false)} className="w-full" size="lg">
                   {t('status_page.payment.close_button')}
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog chọn phương thức thanh toán */}
+      <Dialog
+        open={!!selectedPaymentOrder}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedPaymentOrder(null);
+            setShowCashNote(false);
+          }
+        }}
+      >
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-center">
+              {t('status_page.payment.choose_method') || 'Chọn phương thức thanh toán'}
+            </DialogTitle>
+          </DialogHeader>
+          {selectedPaymentOrder && (
+            <div className="space-y-4">
+              {/* Thanh toán VNPay */}
+              <div className="space-y-2">
+                <Button
+                  onClick={() => {
+                    vnpayPaymentMutation.mutate(selectedPaymentOrder.id);
+                    setSelectedPaymentOrder(null);
+                  }}
+                  disabled={vnpayPaymentMutation.isLoading}
+                  className="w-full"
+                  size="lg"
+                  variant="outline"
+                >
+                  {vnpayPaymentMutation.isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      {t('status_page.vnpay.processing')}
+                    </>
+                  ) : (
+                    <>
+                      <CreditCard className="mr-2 h-5 w-5" />
+                      {t('status_page.vnpay.pay_button') || 'Thanh toán bằng VNPay'}
+                    </>
+                  )}
+                </Button>
+              </div>
+
+              {/* Thanh toán tiền mặt */}
+              <div className="space-y-2 pt-2 border-t">
+                <Button
+                  onClick={() => {
+                    paymentRequestMutation.mutate(selectedPaymentOrder.id);
+                    setShowCashNote(true);
+                  }}
+                  disabled={paymentRequestMutation.isLoading}
+                  className="w-full"
+                  size="lg"
+                  variant="outline"
+                >
+                  {paymentRequestMutation.isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      {t('status_page.payment.requesting') || 'Đang gửi yêu cầu'}
+                    </>
+                  ) : (
+                    <>
+                      <DollarSign className="mr-2 h-5 w-5" />
+                      {t('status_page.payment.cash_button') || 'Thanh toán bằng tiền mặt'}
+                    </>
+                  )}
+                </Button>
+                {showCashNote && (
+                  <p className="text-xs text-muted-foreground text-center">
+                    {t('status_page.payment.cash_note') ||
+                      'Bạn vui lòng đợi một chút, nhân viên sẽ đến thanh toán cho bạn.'}
+                  </p>
+                )}
+              </div>
+
+              {/* Nút xem biên lai ở cuối dialog */}
+              <div className="pt-2 border-t">
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  size="sm"
+                  onClick={() => openBillForOrder(selectedPaymentOrder)}
+                >
+                  {t('status_page.payment.view_receipt') || 'Xem biên lai'}
                 </Button>
               </div>
             </div>
@@ -438,67 +510,16 @@ export default function OrderStatusPage() {
                     </Button>
                   )}
 
-                  {/* Hàng 3: Nút thanh toán (chỉ hiện khi SERVED và chưa thanh toán) */}
-                  {orderStatuses[order.id] === 'SERVED' && 
-                   order.paymentStatus !== 'PAID' && 
-                   !requestedPayments[order.id] && (
+                  {/* Nút thanh toán: chỉ còn 1 nút, mở dialog chọn phương thức */}
+                  {orderStatuses[order.id] === 'SERVED' &&
+                   order.paymentStatus !== 'PAID' && (
                     <div className="space-y-2">
-                      {/* Nút thanh toán VNPay */}
-                      <Button 
-                        onClick={() => vnpayPaymentMutation.mutate(order.id)}
-                        disabled={vnpayPaymentMutation.isLoading}
-                        className="w-full bg-blue-600 hover:bg-blue-700"
-                        size="lg"
-                      >
-                        {vnpayPaymentMutation.isLoading ? (
-                          <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            {t('status_page.vnpay.processing')}
-                          </>
-                        ) : (
-                          <>
-                            <CreditCard className="mr-2 h-5 w-5" />
-                            {t('status_page.vnpay.pay_button')}
-                          </>
-                        )}
-                      </Button>
-                      
-                      {/* Nút yêu cầu thanh toán thủ công (tùy chọn) */}
-                      <Button 
-                        onClick={() => paymentRequestMutation.mutate(order.id)}
-                        disabled={paymentRequestMutation.isLoading}
-                        variant="outline"
+                      <Button
+                        onClick={() => setSelectedPaymentOrder(order)}
                         className="w-full"
                         size="lg"
                       >
-                        {paymentRequestMutation.isLoading ? (
-                          <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            {t('status_page.payment.requesting')}
-                          </>
-                        ) : (
-                          <>
-                            <DollarSign className="mr-2 h-5 w-5" />
-                            {t('status_page.payment.request_button')}
-                          </>
-                        )}
-                      </Button>
-                    </div>
-                  )}
-                  
-                  {/* Hiển thị nút xem biên lai khi đã yêu cầu thanh toán */}
-                  {requestedPayments[order.id] && orderStatuses[order.id] === 'SERVED' && (
-                    <div className="space-y-2">
-                      <div className="text-center text-sm text-primary font-medium p-2 bg-primary/10 rounded-md">
-                        {t('status_page.payment.requested_message')}
-                      </div>
-                      <Button 
-                        onClick={() => handleViewBill(order.id)}
-                        variant="outline"
-                        className="w-full"
-                        size="lg"
-                      >
-                        {t('status_page.payment.view_receipt')}
+                        {t('status_page.payment.pay_button') || 'Thanh toán'}
                       </Button>
                     </div>
                   )}
