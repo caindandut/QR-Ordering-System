@@ -79,6 +79,12 @@
             "toast_error_title": "❌ Lỗi",
             "toast_error_desc": "Không thể gửi yêu cầu thanh toán."
         },
+        "vnpay": {
+            "pay_button": "Thanh toán VNPay",
+            "processing": "Đang xử lý...",
+            "error_title": "Lỗi thanh toán",
+            "error_desc": "Không thể tạo liên kết thanh toán. Vui lòng thử lại."
+        },
         "cancel": {
             "button": "Hủy đơn này",
             "cancelling": "Đang hủy...",
@@ -157,5 +163,41 @@
         "menu": "Thực đơn",
         "cart": "Giỏ hàng",
         "status": "Trạng thái đơn hàng"
+    },
+    "payment": {
+        "success": {
+            "title": "Thanh toán thành công!",
+            "description": "Đơn hàng của bạn đã được thanh toán thành công."
+        },
+        "failed": {
+            "title": "Thanh toán thất bại",
+            "description": "Giao dịch thanh toán không thành công. Vui lòng thử lại."
+        },
+        "error": {
+            "title": "Lỗi xử lý thanh toán",
+            "description": "Đã xảy ra lỗi trong quá trình xử lý thanh toán."
+        },
+        "order_id": "Mã đơn hàng",
+        "amount": "Số tiền",
+        "status": "Trạng thái",
+        "paid": "Đã thanh toán",
+        "view_orders": "Xem đơn hàng",
+        "back_to_menu": "Quay lại thực đơn",
+        "try_again": "Thử lại",
+        "error_code": "Mã lỗi",
+        "errors": {
+            "code_07": "Trừ tiền thành công. Giao dịch bị nghi ngờ (liên quan tới lừa đảo, giao dịch bất thường).",
+            "code_09": "Thẻ/Tài khoản chưa đăng ký dịch vụ InternetBanking",
+            "code_10": "Xác thực thông tin thẻ/tài khoản không đúng quá 3 lần",
+            "code_11": "Đã hết hạn chờ thanh toán. Xin vui lòng thực hiện lại giao dịch.",
+            "code_12": "Thẻ/Tài khoản bị khóa.",
+            "code_13": "Nhập sai mật khẩu xác thực giao dịch (OTP). Xin vui lòng thực hiện lại giao dịch.",
+            "code_51": "Tài khoản không đủ số dư để thực hiện giao dịch.",
+            "code_65": "Tài khoản đã vượt quá hạn mức giao dịch trong ngày.",
+            "code_75": "Ngân hàng thanh toán đang bảo trì.",
+            "code_79": "Nhập sai mật khẩu đăng nhập InternetBanking quá số lần quy định.",
+            "code_99": "Lỗi không xác định được. Vui lòng liên hệ hotline để được hỗ trợ.",
+            "unknown": "Lỗi không xác định. Vui lòng thử lại hoặc liên hệ hỗ trợ."
+        }
     }
 }

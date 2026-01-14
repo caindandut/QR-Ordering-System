@@ -52,17 +52,19 @@ model MenuItem {
 }
 
 model Order {
-  id           Int           @id @default(autoincrement())
-  customerName String
-  status       String        @default("PENDING")
-  totalAmount  Int
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  tableId      Int
-  staffId      Int?
-  table        Table         @relation(fields: [tableId], references: [id])
-  staff        User?         @relation(fields: [staffId], references: [id])
-  details      OrderDetail[]
+  id            Int           @id @default(autoincrement())
+  customerName  String
+  status        String        @default("PENDING")
+  totalAmount   Int
+  paymentStatus String        @default("UNPAID")
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  tableId       Int
+  staffId       Int?
+  table         Table         @relation(fields: [tableId], references: [id])
+  staff         User?         @relation(fields: [staffId], references: [id])
+  details       OrderDetail[]
+  payments      Payment[]
 }
 
 model OrderDetail {
@@ -71,6 +73,7 @@ model OrderDetail {
   priceAtOrder Int
   orderId      Int
   menuItemId   Int
+  status       String   @default("PENDING")
   order        Order    @relation(fields: [orderId], references: [id])
   menuItem     MenuItem @relation(fields: [menuItemId], references: [id])
 }
@@ -80,6 +83,20 @@ model UserToken {
   token  String @unique
   userId Int    @unique
   user   User   @relation(fields: [userId], references: [id])
+}
+
+model Payment {
+  id              Int       @id @default(autoincrement())
+  orderId         Int
+  vnpTxnRef       String    @unique
+  vnpAmount       Int
+  vnpTransactionNo String?
+  vnpResponseCode String?
+  vnpSecureHash   String?
+  paymentStatus   String    @default("PENDING")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  order           Order     @relation(fields: [orderId], references: [id])
 }
 
 enum Role {

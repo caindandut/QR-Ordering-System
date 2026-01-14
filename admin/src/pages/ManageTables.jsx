@@ -4,7 +4,6 @@ import api from '../services/api';
 import { QRCode } from 'react-qrcode-logo';
 import { useReactToPrint } from 'react-to-print';
 
-// 1. Import "linh kiện"
 import {
   Table,
   TableBody,

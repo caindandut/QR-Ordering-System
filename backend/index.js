@@ -11,6 +11,7 @@ import staffRoutes from './routes/staffRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import adminOrderRoutes from './routes/adminOrderRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
+import paymentRoutes from './routes/paymentRoutes.js';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 
@@ -41,6 +42,7 @@ app.use('/api/staff', staffRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/admin/orders', adminOrderRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/payments', paymentRoutes);
 
 // Health check endpoint for Render
 app.get('/', (req, res) => {

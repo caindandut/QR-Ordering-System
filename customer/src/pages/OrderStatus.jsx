@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import api from '../services/api';
 import { io } from 'socket.io-client';
-import { Loader2, DollarSign, X } from 'lucide-react';
+import { Loader2, DollarSign, X, CreditCard } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -28,6 +28,11 @@ const fetchMyOrders = async (tableId, customerName) => {
 
 const requestPayment = async (orderId) => {
   const response = await api.post(`/api/orders/${orderId}/request-payment`);
+  return response.data;
+};
+
+const createVnpayPayment = async (orderId) => {
+  const response = await api.post('/api/payments/create', { orderId });
   return response.data;
 };
 
@@ -99,6 +104,23 @@ export default function OrderStatusPage() {
       toast({
         title: t('status_page.payment.toast_error_title'),
         description: err.response?.data?.message || t('status_page.payment.toast_error_desc'),
+        variant: 'destructive',
+        duration: 5000,
+      });
+    },
+  });
+
+  // Mutation thanh toán VNPay
+  const vnpayPaymentMutation = useMutation({
+    mutationFn: createVnpayPayment,
+    onSuccess: (data) => {
+      // Redirect đến VNPay
+      window.location.href = data.paymentUrl;
+    },
+    onError: (err) => {
+      toast({
+        title: t('status_page.vnpay.error_title'),
+        description: err.response?.data?.message || t('status_page.vnpay.error_desc'),
         variant: 'destructive',
         duration: 5000,
       });
@@ -416,26 +438,52 @@ export default function OrderStatusPage() {
                     </Button>
                   )}
 
-                  {/* Hàng 3: Nút yêu cầu thanh toán (chỉ hiện khi SERVED) */}
-                  {orderStatuses[order.id] === 'SERVED' && !requestedPayments[order.id] && (
-                    <Button 
-                      onClick={() => paymentRequestMutation.mutate(order.id)}
-                      disabled={paymentRequestMutation.isLoading}
-                      className="w-full"
-                      size="lg"
-                    >
-                      {paymentRequestMutation.isLoading ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          {t('status_page.payment.requesting')}
-                        </>
-                      ) : (
-                        <>
-                          <DollarSign className="mr-2 h-5 w-5" />
-                          {t('status_page.payment.request_button')}
-                        </>
-                      )}
-                    </Button>
+                  {/* Hàng 3: Nút thanh toán (chỉ hiện khi SERVED và chưa thanh toán) */}
+                  {orderStatuses[order.id] === 'SERVED' && 
+                   order.paymentStatus !== 'PAID' && 
+                   !requestedPayments[order.id] && (
+                    <div className="space-y-2">
+                      {/* Nút thanh toán VNPay */}
+                      <Button 
+                        onClick={() => vnpayPaymentMutation.mutate(order.id)}
+                        disabled={vnpayPaymentMutation.isLoading}
+                        className="w-full bg-blue-600 hover:bg-blue-700"
+                        size="lg"
+                      >
+                        {vnpayPaymentMutation.isLoading ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            {t('status_page.vnpay.processing')}
+                          </>
+                        ) : (
+                          <>
+                            <CreditCard className="mr-2 h-5 w-5" />
+                            {t('status_page.vnpay.pay_button')}
+                          </>
+                        )}
+                      </Button>
+                      
+                      {/* Nút yêu cầu thanh toán thủ công (tùy chọn) */}
+                      <Button 
+                        onClick={() => paymentRequestMutation.mutate(order.id)}
+                        disabled={paymentRequestMutation.isLoading}
+                        variant="outline"
+                        className="w-full"
+                        size="lg"
+                      >
+                        {paymentRequestMutation.isLoading ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            {t('status_page.payment.requesting')}
+                          </>
+                        ) : (
+                          <>
+                            <DollarSign className="mr-2 h-5 w-5" />
+                            {t('status_page.payment.request_button')}
+                          </>
+                        )}
+                      </Button>
+                    </div>
                   )}
                   
                   {/* Hiển thị nút xem biên lai khi đã yêu cầu thanh toán */}

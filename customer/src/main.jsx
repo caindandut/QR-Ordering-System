@@ -14,6 +14,9 @@ import ErrorPage from './pages/ErrorPage';
 import CartPage from './pages/Cart';
 import OrderStatusPage from './pages/OrderStatus';
 import WelcomePage from './pages/WelcomePage';
+import PaymentSuccessPage from './pages/PaymentSuccess';
+import PaymentFailedPage from './pages/PaymentFailed';
+import PaymentErrorPage from './pages/PaymentError';
 import './i18n';
 
 const queryClient = new QueryClient();
@@ -49,6 +52,23 @@ const router = createBrowserRouter([
               },
             ]
           }
+        ]
+      },
+      {
+        path: 'payment',
+        children: [
+          {
+            path: 'success',
+            element: <PaymentSuccessPage />,
+          },
+          {
+            path: 'failed',
+            element: <PaymentFailedPage />,
+          },
+          {
+            path: 'error',
+            element: <PaymentErrorPage />,
+          },
         ]
       },
     ]

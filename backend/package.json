@@ -23,7 +23,8 @@
     "multer": "^2.0.2",
     "socket.io": "^4.8.1",
     "streamifier": "^0.1.1",
-    "prisma": "^6.18.0"
+    "prisma": "^6.18.0",
+    "vnpay": "^2.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
