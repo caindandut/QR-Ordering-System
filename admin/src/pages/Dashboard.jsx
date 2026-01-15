@@ -48,8 +48,7 @@ export default function DashboardPage() {
 
       setStats(statsData);
       setChartData(revenueData);
-    } catch (error) {
-      console.error('Error fetching dashboard data:', error);
+    } catch {
       toast({
         title: t('dashboard.error_title'),
         description: t('dashboard.error_load_data'),
@@ -65,8 +64,7 @@ export default function DashboardPage() {
     try {
       const revenueData = await dashboardService.fetchRevenueChart(revenuePeriod);
       setChartData(revenueData);
-    } catch (error) {
-      console.error('Error fetching revenue data:', error);
+    } catch {
     }
   };
 

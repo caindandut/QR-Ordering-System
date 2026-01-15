@@ -3,15 +3,10 @@ export const useNotificationSound = () => {
     // Ưu tiên 1: Chơi file MP3 nếu có (User yêu cầu)
     const audio = new Audio('/sounds/notification.mp3');
     
-    audio.play()
-      .then(() => {
-        console.log('🔊 Playing custom MP3 sound');
-      })
-      .catch(() => {
-        // Ưu tiên 2: Fallback sang Web Audio API (Melody dễ chịu hơn)
-        console.log('MP3 not found or blocked, playing fallback melody');
-        playFallbackMelody();
-      });
+    audio.play().catch(() => {
+      // Ưu tiên 2: Fallback sang Web Audio API (Melody dễ chịu hơn)
+      playFallbackMelody();
+    });
   };
 
   const playFallbackMelody = () => {
@@ -48,8 +43,8 @@ export const useNotificationSound = () => {
         oscillator.stop(startTime + duration);
       });
 
-    } catch (error) {
-      console.error('Fallback sound failed:', error);
+    } catch {
+      // Ignore fallback sound error to avoid console noise
     }
   };
 

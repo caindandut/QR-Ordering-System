@@ -49,8 +49,8 @@ export default function Sidebar({ onLinkClick, isMobileSheet = false }) {
       try {
         const response = await api.get('/api/admin/orders/pending-count');
         setPendingCount(response.data.count);
-      } catch (error) {
-        console.error('Failed to fetch pending count:', error);
+      } catch {
+        // Ignore pending count error to avoid console noise
       }
     };
 

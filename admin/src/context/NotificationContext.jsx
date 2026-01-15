@@ -23,32 +23,19 @@ export const NotificationProvider = ({ children }) => {
   // Lắng nghe socket events
   useEffect(() => {
     if (!socket) {
-      console.log('⚠️ Socket not available in NotificationContext');
       return;
     }
     
-    // Log socket connection status
-    console.log('🔌 NotificationContext: Socket status:', {
-      connected: socket.connected,
-      id: socket.id,
-      url: socket.io?.uri
-    });
-    
     // Listen for connection events
-    const onConnect = () => {
-      console.log('✅ NotificationContext: Socket connected!', socket.id);
-    };
+    const onConnect = () => {};
     
-    const onDisconnect = () => {
-      console.log('❌ NotificationContext: Socket disconnected');
-    };
+    const onDisconnect = () => {};
     
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
     
     const handleNewOrder = (newOrder) => {
       if (!newOrder || !newOrder.id) {
-        console.error('Đơn hàng không hợp lệ:', newOrder);
         return;
       }
 
@@ -66,7 +53,6 @@ export const NotificationProvider = ({ children }) => {
 
     const handlePaymentRequest = (paymentRequest) => {
       if (!paymentRequest || !paymentRequest.orderId) {
-        console.error('Yêu cầu thanh toán không hợp lệ:', paymentRequest);
         return;
       }
 
@@ -91,19 +77,13 @@ export const NotificationProvider = ({ children }) => {
 
     // Khi đơn hàng được cập nhật cho admin (bao gồm cả VNPay thành công)
     const handleOrderUpdatedForAdmin = (order) => {
-      console.log('📨 Received order_updated_for_admin:', order);
-      
       if (!order || !order.id) {
-        console.error('Đơn hàng cập nhật không hợp lệ:', order);
         return;
       }
-
-      console.log('🔍 Checking paymentStatus:', order.paymentStatus, 'Type:', typeof order.paymentStatus);
 
       // Chỉ quan tâm tới các đơn đã thanh toán (ví dụ VNPay thành công)
       // Kiểm tra cả 'PAID' và 'Paid' để đảm bảo tương thích
       if (order.paymentStatus === 'PAID' || order.paymentStatus === 'Paid' || order.paymentStatus?.toUpperCase() === 'PAID') {
-        console.log('✅ Order is PAID, creating VNPay notification');
         const notification = {
           type: 'VNPAY_SUCCESS',
           orderId: order.id,
@@ -112,38 +92,25 @@ export const NotificationProvider = ({ children }) => {
           totalAmount: order.totalAmount,
           createdAt: order.updatedAt || order.createdAt,
         };
-
-        console.log('📬 Adding notification to paymentRequests:', notification);
-
         setPaymentRequests((prev) => {
           const exists = prev.some(
             (req) => req.orderId === notification.orderId && req.type === notification.type
           );
           if (exists) {
-            console.log('⚠️ Notification already exists, skipping');
             return prev;
           }
-          console.log('✅ Adding new notification, count will increase');
           return [notification, ...prev];
         });
 
-        setPaymentRequestCount((prev) => {
-          console.log('📊 Payment request count:', prev, '->', prev + 1);
-          return prev + 1;
-        });
-      } else {
-        console.log('⏭️ Order paymentStatus is not PAID, skipping notification. Status:', order.paymentStatus);
-      }
+        setPaymentRequestCount((prev) => prev + 1);
+      } 
     };
 
-    console.log('📡 Registering socket listeners...');
     socket.on('new_order_received', handleNewOrder);
     socket.on('payment_requested', handlePaymentRequest);
     socket.on('order_updated_for_admin', handleOrderUpdatedForAdmin);
-    console.log('✅ All socket listeners registered, including order_updated_for_admin');
 
     return () => {
-      console.log('🧹 Cleaning up socket listeners');
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
       socket.off('new_order_received', handleNewOrder);

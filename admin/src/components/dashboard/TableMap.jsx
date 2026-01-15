@@ -35,10 +35,6 @@ export default function TableMap() {
   useEffect(() => {
     const socket = io(import.meta.env.VITE_API_URL || 'http://localhost:3000');
 
-    socket.on('connect', () => {
-      console.log('TableMap: Socket connected');
-    });
-
     socket.on('tableStatusChanged', () => {
       refetch();
     });

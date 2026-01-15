@@ -149,7 +149,6 @@ export default function ManageOrdersPage() {
 
     const handleNewOrder = (newOrder) => {
       if (!newOrder || !newOrder.id) {
-        console.error('Đơn hàng không hợp lệ:', newOrder);
         return;
       }
       
@@ -181,7 +180,6 @@ export default function ManageOrdersPage() {
     
     const handleUpdateOrder = (updatedOrder) => {
       if (!updatedOrder || !updatedOrder.id) {
-        console.error('Đơn hàng cập nhật không hợp lệ:', updatedOrder);
         return;
       }
       

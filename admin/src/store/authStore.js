@@ -69,8 +69,8 @@ export const useAuthStore = create(
           try {
             // Bảo backend hủy token này
             await api.post('/api/auth/logout', { refreshToken });
-          } catch (error) {
-            console.error("Lỗi khi logout:", error);
+          } catch {
+            // Ignore logout error to avoid console noise
           }
       }
       set({

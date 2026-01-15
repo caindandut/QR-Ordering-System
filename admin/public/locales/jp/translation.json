@@ -43,6 +43,7 @@
             "customer": "顧客:",
             "time": "時間:",
             "payment_section": "💰 支払いリクエスト",
+            "vnpay_section": "VNPay支払い通知",
             "payment_title": "支払い #{{id}}",
             "payment_badge": "至急",
             "total": "合計金額:",

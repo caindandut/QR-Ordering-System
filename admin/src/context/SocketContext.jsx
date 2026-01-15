@@ -18,8 +18,6 @@ export const SocketProvider = ({ children }) => {
   useEffect(() => {
     // 6a. Chỉ kết nối nếu chưa có
     if (!socketRef.current) {
-      console.log('🔌 Initializing Socket.IO connection...');
-      
       // 6b. Tạo kết nối (Socket.IO client)
       const newSocket = io(SOCKET_URL, {
         transports: ['websocket', 'polling'],
@@ -33,16 +31,16 @@ export const SocketProvider = ({ children }) => {
 
       // Listen to connection events
       newSocket.on('connect', () => {
-        console.log('✅ Socket.IO connected successfully!', newSocket.id);
+        // Connected
       });
 
       newSocket.on('disconnect', () => {
-        console.log('❌ Socket.IO disconnected');
+        // Disconnected
       });
 
       // Lắng nghe các sự kiện kết nối/lỗi
-      newSocket.on('connect_error', (err) => {
-        console.error('Lỗi kết nối Socket.IO (Admin):', err.message);
+      newSocket.on('connect_error', () => {
+        // Kết nối socket lỗi (ví dụ backend chưa chạy) - không log ra console
       });
     }
 
@@ -54,7 +52,6 @@ export const SocketProvider = ({ children }) => {
     //    Nếu không, kết nối sẽ "lơ lửng" (zombie connection).
     return () => {
       if (currentSocket) {
-        console.log('🔌 Disconnecting socket...');
         currentSocket.disconnect();
         socketRef.current = null;
         setSocket(null);

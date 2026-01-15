@@ -11,8 +11,8 @@ i18n
     // 3. Ngôn ngữ mặc định
     fallbackLng: 'vi',
     
-    // 4. Bật debug (chỉ khi dev) để xem log
-    debug: import.meta.env.DEV,
+    // 4. Tắt debug để không log i18next ra console
+    debug: false,
 
     // 5. Cấu hình cho "Xe tải" (http-backend)
     backend: {

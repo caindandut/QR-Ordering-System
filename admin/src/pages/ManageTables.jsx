@@ -567,8 +567,8 @@ export default function ManageTablesPage() {
                   // 3. (Tùy chọn) Reset lại sau 2 giây
                   setTimeout(() => setIsCopied(false), 2000);
                   
-                } catch (err) {
-                  console.error('Không thể copy URL: ', err);
+                } catch {
+                  // Ignore clipboard error to avoid console noise
                 }
               }}
             >

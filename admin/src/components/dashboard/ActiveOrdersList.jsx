@@ -35,8 +35,7 @@ export default function ActiveOrdersList() {
       }
       const data = await dashboardService.fetchActiveOrders(filters);
       setOrders(data);
-    } catch (error) {
-      console.error('Error fetching active orders:', error);
+    } catch {
       toast({
         title: t('dashboard.active_orders.error_title'),
         description: t('dashboard.active_orders.error_load'),

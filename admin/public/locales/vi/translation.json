@@ -43,6 +43,7 @@
             "customer": "Khách:",
             "time": "Thời gian:",
             "payment_section": "💰 Yêu cầu thanh toán",
+            "vnpay_section": "Thông báo thanh toán VNPay",
             "payment_title": "Thanh toán #{{id}}",
             "payment_badge": "Khẩn cấp",
             "total": "Tổng tiền:",

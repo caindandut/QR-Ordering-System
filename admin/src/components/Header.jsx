@@ -48,9 +48,8 @@ export default function Header() {
         duration: 5000,
       });
 
-    } catch (error) {
+    } catch {
       // (Phòng trường hợp logout bị lỗi, hiếm khi xảy ra)
-      console.error("Logout error:", error);
       toast({
         title: t('header.logout_error_title'),
         description: t('header.logout_error_desc'),
