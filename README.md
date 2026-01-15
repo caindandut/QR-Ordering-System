@@ -2,8 +2,21 @@
 
 A comprehensive QR code-based ordering management system for restaurants. Customers can scan QR codes on tables to place orders and track them in real-time.
 
+## 🚀 Live Demo
+
+Try the system online! Visit the admin dashboard:
+
+**🔗 Demo URL:** [https://qr-ordering-admin.vercel.app/](https://qr-ordering-admin.vercel.app/)
+
+**Demo Credentials:**
+- **Email:** `admin@gmail.com`
+- **Password:** `admin`
+
+> ⚠️ **Note:** This is a demo environment. Please use responsibly and do not modify critical data.
+
 ## 📋 Table of Contents
 
+- [🚀 Live Demo](#-live-demo)
 - [🎯 Overview](#-overview)
   - [Key Benefits](#key-benefits)
 - [✨ Key Features](#-key-features)
