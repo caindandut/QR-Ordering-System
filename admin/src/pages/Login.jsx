@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from 'react-i18next';
+import { LanguageToggle } from '@/components/LanguageToggle';
 
 export default function LoginPage() {
   // 1. Lấy hàm `login` từ "Não"
@@ -73,7 +74,12 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-background">
+    <div className="flex items-center justify-center h-screen bg-background relative">
+      {/* Language Toggle Button - Top Right */}
+      <div className="absolute top-4 right-4">
+        <LanguageToggle />
+      </div>
+      
       <form onSubmit={handleSubmit} className="w-full max-w-sm p-8 space-y-4 border rounded-lg shadow-md bg-card">
         <h2 className="text-2xl font-bold text-center text-card-foreground">{t('login_page.title')}</h2>
         <div>
