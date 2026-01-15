@@ -56,18 +56,16 @@ export default function Sidebar({ onLinkClick, isMobileSheet = false }) {
 
     fetchPendingCount();
 
-    // Socket.IO listener for new orders
+    // Socket.IO listener cho các sự kiện real-time
     const socket = io(import.meta.env.VITE_API_URL || 'http://localhost:3000');
 
+    // Đơn hàng mới
     socket.on('new_order_received', (order) => {
       if (order.status === 'PENDING') {
         setPendingCount(prev => prev + 1);
         
-        // Play notification sound
+        // Chuông báo + toast
         play(); 
-        
-        // Show toast notification
-        // Fix: Removed "Bàn" prefix as table name likely includes it
         toast({
           title: "Đơn hàng mới! 🔔",
           description: `${order.table?.name} - ${order.customerName}`,
@@ -77,9 +75,9 @@ export default function Sidebar({ onLinkClick, isMobileSheet = false }) {
       }
     });
 
+    // Khách yêu cầu thanh toán (tiền mặt)
     socket.on('payment_requested', (data) => {
-      play(); // Play notification sound
-      
+      play();
       toast({
         title: "Yêu cầu thanh toán! 💸",
         description: `${data.tableName} - ${data.customerName}`,
@@ -88,8 +86,24 @@ export default function Sidebar({ onLinkClick, isMobileSheet = false }) {
       });
     });
 
+    // Khách thanh toán VNPay thành công (order_updated_for_admin với paymentStatus = PAID)
+    socket.on('order_updated_for_admin', (order) => {
+      if (!order) return;
+
+      const status = order.paymentStatus || order.status;
+      if (status === 'PAID' || status === 'Paid' || status?.toUpperCase() === 'PAID') {
+        play();
+        toast({
+          title: "Khách đã thanh toán VNPay ✅",
+          description: `${order.table?.name || 'Bàn ?'} - ${order.customerName || 'Khách'}`,
+          variant: "success",
+          duration: 5000,
+        });
+      }
+    });
+
+    // Cập nhật lại số lượng đơn chờ khi trạng thái thay đổi
     socket.on('orderStatusChanged', () => {
-      // Refetch count when order status changes
       fetchPendingCount();
     });
 

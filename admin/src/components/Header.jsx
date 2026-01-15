@@ -156,46 +156,61 @@ export default function Header() {
               ))
             )}
             
-            {/* Yêu cầu thanh toán */}
+            {/* Yêu cầu thanh toán & thông báo thanh toán */}
             {paymentRequests.length > 0 && (
               <>
                 <DropdownMenuSeparator />
                 <DropdownMenuLabel className="flex items-center justify-between">
                   <span className="text-orange-600 dark:text-orange-400">
-                    {t('header.notifications.payment_section')}
+                    {/* Nếu TẤT CẢ là VNPay thì đổi tiêu đề cho đúng ngữ nghĩa */}
+                    {paymentRequests.every((req) => req.type === 'VNPAY_SUCCESS')
+                      ? t('header.notifications.vnpay_section', { defaultValue: 'Thông báo thanh toán VNPay' })
+                      : t('header.notifications.payment_section')}
                   </span>
                   {paymentRequestCount > 0 && (
                     <Badge variant="destructive">{paymentRequestCount}</Badge>
                   )}
                 </DropdownMenuLabel>
-                {paymentRequests.map((request) => (
-                  <DropdownMenuItem 
-                    key={request.orderId}
-                    className="flex flex-col items-start p-3 cursor-pointer"
-                    onClick={() => {
-                      navigate(`/orders?highlightOrder=${request.orderId}`);
-                      removePaymentRequest(request.orderId);
-                    }}
-                  >
-                    <div className="flex items-start justify-between w-full mb-1">
-                      <span className="font-semibold text-sm">
-                        {t('header.notifications.payment_title', { id: request.orderId })}
-                      </span>
-                    </div>
-                    <div className="text-xs text-muted-foreground space-y-0.5">
-                      <div>
-                        <span className="font-medium">{t('header.notifications.table')}</span> {request.tableName || fallbackValue}
+                {paymentRequests.map((request) => {
+                  const isVnpaySuccess = request.type === 'VNPAY_SUCCESS';
+
+                  return (
+                    <DropdownMenuItem 
+                      key={`${request.type || 'REQUEST'}-${request.orderId}`}
+                      className="flex flex-col items-start p-3 cursor-pointer"
+                      onClick={() => {
+                        navigate(`/orders?highlightOrder=${request.orderId}`);
+                        removePaymentRequest(request.orderId);
+                      }}
+                    >
+                      <div className="flex items-start justify-between w-full mb-1">
+                        <span className="font-semibold text-sm">
+                          {isVnpaySuccess
+                            ? `Khách đã thanh toán VNPay (Đơn #${request.orderId})`
+                            : t('header.notifications.payment_title', { id: request.orderId })}
+                        </span>
                       </div>
-                      <div>
-                        <span className="font-medium">{t('header.notifications.customer')}</span> {request.customerName || fallbackValue}
+                      <div className="text-xs text-muted-foreground space-y-0.5">
+                        <div>
+                          <span className="font-medium">{t('header.notifications.table')}</span> {request.tableName || fallbackValue}
+                        </div>
+                        <div>
+                          <span className="font-medium">{t('header.notifications.customer')}</span> {request.customerName || fallbackValue}
+                        </div>
+                        <div>
+                          <span className="font-medium">{t('header.notifications.total')}</span>{' '}
+                          <span className="font-bold text-primary">{request.totalAmount?.toLocaleString('vi-VN')}đ</span>
+                        </div>
+                        {isVnpaySuccess && (
+                          <div>
+                            <span className="font-medium">Hình thức:</span>{' '}
+                            <span className="font-semibold text-green-600 dark:text-green-400">VNPay</span>
+                          </div>
+                        )}
                       </div>
-                      <div>
-                        <span className="font-medium">{t('header.notifications.total')}</span>{' '}
-                        <span className="font-bold text-primary">{request.totalAmount?.toLocaleString('vi-VN')}đ</span>
-                      </div>
-                    </div>
-                  </DropdownMenuItem>
-                ))}
+                    </DropdownMenuItem>
+                  );
+                })}
               </>
             )}
             
