@@ -9,6 +9,23 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8080',
 });
 
+// [QUAN TRỌNG] Biến để ngăn nhiều request refresh cùng lúc (Race Condition)
+let isRefreshing = false;
+let failedQueue = [];
+
+// Helper: Xử lý các request đang chờ trong queue
+const processQueue = (error, token = null) => {
+  failedQueue.forEach(prom => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+  
+  failedQueue = [];
+};
+
 // 2. Đây là "Trạm gác" Interceptor
 api.interceptors.request.use(
   (config) => {
@@ -44,17 +61,33 @@ api.interceptors.response.use(
     const originalRequest = error.config;
     
     // 3. CHỈ xử lý nếu lỗi là 403 (Token hết hạn) VÀ
-    //    chúng ta chưa thử lại request này (`_retry`)
+    //    không phải là request refresh token
     if (error.response?.status === 403 && 
-      originalRequest.url !== '/api/auth/refresh' &&
-      !originalRequest._retry
+      originalRequest.url !== '/api/auth/refresh'
     ) {
       
+      // [FIX RACE CONDITION] Nếu đang refresh, đưa request vào hàng đợi
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        })
+          .then(token => {
+            originalRequest.headers['Authorization'] = `Bearer ${token}`;
+            return api(originalRequest);
+          })
+          .catch(err => {
+            return Promise.reject(err);
+          });
+      }
+
       originalRequest._retry = true; // Đánh dấu là đã thử 1 lần
+      isRefreshing = true; // Đánh dấu đang refresh
       
       const { refreshToken, setAccessToken, logout } = useAuthStore.getState();
 
       if (!refreshToken) {
+        processQueue(error, null); // Từ chối tất cả request trong queue
+        isRefreshing = false;
         logout(); // Nếu không có refresh token, logout luôn
         return Promise.reject(error);
       }
@@ -71,19 +104,28 @@ api.interceptors.response.use(
         // 6. Cập nhật header của request gốc
         originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
         
-        // 7. Gửi lại request gốc (lần này sẽ thành công)
+        // [FIX] Xử lý tất cả request đang chờ trong queue
+        processQueue(null, newAccessToken);
+        
+        // 7. Reset flag
+        isRefreshing = false;
+        
+        // 8. Gửi lại request gốc (lần này sẽ thành công)
         return api(originalRequest);
         
       } catch (refreshError) {
-        // 8. NẾU "Gia hạn" THẤT BẠI (vd: refreshToken cũng hết hạn)
-        //    Logout và "đá" người dùng về trang login
+        // 9. NẾU "Gia hạn" THẤT BẠI (vd: refreshToken cũng hết hạn)
+        processQueue(refreshError, null); // Từ chối tất cả request trong queue
+        isRefreshing = false;
+        
+        // Logout - React Router sẽ tự động redirect thông qua ProtectedRoute
         logout();
-        window.location.href = '/login'; // Chuyển hướng "cứng"
+        // KHÔNG dùng window.location.href để tránh conflict với React Router
         return Promise.reject(refreshError);
       }
     }
     
-    // 9. Nếu là lỗi khác (không phải 403), cứ báo lỗi như bình thường
+    // 10. Nếu là lỗi khác (không phải 403), cứ báo lỗi như bình thường
     return Promise.reject(error);
   }
 );

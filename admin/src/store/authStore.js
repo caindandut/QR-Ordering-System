@@ -65,23 +65,29 @@ export const useAuthStore = create(
       logout: async () => {
         const { refreshToken } = get(); // Lấy refreshToken hiện tại
 
-        if (refreshToken) {
-          try {
-            // Bảo backend hủy token này
-            await api.post('/api/auth/logout', { refreshToken });
-          } catch {
-            // Ignore logout error to avoid console noise
-          }
-      }
-      set({
+        // [QUAN TRỌNG] Xóa state và header TRƯỚC KHI gọi API logout
+        // để tránh race condition nếu API logout bị lỗi
+        const tokenToRevoke = refreshToken;
+        
+        set({
           user: null,
           accessToken: null,
           refreshToken: null,
-      });
+        });
 
-      // Xóa header mặc định
+        // Xóa header mặc định
         delete api.defaults.headers.common['Authorization'];
-    },
+
+        // Gọi API logout sau khi đã clear state
+        if (tokenToRevoke) {
+          try {
+            // Bảo backend hủy token này (best effort, không chặn logout)
+            await api.post('/api/auth/logout', { refreshToken: tokenToRevoke });
+          } catch {
+            // Ignore logout error - user đã được logout ở client
+          }
+        }
+      },
 
     updateUser: (newUserData) => {
       set((state) => ({

@@ -721,7 +721,7 @@ const handleCallback = async (req, res) => {
       const updatedOrder = await prisma.order.findUnique({
         where: { id: payment.orderId },
         include: {
-          table: { select: { name: true } },
+          table: { select: { id: true, name: true } },
           staff: { select: { id: true, name: true, avatarUrl: true } },
           details: {
             include: {
@@ -738,14 +738,36 @@ const handleCallback = async (req, res) => {
       });
 
       // Emit cho tất cả admin với full thông tin đơn hàng (bao gồm table & customerName)
+      // [FIX] Serialize Prisma object thành plain object để đảm bảo socket.io emit đúng
       if (updatedOrder) {
-        console.log('🔔 Emitting order_updated_for_admin for VNPay success:', {
-          orderId: updatedOrder.id,
+        // Tạo plain object với tất cả các field cần thiết
+        const orderForEmit = {
+          id: updatedOrder.id,
+          customerName: updatedOrder.customerName,
+          status: updatedOrder.status,
+          totalAmount: updatedOrder.totalAmount,
           paymentStatus: updatedOrder.paymentStatus,
-          tableName: updatedOrder.table?.name,
-          customerName: updatedOrder.customerName
+          createdAt: updatedOrder.createdAt,
+          updatedAt: updatedOrder.updatedAt,
+          tableId: updatedOrder.tableId,
+          staffId: updatedOrder.staffId,
+          table: updatedOrder.table ? {
+            id: updatedOrder.table.id,
+            name: updatedOrder.table.name
+          } : null,
+          staff: updatedOrder.staff,
+          details: updatedOrder.details
+        };
+
+        console.log('🔔 Emitting order_updated_for_admin for VNPay success:', {
+          orderId: orderForEmit.id,
+          paymentStatus: orderForEmit.paymentStatus,
+          tableName: orderForEmit.table?.name,
+          customerName: orderForEmit.customerName,
+          totalAmount: orderForEmit.totalAmount
         });
-        io.emit('order_updated_for_admin', updatedOrder);
+        
+        io.emit('order_updated_for_admin', orderForEmit);
       } else {
         console.error('❌ updatedOrder is null, cannot emit notification');
       }
