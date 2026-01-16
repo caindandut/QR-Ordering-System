@@ -741,33 +741,39 @@ const handleCallback = async (req, res) => {
       // [FIX] Serialize Prisma object thành plain object để đảm bảo socket.io emit đúng
       if (updatedOrder) {
         // Tạo plain object với tất cả các field cần thiết
+        // Convert Date objects thành ISO strings để đảm bảo serialize đúng qua socket.io
         const orderForEmit = {
           id: updatedOrder.id,
-          customerName: updatedOrder.customerName,
+          customerName: updatedOrder.customerName || null,
           status: updatedOrder.status,
-          totalAmount: updatedOrder.totalAmount,
+          totalAmount: Number(updatedOrder.totalAmount) || 0,
           paymentStatus: updatedOrder.paymentStatus,
-          createdAt: updatedOrder.createdAt,
-          updatedAt: updatedOrder.updatedAt,
+          createdAt: updatedOrder.createdAt ? new Date(updatedOrder.createdAt).toISOString() : null,
+          updatedAt: updatedOrder.updatedAt ? new Date(updatedOrder.updatedAt).toISOString() : null,
           tableId: updatedOrder.tableId,
           staffId: updatedOrder.staffId,
           table: updatedOrder.table ? {
             id: updatedOrder.table.id,
-            name: updatedOrder.table.name
+            name: updatedOrder.table.name || null
           } : null,
-          staff: updatedOrder.staff,
-          details: updatedOrder.details
+          staff: updatedOrder.staff ? {
+            id: updatedOrder.staff.id,
+            name: updatedOrder.staff.name || null,
+            avatarUrl: updatedOrder.staff.avatarUrl || null
+          } : null,
+          details: updatedOrder.details ? updatedOrder.details.map(detail => ({
+            id: detail.id,
+            quantity: detail.quantity,
+            priceAtOrder: Number(detail.priceAtOrder) || 0,
+            menuItem: detail.menuItem ? {
+              name: detail.menuItem.name || null,
+              imageUrl: detail.menuItem.imageUrl || null
+            } : null
+          })) : []
         };
-
-        console.log('🔔 Emitting order_updated_for_admin for VNPay success:', {
-          orderId: orderForEmit.id,
-          paymentStatus: orderForEmit.paymentStatus,
-          tableName: orderForEmit.table?.name,
-          customerName: orderForEmit.customerName,
-          totalAmount: orderForEmit.totalAmount
-        });
         
-        io.emit('order_updated_for_admin', orderForEmit);
+        // Emit với JSON.parse(JSON.stringify()) để đảm bảo serialize hoàn toàn
+        io.emit('order_updated_for_admin', JSON.parse(JSON.stringify(orderForEmit)));
       } else {
         console.error('❌ updatedOrder is null, cannot emit notification');
       }

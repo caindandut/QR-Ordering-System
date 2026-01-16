@@ -83,15 +83,22 @@ export const NotificationProvider = ({ children }) => {
 
       // Chỉ quan tâm tới các đơn đã thanh toán (ví dụ VNPay thành công)
       // Kiểm tra cả 'PAID' và 'Paid' để đảm bảo tương thích
-      if (order.paymentStatus === 'PAID' || order.paymentStatus === 'Paid' || order.paymentStatus?.toUpperCase() === 'PAID') {
+      const paymentStatus = order.paymentStatus || order.status;
+      if (paymentStatus === 'PAID' || paymentStatus === 'Paid' || paymentStatus?.toUpperCase() === 'PAID') {
+        // Đảm bảo lấy đúng table name từ order.table hoặc order.tableName
+        const tableName = order.table?.name || order.tableName || null;
+        const customerName = order.customerName || null;
+        const totalAmount = order.totalAmount ? Number(order.totalAmount) : 0;
+
         const notification = {
           type: 'VNPAY_SUCCESS',
           orderId: order.id,
-          tableName: order.table?.name,
-          customerName: order.customerName,
-          totalAmount: order.totalAmount,
+          tableName: tableName,
+          customerName: customerName,
+          totalAmount: totalAmount,
           createdAt: order.updatedAt || order.createdAt,
         };
+        
         setPaymentRequests((prev) => {
           const exists = prev.some(
             (req) => req.orderId === notification.orderId && req.type === notification.type

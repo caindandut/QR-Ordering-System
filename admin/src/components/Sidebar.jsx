@@ -92,10 +92,15 @@ export default function Sidebar({ onLinkClick, isMobileSheet = false }) {
 
       const status = order.paymentStatus || order.status;
       if (status === 'PAID' || status === 'Paid' || status?.toUpperCase() === 'PAID') {
+        // Đảm bảo lấy đúng thông tin từ order
+        const tableName = order.table?.name || order.tableName || 'Bàn ?';
+        const customerName = order.customerName || 'Khách';
+        const totalAmount = order.totalAmount ? Number(order.totalAmount).toLocaleString('vi-VN') : '0';
+        
         play();
         toast({
           title: "Khách đã thanh toán VNPay ✅",
-          description: `${order.table?.name || 'Bàn ?'} - ${order.customerName || 'Khách'}`,
+          description: `${tableName} - ${customerName} - ${totalAmount}đ`,
           variant: "success",
           duration: 5000,
         });
