@@ -47,7 +47,11 @@
             "payment_title": "Thanh toán #{{id}}",
             "payment_badge": "Khẩn cấp",
             "total": "Tổng tiền:",
-            "view_all": "Xem tất cả đơn hàng"
+            "view_all": "Xem tất cả đơn hàng",
+            "vnpay_success_title": "Khách đã thanh toán VNPay (Đơn #{{id}})",
+            "vnpay_success_toast": "Khách đã thanh toán VNPay ✅",
+            "payment_method": "Hình thức:",
+            "new_orders_section": "Đơn hàng mới"
         }
     },
     "theme": {

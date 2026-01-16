@@ -47,7 +47,11 @@
             "payment_title": "支払い #{{id}}",
             "payment_badge": "至急",
             "total": "合計金額:",
-            "view_all": "すべての注文を見る"
+            "view_all": "すべての注文を見る",
+            "vnpay_success_title": "お客様がVNPayで支払いを完了しました (注文 #{{id}})",
+            "vnpay_success_toast": "お客様がVNPayで支払いを完了しました ✅",
+            "payment_method": "支払い方法:",
+            "new_orders_section": "新しい注文"
         }
     },
     "theme": {

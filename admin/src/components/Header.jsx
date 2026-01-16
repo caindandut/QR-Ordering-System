@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { User, LogOut, Menu, Bell } from 'lucide-react';
+import { User, LogOut, Menu, Bell, CheckCircle2, CreditCard } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
@@ -183,11 +183,18 @@ export default function Header() {
                       }}
                     >
                       <div className="flex items-start justify-between w-full mb-1">
-                        <span className="font-semibold text-sm">
-                          {isVnpaySuccess
-                            ? `Khách đã thanh toán VNPay (Đơn #${request.orderId})`
-                            : t('header.notifications.payment_title', { id: request.orderId })}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          {isVnpaySuccess ? (
+                            <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400 flex-shrink-0" />
+                          ) : (
+                            <CreditCard className="h-4 w-4 text-orange-600 dark:text-orange-400 flex-shrink-0" />
+                          )}
+                          <span className="font-semibold text-sm">
+                            {isVnpaySuccess
+                              ? t('header.notifications.vnpay_success_title', { id: request.orderId })
+                              : t('header.notifications.payment_title', { id: request.orderId })}
+                          </span>
+                        </div>
                       </div>
                       <div className="text-xs text-muted-foreground space-y-0.5">
                         <div>
@@ -201,9 +208,11 @@ export default function Header() {
                           <span className="font-bold text-primary">{request.totalAmount?.toLocaleString('vi-VN')}đ</span>
                         </div>
                         {isVnpaySuccess && (
-                          <div>
-                            <span className="font-medium">Hình thức:</span>{' '}
-                            <span className="font-semibold text-green-600 dark:text-green-400">VNPay</span>
+                          <div className="flex items-center gap-1 mt-1">
+                            <span className="font-medium">{t('header.notifications.payment_method')}</span>
+                            <Badge variant="outline" className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-300 dark:border-green-700">
+                              VNPay
+                            </Badge>
                           </div>
                         )}
                       </div>

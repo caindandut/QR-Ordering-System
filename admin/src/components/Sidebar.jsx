@@ -99,7 +99,7 @@ export default function Sidebar({ onLinkClick, isMobileSheet = false }) {
         
         play();
         toast({
-          title: "Khách đã thanh toán VNPay ✅",
+          title: t('header.notifications.vnpay_success_toast', { defaultValue: 'Khách đã thanh toán VNPay ✅' }),
           description: `${tableName} - ${customerName} - ${totalAmount}đ`,
           variant: "success",
           duration: 5000,
