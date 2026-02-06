@@ -1,7 +1,7 @@
-import express from 'express'; // Framework để tạo server
-import cors from 'cors'; // Cho phép frontend gọi API
-import dotenv from 'dotenv'; // Đọc file .env
-import { PrismaClient } from '@prisma/client'; // Import Prisma
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import { PrismaClient } from '@prisma/client';
 import authRoutes from './routes/authRoutes.js';
 import menuRoutes from './routes/menuRoutes.js';
 import tableRoutes from './routes/tableRoutes.js';
@@ -15,20 +15,14 @@ import paymentRoutes from './routes/paymentRoutes.js';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 
-// --- Khởi tạo ---
-dotenv.config(); // Nạp các biến từ file .env
-const app = express(); // Tạo app Express
-const port = process.env.PORT || 8080; // Đặt cổng server
+dotenv.config();
+const app = express();
+const port = process.env.PORT || 8080;
 
-// TẠI SAO PHẢI KHỞI TẠO PRISMA Ở ĐÂY?
-// Tác dụng: Chúng ta tạo 1 "instance" (phiên bản) duy nhất của PrismaClient
-// và tái sử dụng nó cho toàn bộ ứng dụng.
-// Nếu bạn tạo `new PrismaClient()` bên trong mỗi API, bạn sẽ
-// nhanh chóng làm cạn kiệt kết nối database và sập server.
 export const prisma = new PrismaClient();
 
 
-app.use(cors()); // Cho phép mọi domain gọi API này (để test)
+app.use(cors());
 
 app.use(express.json());
 
@@ -44,7 +38,6 @@ app.use('/api/admin/orders', adminOrderRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/payments', paymentRoutes);
 
-// Health check endpoint for Render
 app.get('/', (req, res) => {
   res.json({ 
     status: 'ok', 
@@ -57,20 +50,15 @@ const httpServer = createServer(app);
 
 export const io = new Server(httpServer, {
   cors: {
-    origin: "*", // (Cho phép mọi domain - có thể sửa lại sau)
+    origin: "*",
     methods: ["GET", "POST"]
   }
 });
 
-// 5. 🧠 KHÁI NIỆM: "Rooms" (Phòng)
-//    Chúng ta lắng nghe kết nối
 io.on('connection', (socket) => {
   console.log(`Một người dùng đã kết nối: ${socket.id}`);
   
-  // 5a. Khi Khách hàng (Frontend) "tham gia"
   socket.on('join_order_room', (orderId) => {
-    // 5b. Cho socket này vào 1 "phòng" riêng
-    //    (Ví dụ: "order_123")
     socket.join(`order_${orderId}`);
     console.log(`Socket ${socket.id} đã vào phòng order_${orderId}`);
   });
@@ -80,18 +68,6 @@ io.on('connection', (socket) => {
   });
 });
 
-// 6. Chạy httpServer (thay vì app)
 httpServer.listen(port, () => {
   console.log(`Server (HTTP + Socket.IO) đang chạy tại http://localhost:${port}`);
 });
-
-// app.get('/', (req, res) => {
-//   res.send('Chào mừng đến với API Nhà hàng!');
-// });
-
-
-
-// --- Khởi động Server ---
-// app.listen(port, () => {
-//   console.log(`Server đang chạy tại http://localhost:${port}`);
-// });

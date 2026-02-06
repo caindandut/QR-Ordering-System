@@ -7,7 +7,6 @@ function App() {
         Xin chào, Tailwind đã chạy!
       </h1>
       
-      {/* Sử dụng component Button của Shadcn */}
       <Button>Đây là nút của Shadcn</Button>
       <Button variant="destructive">Nút Hủy (Destructive)</Button>
     </div>

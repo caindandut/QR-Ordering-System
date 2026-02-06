@@ -4,29 +4,15 @@ import { authenticateToken, authorizeAdmin } from '../middleware/authMiddleware.
 
 const router = express.Router();
 
-// TẠI SAO LẠI CÓ 2 PHẦN?
-// Tác dụng: Chúng ta chia API Món ăn làm 2 phần:
-// 1. PUBLIC (Công khai): Cho khách hàng (React App của Khách) xem menu.
-// 2. PROTECTED (Bảo mật): Cho Admin/Nhân viên (React App của Admin) quản lý.
-
-// ============================================
-// === 1. API CÔNG KHAI (Cho Khách hàng) ===
-// ============================================
-
-// GET /api/menu (Lấy menu CÔNG KHAI)
-// API này không dùng 'authenticateToken' -> Ai cũng gọi được
 router.get('/', async (req, res) => {
   try {
     const menu = await prisma.menuItem.findMany({
       where: {
-        status: 'AVAILABLE', // Chỉ lấy các món "Có sẵn"
+        status: 'AVAILABLE',
       },
-      // TẠI SAO DÙNG `include`?
-      // Tác dụng: Lấy luôn thông tin của Bảng `Category` liên quan
-      // để React có thể gom nhóm (vd: Nhóm 'Món chính', 'Đồ uống')
       include: {
         category: {
-          select: { name: true, name_jp: true }, // Chỉ lấy tên category
+          select: { name: true, name_jp: true },
         },
       },
       orderBy: { categoryId: 'asc' },
@@ -37,17 +23,10 @@ router.get('/', async (req, res) => {
   }
 });
 
-// ============================================
-// === 2. API BẢO MẬT (Cho Admin/Nhân viên) ===
-// ============================================
-
-// TÁC DỤNG: Đặt "trạm gác" cho tất cả các API bên dưới
 router.use(authenticateToken);
 
-// GET /api/menu/all (Lấy TẤT CẢ món ăn - Cho trang Admin)
 router.get('/all', async (req, res) => {
   try {
-    // API này lấy tất cả món, bao gồm cả món "Ẩn" (HIDDEN)
     const allItems = await prisma.menuItem.findMany({
       include: { category: { select: { name: true, name_jp: true } } },
       orderBy: { id: 'asc' },
@@ -58,7 +37,6 @@ router.get('/all', async (req, res) => {
   }
 });
 
-// POST /api/menu (Tạo món ăn mới)
 router.post('/', async (req, res) => {
   const { name, name_jp, description, description_jp, price, imageUrl, status, categoryId } =
     req.body;
@@ -69,13 +47,6 @@ router.post('/', async (req, res) => {
       .json({ message: 'Tên, giá, hình ảnh và danh mục là bắt buộc.' });
   }
 
-  // LƯU Ý QUAN TRỌNG VỀ `imageUrl`
-  // Hiện tại, chúng ta đang "tin tưởng" React App sẽ gửi lên
-  // một URL (text) của ảnh.
-  // Ở phần sau, chúng ta sẽ làm API Upload Ảnh,
-  // React sẽ upload ảnh lên server TRƯỚC, nhận về URL,
-  // sau đó mới gọi API này.
-
   try {
     const newItem = await prisma.menuItem.create({
       data: {
@@ -84,7 +55,7 @@ router.post('/', async (req, res) => {
         description,
         description_jp,
         price: parseInt(price),
-        imageUrl, // Sẽ là URL từ Cloudinary
+        imageUrl,
         status: status || 'AVAILABLE',
         categoryId: parseInt(categoryId),
       },
@@ -95,10 +66,8 @@ router.post('/', async (req, res) => {
   }
 });
 
-// PATCH /api/menu/:id (Cập nhật món ăn)
 router.patch('/:id', async (req, res) => {
   const itemId = parseInt(req.params.id);
-  // Lấy các trường có thể được cập nhật
   const { name, name_jp, description, description_jp, price, imageUrl, status, categoryId } =
     req.body;
 
@@ -125,12 +94,6 @@ router.patch('/:id', async (req, res) => {
   }
 });
 
-// DELETE /api/menu/:id (Xóa món ăn)
-// TẠI SAO Ở ĐÂY DÙNG `authorizeAdmin`?
-// Tác dụng: Xóa là một hành động nguy hiểm.
-// Theo logic thông thường, ta có thể chỉ cho phép Admin xóa,
-// còn Nhân viên chỉ được sửa.
-// (Nếu bạn muốn Nhân viên cũng xóa được, chỉ cần bỏ `authorizeAdmin` đi)
 router.delete('/:id', authorizeAdmin, async (req, res) => {
   const itemId = parseInt(req.params.id);
 

@@ -9,7 +9,6 @@ import { useReactToPrint } from 'react-to-print';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
-// Import components
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table';
@@ -44,7 +43,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-// --- CÁC HÀM GỌI API ---
 const fetchAdminOrders = async () => {
   const response = await api.get('/api/admin/orders');
   return response.data;
@@ -70,7 +68,6 @@ const updateOrderStatus = async ({ orderId, status }) => {
   return response.data;
 };
 
-// --- COMPONENT CHÍNH ---
 export default function ManageOrdersPage() {
   const { t, i18n } = useTranslation();
   const queryClient = useQueryClient();
@@ -80,7 +77,6 @@ export default function ManageOrdersPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const highlightOrderId = searchParams.get('highlightOrder');
   
-  // State cho filters  
   const [statusFilter, setStatusFilter] = useState(highlightOrderId ? "SERVED" : "PENDING");
   const [tableFilter, setTableFilter] = useState("ALL");
   const [customerNameSearch, setCustomerNameSearch] = useState("");
@@ -88,45 +84,37 @@ export default function ManageOrdersPage() {
   const currentLang = i18n.language === 'ja' ? 'jp' : i18n.language;
   const statusOptions = ['PENDING', 'COOKING', 'SERVED', 'PAID', 'CANCELLED'];
   
-  // State cho tạo đơn thủ công
   const [isCreateOrderOpen, setIsCreateOrderOpen] = useState(false);
   const [selectedTableId, setSelectedTableId] = useState('');
   const [customerName, setCustomerName] = useState('');
-  const [selectedItems, setSelectedItems] = useState([]); // [{item_id, quantity}]
+  const [selectedItems, setSelectedItems] = useState([]);
   
-  // --- LOGIC ĐỌC (READ) ---
   const { data: allOrders, isLoading, isError } = useQuery({
     queryKey: ['admin_orders'],
     queryFn: fetchAdminOrders,
   });
 
-  // Fetch danh sách bàn
   const { data: tables = [] } = useQuery({
     queryKey: ['tables'],
     queryFn: fetchTables,
   });
 
-  // Fetch danh sách món ăn
   const { data: menuItems = [] } = useQuery({
     queryKey: ['menu_items'],
     queryFn: fetchMenuItems,
   });
 
-  // Clear notifications khi vào trang này
   useEffect(() => {
     clearNotifications();
-  }, []); // Chỉ chạy một lần khi component mount
+  }, []);
 
-  // Highlight order khi có highlightOrderId từ URL
   useEffect(() => {
     if (highlightOrderId && allOrders) {
       const order = allOrders.find(o => o.id === parseInt(highlightOrderId));
       if (order) {
-        // Set filter to show the order
         setStatusFilter(order.status);
         setHighlightedOrder(parseInt(highlightOrderId));
         
-        // Scroll to order after a short delay
         setTimeout(() => {
           const element = document.getElementById(`order-${highlightOrderId}`);
           if (element) {
@@ -134,7 +122,6 @@ export default function ManageOrdersPage() {
           }
         }, 300);
         
-        // Clear highlight after 5 seconds
         setTimeout(() => {
           setHighlightedOrder(null);
           setSearchParams({});
@@ -143,7 +130,6 @@ export default function ManageOrdersPage() {
     }
   }, [highlightOrderId, allOrders, setSearchParams]);
 
-  // --- LOGIC "NGHE" (SOCKET.IO) ---
   useEffect(() => {
     if (!socket) return; 
 
@@ -152,22 +138,17 @@ export default function ManageOrdersPage() {
         return;
       }
       
-      // Cập nhật cache ngay lập tức với đơn hàng mới
       queryClient.setQueryData(['admin_orders'], (oldOrders) => {
         if (!oldOrders) return [newOrder];
-        // Kiểm tra xem đơn đã tồn tại chưa (tránh duplicate)
         const exists = oldOrders.some(order => order.id === newOrder.id);
         if (exists) {
-          // Nếu đã tồn tại, cập nhật
           return oldOrders.map(order => 
             order.id === newOrder.id ? newOrder : order
           );
         }
-        // Nếu chưa tồn tại, thêm vào đầu danh sách
         return [newOrder, ...oldOrders];
       });
       
-      // Hiển thị toast notification
       toast({
         title: t('orders_page.toasts.new_order_title'),
         description: t('orders_page.toasts.new_order_desc', {
@@ -183,7 +164,6 @@ export default function ManageOrdersPage() {
         return;
       }
       
-      // Cập nhật cache với đơn hàng đã được cập nhật
       queryClient.setQueryData(['admin_orders'], (oldOrders) => {
         if (!oldOrders) return oldOrders;
         return oldOrders.map(order => 
@@ -192,7 +172,6 @@ export default function ManageOrdersPage() {
       });
     };
     
-    // Đăng ký listeners
     socket.on('new_order_received', handleNewOrder);
     socket.on('order_updated_for_admin', handleUpdateOrder);
 
@@ -202,7 +181,6 @@ export default function ManageOrdersPage() {
     };
   }, [socket, queryClient, toast]);
 
-  // --- LOGIC TẠO ĐƠN HÀNG THỦ CÔNG ---
   const createOrderMutation = useMutation({
     mutationFn: createOrder,
     onSuccess: () => {
@@ -213,7 +191,6 @@ export default function ManageOrdersPage() {
       });
       queryClient.invalidateQueries({ queryKey: ['admin_orders'] });
       setIsCreateOrderOpen(false);
-      // Reset form
       setSelectedTableId('');
       setCustomerName('');
       setSelectedItems([]);
@@ -228,21 +205,15 @@ export default function ManageOrdersPage() {
     },
   });
 
-  // --- LOGIC "CÔNG NHÂN" (UPDATE) ---
   const updateStatusMutation = useMutation({
     mutationFn: updateOrderStatus,
-    // Optimistic update: Cập nhật UI ngay lập tức trước khi server phản hồi
     onMutate: async ({ orderId, status }) => {
-      // Hủy các query đang chạy để tránh ghi đè optimistic update
       await queryClient.cancelQueries({ queryKey: ['admin_orders'] });
       
-      // Lưu snapshot của data hiện tại để rollback nếu lỗi
       const previousOrders = queryClient.getQueryData(['admin_orders']);
       
-      // Lấy thông tin đơn hàng để hiển thị trong toast
       const currentOrder = previousOrders?.find(order => order.id === orderId);
       
-      // Optimistic update: Cập nhật status ngay lập tức
       queryClient.setQueryData(['admin_orders'], (old) => {
         if (!old) return old;
         return old.map(order => 
@@ -255,10 +226,8 @@ export default function ManageOrdersPage() {
       return { previousOrders, currentOrder };
     },
     onSuccess: (data, variables, context) => {
-      // Invalidate queries để đảm bảo data đồng bộ với server
       queryClient.invalidateQueries({ queryKey: ['admin_orders'] });
       
-      // Hiển thị toast notification dựa trên trạng thái mới
       const order = context?.currentOrder;
       const fallbackValue = t('orders_page.na');
       const customerInfo = order?.customerName || fallbackValue;
@@ -284,7 +253,6 @@ export default function ManageOrdersPage() {
       });
     },
     onError: (err, variables, context) => {
-      // Rollback nếu có lỗi
       if (context?.previousOrders) {
         queryClient.setQueryData(['admin_orders'], context.previousOrders);
       }
@@ -297,11 +265,9 @@ export default function ManageOrdersPage() {
     },
   });
 
-  // --- LOGIC "LỌC" & "NHÓM" ---
   const { filteredAndGroupedOrders, tableList, orderCounts } = useMemo(() => {
     if (!allOrders) return { filteredAndGroupedOrders: {}, tableList: [], orderCounts: {} };
     
-    // Lọc theo status
     let filtered = allOrders.filter(order => {
       if (statusFilter === 'CANCELLED') {
         return order.status === 'CANCELLED' || order.status === 'DENIED';
@@ -309,12 +275,10 @@ export default function ManageOrdersPage() {
       return order.status === statusFilter;
     });
     
-    // Lọc theo bàn nếu có
     if (tableFilter !== "ALL") {
       filtered = filtered.filter(order => order.table?.name === tableFilter);
     }
     
-    // Lọc theo tên khách hàng nếu có
     if (customerNameSearch.trim() !== "") {
       const searchTerm = customerNameSearch.trim().toLowerCase();
       filtered = filtered.filter(order => 
@@ -322,10 +286,8 @@ export default function ManageOrdersPage() {
       );
     }
     
-    // Sắp xếp theo thời gian tạo (mới nhất trước)
     filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     
-    // Nhóm theo Bàn
     const grouped = filtered.reduce((acc, order) => {
       const tableName = order.table?.name || t('orders_page.unknown_table');
       if (!acc[tableName]) {
@@ -335,7 +297,6 @@ export default function ManageOrdersPage() {
       return acc;
     }, {});
     
-    // Lấy danh sách bàn và đếm số đơn
     const tables = [...new Set(allOrders.map(o => o.table?.name).filter(Boolean))];
     const counts = tables.reduce((acc, tableName) => {
       acc[tableName] = allOrders.filter(o => 
@@ -351,7 +312,6 @@ export default function ManageOrdersPage() {
     };
   }, [allOrders, statusFilter, tableFilter, customerNameSearch, i18n.language, t]);
 
-  // --- HÀM XỬ LÝ TẠO ĐƠN HÀNG ---
   const handleAddItem = (itemId) => {
     const existingItem = selectedItems.find(item => item.item_id === itemId);
     if (existingItem) {
@@ -400,7 +360,6 @@ export default function ManageOrdersPage() {
     });
   };
 
-  // Tính tổng tiền
   const totalAmount = useMemo(() => {
     return selectedItems.reduce((total, selectedItem) => {
       const menuItem = menuItems.find(item => item.id === selectedItem.item_id);
@@ -414,20 +373,16 @@ export default function ManageOrdersPage() {
   if (isLoading) return <div className="flex justify-center p-8"><Loader2 className="h-8 w-8 animate-spin" /></div>;
   if (isError) return <div className="p-4 text-red-500">{t('orders_page.loading_error')}</div>;
 
-  // --- RENDER ---
   return (
     <div className="space-y-4 sm:space-y-6">
-      {/* HEADER SECTION */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h1 className="text-2xl sm:text-3xl font-bold">{t('orders_page.title')}</h1>
         
-        {/* Nút tạo đơn thủ công */}
         <Dialog 
           open={isCreateOrderOpen} 
           onOpenChange={(open) => {
             setIsCreateOrderOpen(open);
             if (!open) {
-              // Reset form khi đóng
               setSelectedTableId('');
               setCustomerName('');
               setSelectedItems([]);
@@ -445,7 +400,6 @@ export default function ManageOrdersPage() {
                 <DialogTitle>{t('orders_page.manual_dialog_title')}</DialogTitle>
               </DialogHeader>
               <form onSubmit={handleSubmitOrder} className="space-y-4 mt-4">
-                {/* Chọn bàn */}
                 <div className="space-y-2">
                   <Label htmlFor="table">{t('orders_page.form.table')}</Label>
                   <Select value={selectedTableId} onValueChange={setSelectedTableId} required>
@@ -462,7 +416,6 @@ export default function ManageOrdersPage() {
                   </Select>
                 </div>
 
-                {/* Tên khách hàng */}
                 <div className="space-y-2">
                   <Label htmlFor="customerName">{t('orders_page.form.customer')}</Label>
                   <Input
@@ -474,7 +427,6 @@ export default function ManageOrdersPage() {
                   />
                 </div>
 
-                {/* Chọn món ăn */}
                 <div className="space-y-2">
                   <Label>{t('orders_page.form.menu')}</Label>
                   <div className="border rounded-lg p-4 max-h-[300px] overflow-y-auto">
@@ -547,7 +499,6 @@ export default function ManageOrdersPage() {
                   </div>
                 </div>
 
-                {/* Tổng tiền */}
                 {selectedItems.length > 0 && (
                   <div className="border-t pt-4">
                     <div className="flex justify-between items-center">
@@ -559,7 +510,6 @@ export default function ManageOrdersPage() {
                   </div>
                 )}
 
-                {/* Nút submit */}
                 <div className="flex justify-end gap-2 pt-4">
                   <Button
                     type="button"
@@ -587,9 +537,7 @@ export default function ManageOrdersPage() {
         </Dialog>
       </div>
 
-      {/* FILTER SECTION */}
       <div className="space-y-3 sm:space-y-0 sm:space-x-3 sm:flex sm:items-end sm:flex-wrap gap-3">
-        {/* Search Bar - Full width on mobile */}
         <div className="flex-1 min-w-full sm:min-w-[250px]">
           <Label htmlFor="search" className="text-xs sm:text-sm font-medium mb-2 block">
             {t('orders_page.search_label')}
@@ -606,7 +554,6 @@ export default function ManageOrdersPage() {
           </div>
         </div>
 
-        {/* Status Filter */}
         <div className="flex-1 sm:flex-initial min-w-[150px] sm:min-w-[180px]">
           <Label className="text-xs sm:text-sm font-medium mb-2 block">
             {t('orders_page.status_label')}
@@ -625,7 +572,6 @@ export default function ManageOrdersPage() {
           </Select>
         </div>
 
-        {/* Table Filter */}
         <div className="flex-1 sm:flex-initial min-w-[150px]">
           <Label className="text-xs sm:text-sm font-medium mb-2 block">
             {t('orders_page.table_label')}
@@ -646,7 +592,6 @@ export default function ManageOrdersPage() {
         </div>
       </div>
 
-      {/* BẢNG ĐƠN HÀNG */}
       <div className="rounded-lg overflow-hidden border border-border/60 dark:border-border/30 overflow-x-auto">
         <Table className="[&_tr]:border-border/70 dark:[&_tr]:border-border/40 min-w-[800px]">
           <TableHeader>
@@ -674,7 +619,6 @@ export default function ManageOrdersPage() {
                 const orders = filteredAndGroupedOrders[tableName];
                 return (
                   <React.Fragment key={tableName}>
-                    {/* GROUP HEADER - Hiển thị tên bàn và số đơn */}
                     <TableRow className="bg-muted/50 hover:bg-muted/50">
                       <TableCell colSpan={9} className="font-semibold py-2">
                         <div className="flex items-center gap-2">
@@ -686,7 +630,6 @@ export default function ManageOrdersPage() {
                       </TableCell>
                     </TableRow>
                     
-                    {/* CÁC ĐƠN HÀNG TRONG BÀN */}
                     {orders.map(order => (
                       <OrderRow 
                         key={order.id} 
@@ -707,7 +650,6 @@ export default function ManageOrdersPage() {
   );
 }
 
-// --- COMPONENT CON: HÀNG ĐƠN HÀNG ---
 const OrderRow = ({ order, onStatusChange, isLoading, isHighlighted }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showDetailsDialog, setShowDetailsDialog] = useState(false);
@@ -716,7 +658,6 @@ const OrderRow = ({ order, onStatusChange, isLoading, isHighlighted }) => {
   const { toast } = useToast();
   const { t, i18n } = useTranslation();
 
-  // Logic In - mở dialog preview
   const handlePrint = () => {
     setShowPrintDialog(true);
   };
@@ -735,7 +676,6 @@ const OrderRow = ({ order, onStatusChange, isLoading, isHighlighted }) => {
   });
 
 
-  // Hàm lấy màu badge
   const getStatusBadgeVariant = (status) => {
     switch (status) {
       case 'PENDING': return 'default';
@@ -748,10 +688,8 @@ const OrderRow = ({ order, onStatusChange, isLoading, isHighlighted }) => {
     }
   };
   
-  // Hàm lấy 2 chữ cái đầu
   const getInitials = (name) => name?.split(' ').map((n) => n[0]).join('').toUpperCase() || t('orders_page.initials_placeholder');
 
-  // Lấy translation cho status
   let currentLang = i18n.language || 'vi';
   if (currentLang === 'ja') currentLang = 'jp';
   const statusTranslation = translateOrderStatus(order.status, currentLang);
@@ -759,7 +697,6 @@ const OrderRow = ({ order, onStatusChange, isLoading, isHighlighted }) => {
   return (
     <Collapsible asChild open={isOpen} onOpenChange={setIsOpen}>
       <>
-        {/* HÀNG CHÍNH: THÔNG TIN ĐƠN HÀNG */}
         <TableRow 
           id={`order-${order.id}`}
           className={cn(
@@ -824,7 +761,6 @@ const OrderRow = ({ order, onStatusChange, isLoading, isHighlighted }) => {
           </TableCell>
           <TableCell className="text-right">
             <div className="flex items-center justify-end gap-1">
-              {/* Nút xem chi tiết */}
               <Dialog open={showDetailsDialog} onOpenChange={setShowDetailsDialog}>
                 <DialogTrigger asChild>
                   <Button variant="ghost" size="icon" onClick={(e) => e.stopPropagation()}>
@@ -913,7 +849,6 @@ const OrderRow = ({ order, onStatusChange, isLoading, isHighlighted }) => {
                 </DialogContent>
               </Dialog>
 
-              {/* Dropdown menu hành động - Ẩn khi đơn đã hủy */}
               {order.status !== 'CANCELLED' && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
@@ -965,7 +900,6 @@ const OrderRow = ({ order, onStatusChange, isLoading, isHighlighted }) => {
           </TableCell>
         </TableRow>
 
-        {/* Dialog để in hóa đơn */}
         <Dialog open={showPrintDialog} onOpenChange={setShowPrintDialog}>
           <DialogContent className="max-w-2xl max-h-[95vh] overflow-y-auto print:overflow-visible">
             <DialogHeader className="print:hidden">
@@ -974,7 +908,6 @@ const OrderRow = ({ order, onStatusChange, isLoading, isHighlighted }) => {
               </DialogTitle>
             </DialogHeader>
             
-            {/* Preview hóa đơn với border đẹp */}
             <div className="flex justify-center my-4 print:my-0">
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 print:border-none print:p-0">
                 <div ref={printRef}>
@@ -983,7 +916,6 @@ const OrderRow = ({ order, onStatusChange, isLoading, isHighlighted }) => {
               </div>
             </div>
             
-            {/* Nút hành động */}
             <div className="flex gap-3 justify-center pt-4 border-t print:hidden">
               <Button onClick={reactToPrintFn} size="lg" className="flex-1 max-w-xs">
                 <Printer className="mr-2 h-5 w-5" />
@@ -1001,7 +933,6 @@ const OrderRow = ({ order, onStatusChange, isLoading, isHighlighted }) => {
           </DialogContent>
         </Dialog>
 
-        {/* HÀNG CON: CHI TIẾT MÓN (Collapsible) */}
         <CollapsibleContent asChild>
           <TableRow className="bg-muted/30 hover:bg-muted/30">
             <TableCell colSpan={9} className="p-0">
@@ -1036,7 +967,6 @@ const OrderRow = ({ order, onStatusChange, isLoading, isHighlighted }) => {
   );
 };
 
-// --- COMPONENT HÓA ĐƠN ĐỂ IN ---
 const BillReceipt = ({ order }) => {
   const { t } = useTranslation();
   const fallbackValue = t('orders_page.na');

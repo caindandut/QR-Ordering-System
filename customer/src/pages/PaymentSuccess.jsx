@@ -23,11 +23,10 @@ export default function PaymentSuccessPage() {
     queryKey: ['paymentStatus', orderId],
     queryFn: () => fetchPaymentStatus(orderId),
     enabled: !!orderId,
-    refetchInterval: 2000, // Refetch mỗi 2 giây để cập nhật trạng thái
+    refetchInterval: 2000,
   });
 
   useEffect(() => {
-    // Nếu không có orderId, redirect về trang chủ
     if (!orderId) {
       navigate('/order/status');
     }
@@ -58,7 +57,6 @@ export default function PaymentSuccessPage() {
         <CardContent className="space-y-4">
           {paymentStatus && (
             <>
-              {/* Mã đơn hàng */}
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">{t('payment.order_id')}:</span>
@@ -66,7 +64,6 @@ export default function PaymentSuccessPage() {
                 </div>
               </div>
 
-              {/* Danh sách món ăn + số lượng + tiền (ngang hàng) */}
               {Array.isArray(paymentStatus.items) && paymentStatus.items.length > 0 && (
                 <div className="mt-2 space-y-1 max-h-48 overflow-y-auto pr-1 border-t pt-3 text-sm text-muted-foreground">
                   {paymentStatus.items.map((item) => (
@@ -86,7 +83,6 @@ export default function PaymentSuccessPage() {
                 </div>
               )}
 
-              {/* Tổng tiền + trạng thái */}
               <div className="mt-3 space-y-1 text-sm">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">{t('payment.amount')}:</span>
@@ -124,8 +120,3 @@ export default function PaymentSuccessPage() {
     </div>
   );
 }
-
-
-
-
-

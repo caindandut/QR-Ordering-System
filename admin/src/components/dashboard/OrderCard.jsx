@@ -7,18 +7,9 @@ import { vi, ja } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
 import { translateOrderStatus } from '@/lib/translations';
 
-/**
- * OrderCard - Component hiển thị thông tin một đơn hàng
- * @param {Object} order - Thông tin đơn hàng
- * @param {Function} onApprove - Callback khi approve order
- * @param {Function} onDeny - Callback khi deny order
- * @param {Function} onServed - Callback khi mark as served
- * @param {Boolean} loading - Trạng thái đang xử lý
- */
 export default function OrderCard({ order, onApprove, onDeny, onServed, loading }) {
   const { t, i18n } = useTranslation();
   
-  // Get status badge color
   const getStatusBadge = (status) => {
     const currentLang = i18n.language === 'jp' ? 'jp' : 'vi';
     const statusTranslation = translateOrderStatus(status, currentLang);
@@ -61,7 +52,6 @@ export default function OrderCard({ order, onApprove, onDeny, onServed, loading 
       </CardHeader>
 
       <CardContent className="space-y-4">
-        {/* Danh sách món ăn */}
         <div className="space-y-2">
           <div className="flex items-center gap-1 text-sm font-medium">
             <Utensils className="h-3 w-3" />
@@ -81,7 +71,6 @@ export default function OrderCard({ order, onApprove, onDeny, onServed, loading 
           </div>
         </div>
 
-        {/* Tổng tiền và thời gian */}
         <div className="flex items-center justify-between border-t pt-3">
           <div className="flex items-center gap-1 text-sm text-muted-foreground">
             <Clock className="h-3 w-3" />
@@ -92,7 +81,6 @@ export default function OrderCard({ order, onApprove, onDeny, onServed, loading 
           </div>
         </div>
 
-        {/* Action buttons */}
         <div className="flex gap-2">
           {order.status === 'PENDING' && (
             <>

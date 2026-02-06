@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../services/api';
 
-// Import "linh kiện" (Không cần QrCode, Printer)
 import {
   Table,
   TableBody,
@@ -31,10 +30,9 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useToast } from "@/hooks/use-toast";
 import { PlusCircle, Edit, Trash2, Loader2 } from 'lucide-react';
-import CategoryForm from '../components/CategoryForm'; // 👈 Import Form mới
+import CategoryForm from '../components/CategoryForm';
 import { useTranslation } from 'react-i18next';
 
-// --- CÁC HÀM GỌI API (Đã đổi tên) ---
 const fetchCategories = async () => {
   const response = await api.get('/api/categories');
   return response.data;
@@ -53,10 +51,8 @@ const updateCategory = async ({ id, data }) => {
 const deleteCategory = async (id) => {
   await api.delete(`/api/categories/${id}`);
 };
-// ---
 
 export default function ManageCategoriesPage() {
-  // --- STATE QUẢN LÝ UI (Đã đổi tên) ---
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
@@ -66,18 +62,16 @@ export default function ManageCategoriesPage() {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
 
-  // --- LOGIC ĐỌC (READ) ---
   const { 
-    data: categories, // 👈 Đổi tên
+    data: categories,
     isLoading, 
     isError, 
     error 
   } = useQuery({
-    queryKey: ['categories'], // 👈 Đổi Key
-    queryFn: fetchCategories, // 👈 Đổi hàm
+    queryKey: ['categories'],
+    queryFn: fetchCategories,
   });
 
-  // --- LOGIC TẠO (CREATE) ---
   const addCategoryMutation = useMutation({
     mutationFn: createCategory,
     onSuccess: () => {
@@ -95,7 +89,6 @@ export default function ManageCategoriesPage() {
     },
   });
 
-  // --- LOGIC SỬA (UPDATE) ---
   const updateCategoryMutation = useMutation({
     mutationFn: updateCategory,
     onSuccess: () => {
@@ -113,7 +106,6 @@ export default function ManageCategoriesPage() {
     },
   });
   
-  // --- LOGIC XÓA (DELETE) ---
   const deleteCategoryMutation = useMutation({
     mutationFn: deleteCategory,
     onSuccess: () => {
@@ -132,7 +124,6 @@ export default function ManageCategoriesPage() {
     },
   });
 
-  // --- HÀM XỬ LÝ SỰ KIỆN (Đã đổi tên) ---
   const handleOpenAddDialog = () => {
     setEditingCategory(null);
     setIsFormOpen(true);
@@ -160,7 +151,6 @@ export default function ManageCategoriesPage() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      {/* HEADER SECTION */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h1 className="text-2xl sm:text-3xl font-bold">{t('categories_page.title')}</h1>
         <Button onClick={handleOpenAddDialog} className="w-full sm:w-auto">
@@ -169,7 +159,6 @@ export default function ManageCategoriesPage() {
         </Button>
       </div>
 
-      {/* --- DIALOG (Modal) THÊM/SỬA --- */}
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
         <DialogContent>
           <DialogHeader>
@@ -180,7 +169,7 @@ export default function ManageCategoriesPage() {
               {t('categories_page.form_desc')}
             </DialogDescription>
           </DialogHeader>
-          <CategoryForm // 👈 Dùng Form mới
+          <CategoryForm
             onSubmit={handleFormSubmit}
             isLoading={addCategoryMutation.isLoading || updateCategoryMutation.isLoading}
             initialData={editingCategory}
@@ -188,7 +177,6 @@ export default function ManageCategoriesPage() {
         </DialogContent>
       </Dialog>
       
-      {/* --- DIALOG (Alert) XÁC NHẬN XÓA --- */}
       <AlertDialog
         open={!!categoryToDelete}
         onOpenChange={(open) => !open && setCategoryToDelete(null)}
@@ -217,7 +205,6 @@ export default function ManageCategoriesPage() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* CATEGORIES TABLE */}
       {isLoading ? (
         <div className="flex justify-center items-center h-64">
           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />

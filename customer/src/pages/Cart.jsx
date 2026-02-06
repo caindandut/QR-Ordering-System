@@ -14,7 +14,6 @@ const placeOrder = async (orderData) => {
   const response = await api.post('/api/orders', orderData);
   return response.data;
 };
-// ---
 
 export default function CartPage() {
   const { t, i18n } = useTranslation();
@@ -22,38 +21,29 @@ export default function CartPage() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // 3. LẤY TẤT CẢ TỪ "BỘ NÃO" ZUSTAND
-  //    (Dùng "selector" để tối ưu)
   const items = useCartStore((state) => state.items);
   const incrementItem = useCartStore((state) => state.incrementItem);
   const decrementItem = useCartStore((state) => state.decrementItem);
   const removeItem = useCartStore((state) => state.removeItem);
   const clearCart = useCartStore((state) => state.clearCart);
 
-  // 4. DÙNG `useMemo` ĐỂ TÍNH TOÁN (Tối ưu)
-  //    (Giống `getTotalItems` và `getTotalPrice`
-  //     nhưng `useMemo` sẽ tự động cập nhật khi `items` thay đổi)
   const totalPrice = useMemo(
     () => items.reduce((total, item) => total + item.price * item.quantity, 0),
     [items]
   );
   
-  // 5. "CÔNG NHÂN ĐẶT MÓN" (useMutation)
   const placeOrderMutation = useMutation({
     mutationFn: placeOrder,
     
-    // 6. "ẢO THUẬT" KHI THÀNH CÔNG (onSuccess)
-    onSuccess: () => { // `data` là `newOrder` trả về từ API 
+    onSuccess: () => {
       toast({
         title: t('cart_page.order_success_title'),
         description: t('cart_page.order_success_desc'),
         duration: 5000,
       });
       
-      // 6a. XÓA SẠCH giỏ hàng
       clearCart();
       
-      // 6b. CHUYỂN HƯỚNG sang trang Theo dõi Đơn hàng
       navigate(`/order/status/`); 
     },
     onError: (error) => {
@@ -66,19 +56,15 @@ export default function CartPage() {
     },
   });
 
-  // 7. HÀM SUBMIT
   const handlePlaceOrder = () => {
-    // 7a. Lấy dữ liệu từ "bộ não" (Zustand) và sessionStorage
     const table_id = sessionStorage.getItem('table_id');
     const customer_name = sessionStorage.getItem('customer_name');
     
-    // 7b. Định dạng lại dữ liệu `items` cho API
     const formattedItems = items.map(item => ({
       item_id: item.id,
       quantity: item.quantity,
     }));
     
-    // 7c. "Giao việc" cho "Công nhân"
     placeOrderMutation.mutate({
       table_id,
       customer_name,
@@ -86,7 +72,6 @@ export default function CartPage() {
     });
   };
 
-  // Nếu giỏ hàng trống
   if (items.length === 0) {
     return (
       <div className="p-4 text-center">
@@ -98,13 +83,11 @@ export default function CartPage() {
     );
   }
 
-  // Nếu có giỏ hàng
   return (
     <div className="p-4 md:p-8 bg-background">
       <div className="flex justify-between items-center mb-8">
         <h3 className="text-4xl font-bold text-foreground">{t('cart_page.title')}</h3>
         
-        {/* Nút "Thêm món" (Quay lại Menu) */}
         <Button asChild variant="outline">
           <Link to="/order">
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -118,10 +101,8 @@ export default function CartPage() {
           <CardTitle>{t('cart_page.order_details')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* 8. LẶP (MAP) QUA CÁC MÓN TRONG "BỘ NÃO" */}
           {items.map((item) => (
             <div key={item.id} className="flex items-center justify-between">
-              {/* (Bên trái: Thông tin) */}
               <div className="flex items-center gap-4">
                 <img 
                   src={item.imageUrl} 
@@ -138,9 +119,7 @@ export default function CartPage() {
                 </div>
               </div>
               
-              {/* (Bên phải: Nút điều khiển) */}
               <div className="flex items-center gap-3">
-                {/* 9. KẾT NỐI HÀNH ĐỘNG CỦA "BỘ NÃO" */}
                 <Button variant="outline" size="icon" onClick={() => decrementItem(item.id)}>
                   <Minus className="h-4 w-4" />
                 </Button>

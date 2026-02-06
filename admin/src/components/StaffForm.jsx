@@ -42,7 +42,6 @@ export default function StaffForm({ onSubmit, isLoading, initialData = null }) {
   const [role, setRole] = useState('STAFF');
   const [avatarUrl, setAvatarUrl] = useState('');
 
-  // 3. "Sync" (Đồng bộ) `initialData` (Tái sử dụng)
   useEffect(() => {
     if (initialData) {
       setName(initialData.name || '');
@@ -50,9 +49,8 @@ export default function StaffForm({ onSubmit, isLoading, initialData = null }) {
       setPhone(initialData.phone || '');
       setRole(initialData.role || 'STAFF');
       setAvatarUrl(initialData.avatarUrl || '');
-      setPassword(''); // Luôn reset ô pass khi mở
+      setPassword('');
     } else {
-      // Reset form
       setName(''); setEmail(''); setPassword(''); setPhone(''); setRole('STAFF'); setAvatarUrl('');
     }
   }, [initialData]);
@@ -83,7 +81,6 @@ export default function StaffForm({ onSubmit, isLoading, initialData = null }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // 6. LOGIC MẬT KHẨU CÓ ĐIỀU KIỆN (Khái niệm mới)
     const dataToSend = {
       name,
       email,
@@ -92,14 +89,10 @@ export default function StaffForm({ onSubmit, isLoading, initialData = null }) {
       avatarUrl,
     };
     
-    // Chỉ gửi `password` đi NẾU:
-    // 1. Đang ở chế độ Thêm MỚI (luôn gửi).
-    // 2. Đang ở chế độ Sửa VÀ người dùng ĐÃ NHẬP gì đó vào ô pass.
     if (!isEditMode || (isEditMode && password)) {
       dataToSend.password = password;
     }
     
-    // Gửi dữ liệu đã "lọc" về cho "cha"
     onSubmit(dataToSend);
   };
 
@@ -146,7 +139,7 @@ export default function StaffForm({ onSubmit, isLoading, initialData = null }) {
           value={password} 
           onChange={(e) => setPassword(e.target.value)} 
           placeholder={isEditMode ? t('staff_page.password_placeholder_edit') : t('staff_page.password_placeholder')}
-          required={!isEditMode} // 👈 Chỉ bắt buộc khi Thêm Mới
+          required={!isEditMode}
         />
       </div>
       

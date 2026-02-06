@@ -13,7 +13,6 @@ import { useTranslation } from 'react-i18next';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 
-// --- HÀM GỌI API MỚI ---
 const fetchMyOrders = async (tableId, customerName) => {
   const response = await api.get('/api/orders', {
     params: { 
@@ -21,9 +20,8 @@ const fetchMyOrders = async (tableId, customerName) => {
       customer_name: customerName,
     }
   });
-  // Lọc ra các đơn hàng không bị hủy
   const activeOrders = response.data.filter(order => order.status !== 'CANCELLED');
-  return activeOrders; // Trả về MẢNG
+  return activeOrders;
 };
 
 const requestPayment = async (orderId) => {
@@ -45,25 +43,21 @@ const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
 export default function OrderStatusPage() {
   const { t, i18n } = useTranslation();
-  // Normalize language code: 'ja' -> 'jp' để match với translation
   let lang = i18n.language || 'vi';
   if (lang === 'ja') lang = 'jp';
   const { toast } = useToast();
   const fallbackValue = t('status_page.na', { defaultValue: 'N/A' });
   
-  // ĐỌC TỪ sessionStorage - mỗi tab có session riêng
   const tableId = sessionStorage.getItem('table_id');
   const customerName = sessionStorage.getItem('customer_name');
   const tableName = sessionStorage.getItem('table_name');
 
-  // State "sống" (như cũ)
   const [orderStatuses, setOrderStatuses] = useState({});
-  const [billData, setBillData] = useState(null); // Lưu dữ liệu hóa đơn hiện tại đang xem
-  const [showBillDialog, setShowBillDialog] = useState(false); // Hiển thị dialog hóa đơn
-  const [selectedPaymentOrder, setSelectedPaymentOrder] = useState(null); // Đơn hàng đang chọn phương thức thanh toán
-  const [showCashNote, setShowCashNote] = useState(false); // Hiển thị ghi chú chờ nhân viên sau khi chọn tiền mặt
+  const [billData, setBillData] = useState(null);
+  const [showBillDialog, setShowBillDialog] = useState(false);
+  const [selectedPaymentOrder, setSelectedPaymentOrder] = useState(null);
+  const [showCashNote, setShowCashNote] = useState(false);
 
-  // 👇 [SỬA] Đảm bảo tên biến là `initialOrders` (số nhiều)
   const { 
     data: initialOrders, 
     isLoading, 
@@ -74,7 +68,6 @@ export default function OrderStatusPage() {
     enabled: !!tableId && !!customerName,
   });
 
-  // Mutation yêu cầu thanh toán
   const paymentRequestMutation = useMutation({
     mutationFn: requestPayment,
     onSuccess: (data, orderId) => {
@@ -94,11 +87,9 @@ export default function OrderStatusPage() {
     },
   });
 
-  // Mutation thanh toán VNPay
   const vnpayPaymentMutation = useMutation({
     mutationFn: createVnpayPayment,
     onSuccess: (data) => {
-      // Redirect đến VNPay
       window.location.href = data.paymentUrl;
     },
     onError: (err) => {
@@ -134,10 +125,8 @@ export default function OrderStatusPage() {
     cancelOrderMutation.mutate(orderId);
   };
 
-  // useEffect (như cũ)
   useEffect(() => {
-    // 5a. Cập nhật state "sống" khi data "ban đầu" về
-    if (initialOrders) { // 👈 [SỬA] Dùng `initialOrders` (số nhiều)
+    if (initialOrders) {
       const initialStatusMap = {};
       initialOrders.forEach(order => {
         initialStatusMap[order.id] = order.status;
@@ -145,11 +134,9 @@ export default function OrderStatusPage() {
       setOrderStatuses(initialStatusMap);
     }
     
-    // 5b. Kết nối Socket
     const socket = io(SOCKET_URL);
     
-    // 5c. "Tham gia" (join) NHIỀU "phòng"
-    if (initialOrders) { // 👈 [SỬA] Dùng `initialOrders` (số nhiều)
+    if (initialOrders) {
       initialOrders.forEach(order => {
         if (order.status !== 'PAID' && order.status !== 'CANCELLED') {
           socket.emit('join_order_room', order.id);
@@ -157,17 +144,14 @@ export default function OrderStatusPage() {
       });
     }
     
-    // 5d. "Lắng nghe" sự kiện và hiển thị toast notification
     const handleOrderStatusUpdate = (data) => {
       const { orderId, newStatus } = data;
       
-      // Cập nhật state
       setOrderStatuses(prevStatuses => ({
         ...prevStatuses,
         [orderId]: newStatus,
       }));
       
-      // Hiển thị toast notification từ góc nhìn khách hàng
       const statusToastMap = {
         COOKING: {
           title: t('status_page.toasts.cooking.title'),
@@ -205,15 +189,13 @@ export default function OrderStatusPage() {
 
     socket.on('order_status_updated', handleOrderStatusUpdate);
 
-    // 6. Dọn dẹp
     return () => {
       socket.off('order_status_updated', handleOrderStatusUpdate);
       socket.disconnect();
     };
     
-  }, [initialOrders, toast]); // Thêm toast vào dependency array
+  }, [initialOrders, toast]);
 
-  // Hàm mở biên lai từ một đơn hàng cụ thể
   const openBillForOrder = (order) => {
     if (!order) return;
     const bill = {
@@ -232,7 +214,7 @@ export default function OrderStatusPage() {
     const { text, variant } = translateOrderStatus(status, lang);
     return <Badge variant={variant}>{text}</Badge>;
   };
-  // --- RENDER ---
+
   if (isLoading) return (
     <div className="flex items-center justify-center h-screen gap-2 text-foreground">
       <Loader2 className="h-6 w-6 animate-spin" />
@@ -243,7 +225,6 @@ export default function OrderStatusPage() {
 
   return (
     <div className="p-4 md:p-8 bg-background min-h-[calc(100vh-65px)]">
-      {/* Dialog hiển thị hóa đơn */}
       <Dialog open={showBillDialog} onOpenChange={setShowBillDialog}>
         <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
           <DialogHeader>
@@ -251,7 +232,6 @@ export default function OrderStatusPage() {
           </DialogHeader>
           {billData && (
             <div>
-              {/* Nội dung biên lai giống admin */}
               <div style={{ padding: '20px', fontFamily: 'monospace' }}>
                 <div style={{ textAlign: 'center', marginBottom: '20px' }}>
                   <h1 style={{ fontSize: '24px', margin: '0' }}>{t('status_page.receipt.title')}</h1>
@@ -310,7 +290,6 @@ export default function OrderStatusPage() {
                 </div>
               </div>
 
-              {/* Nút đóng */}
               <div className="px-4 pb-4">
                 <Button onClick={() => setShowBillDialog(false)} className="w-full" size="lg">
                   {t('status_page.payment.close_button')}
@@ -321,7 +300,6 @@ export default function OrderStatusPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Dialog chọn phương thức thanh toán */}
       <Dialog
         open={!!selectedPaymentOrder}
         onOpenChange={(open) => {
@@ -339,7 +317,6 @@ export default function OrderStatusPage() {
           </DialogHeader>
           {selectedPaymentOrder && (
             <div className="space-y-4">
-              {/* Thanh toán VNPay */}
               <div className="space-y-2">
                 <Button
                   onClick={() => {
@@ -365,7 +342,6 @@ export default function OrderStatusPage() {
                 </Button>
               </div>
 
-              {/* Thanh toán tiền mặt */}
               <div className="space-y-2 pt-2 border-t">
                 <Button
                   onClick={() => {
@@ -397,7 +373,6 @@ export default function OrderStatusPage() {
                 )}
               </div>
 
-              {/* Nút xem biên lai ở cuối dialog */}
               <div className="pt-2 border-t">
                 <Button
                   variant="outline"
@@ -413,7 +388,6 @@ export default function OrderStatusPage() {
         </DialogContent>
       </Dialog>
       
-      {/* 3. [THÊM MỚI] Hiển thị Tên Khách / Bàn */}
       <div className="max-w-2xl mx-auto mb-6">
          <h1 className="text-3xl font-bold text-foreground">{t('status_page.title')}</h1>
          <p className="text-lg text-muted-foreground">
@@ -425,7 +399,6 @@ export default function OrderStatusPage() {
       </div>
       
       <div className="max-w-2xl mx-auto space-y-6">
-        {/* 4. LẶP (MAP) QUA TẤT CẢ ĐƠN HÀNG */}
         {initialOrders && initialOrders.length > 0 ? (
           initialOrders.map((order, orderIndex) => {
             if (orderStatuses[order.id] === 'CANCELLED') {
@@ -434,7 +407,6 @@ export default function OrderStatusPage() {
             return (
             <Card key={order.id} className="overflow-hidden shadow-md">
               <CardHeader className="flex flex-row items-center justify-between bg-card p-4">
-                {/* 5. [THÊM MỚI] Thêm Số thứ tự */}
                 <CardTitle className="text-xl text-card-foreground">
                   {t('status_page.order_number')}{orderIndex + 1}
                 </CardTitle>
@@ -444,16 +416,14 @@ export default function OrderStatusPage() {
                 
                 {order.details.map((detail, index) => (
                   <div key={detail.id} className="flex items-center gap-3">
-                    {/* STT */}
                     <span className="text-sm text-muted-foreground">{index + 1}</span>
                 
                     <img 
                       src={detail.menuItem.imageUrl} 
                       alt={detail.menuItem.name}
-                      className="w-14 h-14 object-cover rounded-md border" // 👈 Style cho ảnh
+                      className="w-14 h-14 object-cover rounded-md border"
                     />
 
-                    {/* Tên & Số lượng */}
                     <div className="flex-grow">
                       <span className="font-semibold text-card-foreground">
                         {lang === 'jp' ? detail.menuItem.name_jp : detail.menuItem.name}
@@ -463,7 +433,6 @@ export default function OrderStatusPage() {
                       </p>
                     </div>
                     
-                    {/* Giá (Tổng của line) */}
                     <span className="font-semibold text-card-foreground">
                       {(detail.priceAtOrder * detail.quantity).toLocaleString('vi-VN')}đ
                     </span>
@@ -472,7 +441,6 @@ export default function OrderStatusPage() {
               </CardContent>
               <CardFooter className="bg-muted p-4">
                 <div className="w-full space-y-3">
-                  {/* Hàng 1: Trạng thái thanh toán và tổng tiền */}
                   <div className="flex justify-between items-center">
                     <div className="text-sm">
                       {orderStatuses[order.id] !== 'PAID' ? (
@@ -481,13 +449,11 @@ export default function OrderStatusPage() {
                         <span className="font-bold text-green-600 dark:text-green-400">{t('status_page.payment_paid')}</span>
                       )}
                     </div>
-                    {/* Tổng tiền */}
                     <div className="text-lg font-bold text-foreground">
                       {t('status_page.total')} {order.totalAmount.toLocaleString('vi-VN')}đ
                     </div>
                   </div>
                   
-                  {/* Hàng 2: Hủy đơn (khi đang chờ xử lý) */}
                   {orderStatuses[order.id] === 'PENDING' && (
                     <Button
                       onClick={() => handleCancelOrder(order.id)}
@@ -510,7 +476,6 @@ export default function OrderStatusPage() {
                     </Button>
                   )}
 
-                  {/* Nút thanh toán: chỉ còn 1 nút, mở dialog chọn phương thức */}
                   {orderStatuses[order.id] === 'SERVED' &&
                    order.paymentStatus !== 'PAID' && (
                     <div className="space-y-2">

@@ -1,10 +1,10 @@
 import animate from "tailwindcss-animate"
-/** @type {import('tailwindcss').Config} */
+
 export default {
     darkMode: ["class"],
     content: [
-    "./index.html", // Quét file HTML gốc
-    "./src/**/*.{js,jsx}", // Quét tất cả file JS và JSX trong src
+    "./index.html",
+    "./src/**/*.{js,jsx}",
   ],
   theme: {
   	extend: {

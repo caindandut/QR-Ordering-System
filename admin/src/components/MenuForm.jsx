@@ -4,7 +4,6 @@ import api from '../services/api';
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from 'react-i18next';
 
-// Import "linh kiện"
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,38 +15,30 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Loader2 } from 'lucide-react'; // Icon "Đang tải"
+import { Loader2 } from 'lucide-react';
 
-// --- CÁC HÀM GỌI API (Bên trong Form) ---
-
-// 1. Hàm "lấy" (fetch) Danh mục
 const fetchCategories = async () => {
   const response = await api.get('/api/categories');
   return response.data;
 };
 
-// 2. Hàm "upload" (ghi) Ảnh
-//    Nó nhận 1 file, trả về 1 object chứa imageUrl
 const uploadImage = async (file) => {
-  // Phải dùng FormData để gửi file
   const formData = new FormData();
-  formData.append('image', file); // 'image' là key mà API (Multer) mong đợi
+  formData.append('image', file);
   
   const response = await api.post('/api/upload', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
   });
-  return response.data; // Trả về { imageUrl: "http://..." }
+  return response.data;
 };
-// ---
 
 export default function MenuForm({ onSubmit, isLoading, initialData = null }) {
   const { toast } = useToast();
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
 
-  // --- STATE CỦA FORM ---
   const [name, setName] = useState('');
   const [nameJp, setNameJp] = useState('');
   const [price, setPrice] = useState(0);
@@ -55,9 +46,8 @@ export default function MenuForm({ onSubmit, isLoading, initialData = null }) {
   const [descriptionJp, setDescriptionJp] = useState('');
   const [status, setStatus] = useState('AVAILABLE');
   const [categoryId, setCategoryId] = useState('');
-  const [imageUrl, setImageUrl] = useState(''); // 👈 State quan trọng
+  const [imageUrl, setImageUrl] = useState('');
 
-  // --- LOGIC 1: ĐỒNG BỘ (SYNC) `initialData` (Cho chế độ "Sửa") ---
   useEffect(() => {
     if (initialData) {
       setName(initialData.name || '');
@@ -67,9 +57,8 @@ export default function MenuForm({ onSubmit, isLoading, initialData = null }) {
       setDescriptionJp(initialData.description_jp || '');
       setStatus(initialData.status || 'AVAILABLE');
       setCategoryId(initialData.categoryId || '');
-      setImageUrl(initialData.imageUrl || ''); // 👈 Sync cả ảnh
+      setImageUrl(initialData.imageUrl || '');
     } else {
-      // Reset form khi ở chế độ "Thêm mới"
       setName('');
       setNameJp('');
       setPrice(0);
@@ -81,17 +70,14 @@ export default function MenuForm({ onSubmit, isLoading, initialData = null }) {
     }
   }, [initialData]);
 
-  // --- LOGIC 2: LẤY DANH SÁCH DANH MỤC (`useQuery` bên trong Form) ---
   const { data: categories, isLoading: isLoadingCategories } = useQuery({
     queryKey: ['categories'],
     queryFn: fetchCategories,
   });
 
-  // --- LOGIC 3: UPLOAD ẢNH (`useMutation` bên trong Form) ---
   const uploadImageMutation = useMutation({
     mutationFn: uploadImage,
     onSuccess: (data) => {
-      // Bước 4c: Khi upload thành công, set URL vào state
       setImageUrl(data.imageUrl);
       toast({ title: t('menu_page.upload_success_title'), description: t('menu_page.upload_success_desc'), duration: 5000 });
     },
@@ -105,20 +91,16 @@ export default function MenuForm({ onSubmit, isLoading, initialData = null }) {
     },
   });
 
-  // Bước 4b: Hàm xử lý khi chọn file
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Bước 4b: Gọi "công nhân upload"
       uploadImageMutation.mutate(file);
     }
   };
 
-  // --- LOGIC 4: SUBMIT FORM CHÍNH ---
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // Gửi dữ liệu (đã có imageUrl) lên "cha"
     onSubmit({
       name,
       name_jp: nameJp,
@@ -127,14 +109,13 @@ export default function MenuForm({ onSubmit, isLoading, initialData = null }) {
       description_jp: descriptionJp,
       status,
       categoryId: parseInt(categoryId, 10),
-      imageUrl, // 👈 Gửi URL (state) đi
+      imageUrl,
     });
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
       
-      {/* --- CỘT UPLOAD ẢNH --- */}
       <div className="space-y-2">
         <Label htmlFor="image">{t('common.image')}</Label>
         <Input
@@ -144,7 +125,6 @@ export default function MenuForm({ onSubmit, isLoading, initialData = null }) {
           onChange={handleFileChange}
           disabled={uploadImageMutation.isLoading}
         />
-        {/* Hiển thị "Đang tải" hoặc "Ảnh đã tải lên" */}
         {uploadImageMutation.isLoading ? (
           <div className="flex items-center gap-2 text-muted-foreground">
             <Loader2 className="h-4 w-4 animate-spin" />
@@ -163,7 +143,6 @@ export default function MenuForm({ onSubmit, isLoading, initialData = null }) {
         )}
       </div>
 
-      {/* --- CỘT TÊN (VI) --- */}
       <div className="space-y-2">
         <Label htmlFor="name">{t('common.name_vi')}</Label>
         <Input
@@ -172,7 +151,6 @@ export default function MenuForm({ onSubmit, isLoading, initialData = null }) {
         />
       </div>
       
-      {/* --- CỘT TÊN (JP) --- */}
       <div className="space-y-2">
         <Label htmlFor="nameJp">{t('common.name_jp')}</Label>
         <Input
@@ -181,7 +159,6 @@ export default function MenuForm({ onSubmit, isLoading, initialData = null }) {
         />
       </div>
 
-      {/* --- CỘT GIÁ --- */}
       <div className="space-y-2">
         <Label htmlFor="price">{t('common.price')} (VNĐ)</Label>
         <Input
@@ -190,7 +167,6 @@ export default function MenuForm({ onSubmit, isLoading, initialData = null }) {
         />
       </div>
 
-      {/* --- CỘT DANH MỤC (`useQuery` data) --- */}
       <div className="space-y-2">
         <Label htmlFor="category">{t('common.category')}</Label>
         <Select
@@ -211,7 +187,6 @@ export default function MenuForm({ onSubmit, isLoading, initialData = null }) {
         </Select>
       </div>
       
-      {/* --- CỘT TRẠNG THÁI --- */}
       <div className="space-y-2">
         <Label htmlFor="status">{t('common.status')}</Label>
         <Select value={status} onValueChange={setStatus}>
@@ -226,7 +201,6 @@ export default function MenuForm({ onSubmit, isLoading, initialData = null }) {
         </Select>
       </div>
 
-      {/* --- CỘT MÔ TẢ (VI) --- */}
       <div className="space-y-2">
         <Label htmlFor="description">{t('menu_page.description_vi')}</Label>
         <Textarea
@@ -237,7 +211,6 @@ export default function MenuForm({ onSubmit, isLoading, initialData = null }) {
         />
       </div>
 
-      {/* --- CỘT MÔ TẢ (JP) --- */}
       <div className="space-y-2">
         <Label htmlFor="descriptionJp">{t('menu_page.description_jp')}</Label>
         <Textarea
@@ -248,10 +221,8 @@ export default function MenuForm({ onSubmit, isLoading, initialData = null }) {
         />
       </div>
 
-      {/* --- NÚT SUBMIT CHÍNH --- */}
       <Button
         type="submit"
-        // Vô hiệu hóa nếu (1) Đang submit form HOẶC (2) Đang upload ảnh
         disabled={isLoading || uploadImageMutation.isLoading}
         className="w-full"
       >

@@ -28,24 +28,16 @@ export default function AccountPage() {
   const { toast } = useToast();
   const { t } = useTranslation();
   
-  // 1. Lấy "hành động" updateUser từ "bộ não"
   const updateUserInStore = useAuthStore((state) => state.updateUser);
 
-  // 2. "Công nhân Sửa" (Update)
   const updateProfileMutation = useMutation({
     mutationFn: updateProfile,
     
-    // 3. "ẢO THUẬT" (onSuccess)
     onSuccess: (data) => {
-      // `data` là { user: {...} } trả về từ API
       toast({ title: t('account_page.success_update_title'), description: t('account_page.success_update_desc'), duration: 5000 });
       
-      // 3a. Cập nhật "bộ não" (Zustand)
-      //    -> Header sẽ tự động cập nhật tên mới
       updateUserInStore(data.user); 
       
-      // 3b. (Tùy chọn) Làm mới các cache khác nếu cần
-      //    (Ví dụ: làm mới 'staff' nếu nó có tồn tại)
       queryClient.invalidateQueries({ queryKey: ['staff'] });
     },
     onError: (error) => {
@@ -62,8 +54,6 @@ export default function AccountPage() {
     mutationFn: changePassword,
     onSuccess: (data) => {
       toast({ title: t('account_page.success_password_title'), description: data.message, duration: 5000 });
-      // (Không cần invalidateQueries vì không ảnh hưởng Bảng)
-      // (Chúng ta cần 1 cách để reset form con)
     },
     onError: (error) => {
       toast({
@@ -75,7 +65,6 @@ export default function AccountPage() {
     },
   });
 
-  // 4. Hàm Submit (để truyền cho Form "con")
   const handleProfileSubmit = (data) => {
     updateProfileMutation.mutate(data);
   };
@@ -89,7 +78,6 @@ export default function AccountPage() {
       <h1 className="text-3xl font-bold text-foreground">{t('account_page.title')}</h1>
       
       <div className="grid gap-6 md:grid-cols-2">
-        {/* --- CARD 1: THÔNG TIN CÁ NHÂN --- */}
         <Card>
           <CardHeader>
             <CardTitle>{t('account_page.profile_title')}</CardTitle>
@@ -98,7 +86,6 @@ export default function AccountPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {/* 5. Lắp ráp Form */}
             <ProfileForm
               onSubmit={handleProfileSubmit}
               isLoading={updateProfileMutation.isLoading}

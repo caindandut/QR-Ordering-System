@@ -4,30 +4,23 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useTranslation } from 'react-i18next';
 
-// Component này "ngốc" y hệt TableForm
-// Nó nhận data ban đầu (initialData) và một hàm (onSubmit)
 export default function CategoryForm({ onSubmit, isLoading, initialData = null }) {
   const { t } = useTranslation();
   const [name, setName] = useState('');
   const [nameJp, setNameJp] = useState('');
 
-  // 1. "Sync" (Đồng bộ) prop `initialData` vào state
-  //    (Để "tự điền" form khi ở chế độ "Sửa")
   useEffect(() => {
     if (initialData) {
       setName(initialData.name || '');
       setNameJp(initialData.name_jp || '');
     } else {
-      // Reset form khi ở chế độ "Thêm"
       setName('');
       setNameJp('');
     }
   }, [initialData]);
 
-  // 2. Khi nhấn "Lưu"
   const handleSubmit = (e) => {
     e.preventDefault();
-    // 3. Gửi dữ liệu (data) về cho "cha"
     onSubmit({
       name: name,
       name_jp: nameJp,

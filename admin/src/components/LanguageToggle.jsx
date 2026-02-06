@@ -9,10 +9,8 @@ import {
 import { Globe } from 'lucide-react'; 
 
 export function LanguageToggle() {
-  // 1. Lấy "bộ não" i18n
   const { i18n } = useTranslation();
 
-  // 2. Hàm "ra lệnh"
   const changeLanguage = (lang) => {
     i18n.changeLanguage(lang); 
   };
@@ -26,7 +24,6 @@ export function LanguageToggle() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {/* 3. Các nút gọi lệnh */}
         <DropdownMenuItem onClick={() => changeLanguage('vi')}>
           Tiếng Việt 
         </DropdownMenuItem>

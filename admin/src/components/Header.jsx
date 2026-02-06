@@ -38,10 +38,8 @@ export default function Header() {
 
   const handleLogout = async () => {
     try {
-      // 4. Chờ cho "bộ não" gọi API và xóa state
       await logout();
       
-      // 5. Hiển thị thông báo thành công
       toast({
         title: t('header.logout_success_title'),
         description: t('header.logout_success_desc'),
@@ -49,7 +47,6 @@ export default function Header() {
       });
 
     } catch {
-      // (Phòng trường hợp logout bị lỗi, hiếm khi xảy ra)
       toast({
         title: t('header.logout_error_title'),
         description: t('header.logout_error_desc'),
@@ -58,8 +55,6 @@ export default function Header() {
       });
     }
     
-    // 6. Chuyển hướng về trang login
-    // (Luôn chuyển hướng dù thành công hay thất bại)
     navigate('/login');
   };
 
@@ -69,7 +64,6 @@ export default function Header() {
 
   return (
     <header className="flex h-14 sm:h-16 items-center border-b border-border dark:border-white/10 bg-background px-2 sm:px-4 md:px-6 gap-2 sm:gap-4">
-      {/* Nút Hamburger (Chỉ hiện trên Mobile) */}
       <div className="md:hidden">
         <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
           <SheetTrigger asChild>
@@ -85,15 +79,12 @@ export default function Header() {
         </Sheet>
       </div>
 
-      {/* Spacer - Đẩy toggle và avatar sang phải (cả mobile và desktop) */}
       <div className="flex-grow"></div>
       
-      {/* Toggle theme, language, notification bell và Avatar */}
       <div className="flex items-center gap-2">
         <LanguageToggle />
         <ModeToggle />
         
-        {/* Notification Bell Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="relative">
@@ -155,13 +146,11 @@ export default function Header() {
               ))
             )}
             
-            {/* Yêu cầu thanh toán & thông báo thanh toán */}
             {paymentRequests.length > 0 && (
               <>
                 <DropdownMenuSeparator />
                 <DropdownMenuLabel className="flex items-center justify-between">
                   <span className="text-orange-600 dark:text-orange-400">
-                    {/* Nếu TẤT CẢ là VNPay thì đổi tiêu đề cho đúng ngữ nghĩa */}
                     {paymentRequests.every((req) => req.type === 'VNPAY_SUCCESS')
                       ? t('header.notifications.vnpay_section', { defaultValue: 'Thông báo thanh toán VNPay' })
                       : t('header.notifications.payment_section')}
@@ -238,7 +227,6 @@ export default function Header() {
           </DropdownMenuContent>
         </DropdownMenu>
         
-        {/* Dropdown Avatar */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-10 w-10 rounded-full">

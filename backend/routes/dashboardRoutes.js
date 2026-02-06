@@ -3,18 +3,14 @@ import { prisma } from '../index.js';
 
 const router = express.Router();
 
-// GET /api/dashboard/stats
-// Lấy các thống kê cơ bản cho Dashboard
 router.get('/stats', async (req, res) => {
   try {
-    // 1. Xác định ngày hôm nay (00:00:00)
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
 
-    // 2. Tính doanh thu hôm nay (chỉ đơn đã PAID)
     const todayOrders = await prisma.order.findMany({
       where: {
         createdAt: {
@@ -34,9 +30,6 @@ router.get('/stats', async (req, res) => {
 
     const todayOrdersCount = todayOrders.length;
 
-    // 3. Đếm số bàn đang phục vụ
-    // Đếm dựa trên bàn có orders đang active (PENDING, COOKING, SERVED)
-    // Thay vì dựa vào table.status vì có thể không được cập nhật tự động
     const tablesWithActiveOrders = await prisma.order.groupBy({
       by: ['tableId'],
       where: {
@@ -48,8 +41,6 @@ router.get('/stats', async (req, res) => {
     
     const occupiedTables = tablesWithActiveOrders.length;
 
-    // 4. Tìm món ăn bán chạy nhất (dựa vào OrderDetail)
-    // Cách 1: Sử dụng groupBy (nhanh hơn)
     const topItemData = await prisma.orderDetail.groupBy({
       by: ['menuItemId'],
       _sum: {
@@ -84,7 +75,6 @@ router.get('/stats', async (req, res) => {
       };
     }
 
-    // 5. Tính dữ liệu hôm qua để so sánh
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
 
@@ -107,14 +97,12 @@ router.get('/stats', async (req, res) => {
 
     const yesterdayOrdersCount = yesterdayOrders.length;
 
-    // 6. Tính % thay đổi
     const revenueChangePercent = yesterdayRevenue > 0 
       ? ((todayRevenue - yesterdayRevenue) / yesterdayRevenue * 100)
       : (todayRevenue > 0 ? 100 : 0);
 
     const ordersChangeDelta = todayOrdersCount - yesterdayOrdersCount;
 
-    // 7. Trả về kết quả
     res.status(200).json({
       todayRevenue,
       todayOrders: todayOrdersCount,
@@ -122,7 +110,7 @@ router.get('/stats', async (req, res) => {
       topItem,
       yesterdayRevenue,
       yesterdayOrders: yesterdayOrdersCount,
-      revenueChangePercent: Math.round(revenueChangePercent * 10) / 10, // Round to 1 decimal
+      revenueChangePercent: Math.round(revenueChangePercent * 10) / 10,
       ordersChangeDelta,
     });
 
@@ -135,34 +123,28 @@ router.get('/stats', async (req, res) => {
   }
 });
 
-// GET /api/dashboard/revenue-chart
-// Lấy dữ liệu doanh thu theo khoảng thời gian
 router.get('/revenue-chart', async (req, res) => {
   try {
-    const { period = 'week' } = req.query; // 'week' hoặc 'month'
+    const { period = 'week' } = req.query;
     
-    // 1. Xác định khoảng thời gian
     const today = new Date();
-    today.setHours(23, 59, 59, 999); // Cuối ngày hôm nay
+    today.setHours(23, 59, 59, 999);
     
     let startDate;
     let numDays;
     
     if (period === 'month') {
-      // Lấy 30 ngày gần nhất
       startDate = new Date(today);
       startDate.setDate(today.getDate() - 29);
       startDate.setHours(0, 0, 0, 0);
       numDays = 30;
     } else {
-      // Mặc định: 7 ngày (tuần)
       startDate = new Date(today);
       startDate.setDate(today.getDate() - 6);
       startDate.setHours(0, 0, 0, 0);
       numDays = 7;
     }
 
-    // 2. Lấy tất cả orders trong khoảng thời gian với status PAID
     const orders = await prisma.order.findMany({
       where: {
         createdAt: {
@@ -177,18 +159,15 @@ router.get('/revenue-chart', async (req, res) => {
       },
     });
 
-    // 3. Tạo map theo ngày
     const revenueMap = {};
     
-    // Khởi tạo các ngày với revenue = 0
     for (let i = 0; i < numDays; i++) {
       const date = new Date(startDate);
       date.setDate(date.getDate() + i);
-      const dateKey = date.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+      const dateKey = date.toISOString().split('T')[0];
       revenueMap[dateKey] = 0;
     }
 
-    // Tính tổng revenue cho mỗi ngày
     orders.forEach(order => {
       const dateKey = order.createdAt.toISOString().split('T')[0];
       if (revenueMap[dateKey] !== undefined) {
@@ -196,13 +175,11 @@ router.get('/revenue-chart', async (req, res) => {
       }
     });
 
-    // 4. Chuyển map thành array và format cho frontend
     const chartData = Object.entries(revenueMap).map(([date, revenue]) => ({
       date,
       revenue,
     }));
 
-    // Sắp xếp theo ngày tăng dần
     chartData.sort((a, b) => new Date(a.date) - new Date(b.date));
 
     res.status(200).json(chartData);
@@ -216,30 +193,24 @@ router.get('/revenue-chart', async (req, res) => {
   }
 });
 
-// GET /api/dashboard/active-orders
-// Lấy danh sách orders đang xử lý (PENDING, COOKING, SERVED)
 router.get('/active-orders', async (req, res) => {
   try {
     const { status, tableId, limit } = req.query;
     
-    // Build where conditions
     const whereConditions = {
       status: {
         in: ['PENDING', 'COOKING', 'SERVED']
       }
     };
     
-    // Filter theo status cụ thể nếu có
     if (status && ['PENDING', 'COOKING', 'SERVED'].includes(status)) {
       whereConditions.status = status;
     }
     
-    // Filter theo bàn nếu có
     if (tableId) {
       whereConditions.tableId = parseInt(tableId);
     }
     
-    // Fetch orders với full details
     const orders = await prisma.order.findMany({
       where: whereConditions,
       include: {
@@ -260,7 +231,7 @@ router.get('/active-orders', async (req, res) => {
       orderBy: {
         createdAt: 'desc'
       },
-      take: limit ? parseInt(limit) : 20 // Default 20 orders
+      take: limit ? parseInt(limit) : 20
     });
     
     res.status(200).json(orders);
@@ -274,13 +245,10 @@ router.get('/active-orders', async (req, res) => {
   }
 });
 
-// GET /api/dashboard/top-items
-// Lấy danh sách món ăn bán chạy nhất
 router.get('/top-items', async (req, res) => {
   try {
     const { period = 'today', limit = 10 } = req.query;
     
-    // 1. Xác định khoảng thời gian
     const now = new Date();
     let startDate;
     
@@ -304,8 +272,6 @@ router.get('/top-items', async (req, res) => {
         startDate.setHours(0, 0, 0, 0);
     }
     
-    // 2. Lấy tất cả OrderDetails trong khoảng thời gian
-    // Chỉ tính các orders đã PAID
     const orderDetails = await prisma.orderDetail.findMany({
       where: {
         order: {
@@ -333,7 +299,6 @@ router.get('/top-items', async (req, res) => {
       },
     });
     
-    // 3. Group by menuItemId và tính toán
     const itemsMap = {};
     
     orderDetails.forEach(detail => {
@@ -356,7 +321,6 @@ router.get('/top-items', async (req, res) => {
       itemsMap[itemId].revenue += detail.priceAtOrder * detail.quantity;
     });
     
-    // 4. Chuyển thành array và sắp xếp
     const topItems = Object.values(itemsMap)
       .sort((a, b) => b.quantitySold - a.quantitySold)
       .slice(0, parseInt(limit));
@@ -372,8 +336,6 @@ router.get('/top-items', async (req, res) => {
   }
 });
 
-// GET /api/dashboard/tables
-// Lấy danh sách tất cả bàn với trạng thái và order hiện tại
 router.get('/tables', async (req, res) => {
   try {
     const tables = await prisma.table.findMany({

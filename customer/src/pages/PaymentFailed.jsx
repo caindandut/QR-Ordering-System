@@ -13,7 +13,6 @@ export default function PaymentFailedPage() {
   const code = searchParams.get('code');
 
   useEffect(() => {
-    // Nếu không có orderId, redirect về trang chủ
     if (!orderId) {
       navigate('/order/status');
     }
@@ -85,8 +84,3 @@ export default function PaymentFailedPage() {
     </div>
   );
 }
-
-
-
-
-

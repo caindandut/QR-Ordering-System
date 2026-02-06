@@ -23,10 +23,9 @@ export default function CustomerHeader() {
   const navigate = useNavigate();
   
   const location = useLocation(); 
-  const pathname = location.pathname; // Ví dụ: "/order", "/order/cart"
+  const pathname = location.pathname;
   const { t } = useTranslation();
   
-  // Lấy `totalItems` từ "bộ não" Giỏ hàng (dùng selector tối ưu)
   const totalItems = useCartStore((state) => state.getTotalItems());
   const clearCart = useCartStore((state) => state.clearCart);
 
@@ -34,7 +33,6 @@ export default function CustomerHeader() {
     const tableId = sessionStorage.getItem('table_id');
     const customerName = sessionStorage.getItem('customer_name');
 
-    // Gọi API để hủy tất cả đơn hàng chưa thanh toán
     try {
       if (tableId && customerName) {
         await api.delete('/api/orders/clear-session', {
@@ -45,14 +43,12 @@ export default function CustomerHeader() {
       console.error('Lỗi khi hủy phiên:', error);
     }
 
-    // Xóa sessionStorage và localStorage (giỏ hàng)
     sessionStorage.removeItem('customer_name');
     sessionStorage.removeItem('table_id');
     sessionStorage.removeItem('table_name');
     localStorage.removeItem('cart-storage');
     clearCart();
     
-    // Đưa về trang welcome thay vì reload
     navigate('/');
   };
 
@@ -112,7 +108,6 @@ const NavLink = ({ to, icon: Icon, children, pathname, totalItems }) => (
     >
       <Icon className="h-5 w-5 md:mr-2" />
       <span className="hidden md:inline-block">{children}</span>
-      {/* Chỉ hiện Badge (số lượng) cho Giỏ hàng */}
       {to === '/order/cart' && totalItems > 0 && (
         <Badge className="ml-2 hidden md:inline-block">{totalItems}</Badge>
       )}

@@ -33,9 +33,8 @@ export default function MenuPage() {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
 
-  // --- LOGIC LẤY DỮ LIỆU (READ) ---
   const { 
-    data: menuItems, // Mảng "phẳng"
+    data: menuItems,
     isLoading, 
     isError 
   } = useQuery({
@@ -43,38 +42,29 @@ export default function MenuPage() {
     queryFn: fetchMenu,
   });
 
-  // --- 🧠 4. LOGIC BIẾN ĐỔI DỮ LIỆU (useMemo + reduce) ---
   const groupedMenu = useMemo(() => {
-    if (!menuItems) return {}; // Trả về object rỗng nếu chưa có data
+    if (!menuItems) return {};
 
-    // Dùng `reduce` để "biến hình" mảng
-    // (acc = accumulator, "cái thùng chứa")
     return menuItems.reduce((acc, item) => {
-      // Lấy tên danh mục theo ngôn ngữ
       const category = lang === 'jp' 
         ? (item.category?.name_jp || item.category?.name || 'その他')
         : (item.category?.name || 'Chưa phân loại');
       
-      // Nếu "cái thùng" chưa có "ngăn kéo" cho danh mục này
       if (!acc[category]) {
-        acc[category] = []; // 👈 Tạo 1 "ngăn kéo" (mảng) rỗng
+        acc[category] = [];
       }
       
-      // Bỏ món ăn (item) vào đúng "ngăn kéo"
       acc[category].push(item);
       
-      return acc; // Trả "cái thùng" về cho vòng lặp tiếp theo
-    }, {}); // 👈 Bắt đầu với một "cái thùng" rỗng {}
+      return acc;
+    }, {});
   
-  }, [menuItems, lang]); // 👈 Chỉ "sắp xếp" lại khi `menuItems` hoặc `lang` thay đổi
+  }, [menuItems, lang]);
 
-  // Tác dụng: Dùng `useMemo` để tìm tên của danh mục đầu tiên
-  // (ví dụ: "Khai vị") để làm `defaultValue` (giá trị mặc định) cho <Tabs>
   const firstCategory = useMemo(() => {
     return Object.keys(groupedMenu)[0];
   }, [groupedMenu]);
 
-  // --- 5. LOGIC KẾT NỐI GIỎ HÀNG (Zustand) ---
   const addItemToCart = useCartStore((state) => state.addItem);
 
   const handleAddItem = (item) => {
@@ -87,7 +77,6 @@ export default function MenuPage() {
     });
   };
 
-  // --- RENDER (HIỂN THỊ) ---
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen gap-2 text-foreground">
@@ -102,22 +91,13 @@ export default function MenuPage() {
     <div className="p-4 md:p-8 pb-24 bg-background min-h-screen">
       <h1 className="text-4xl font-bold mb-8 text-foreground">{t('menu_page.title')}</h1>
     
-      {/* 👇 [MỚI] 4. BỌC MỌI THỨ TRONG <Tabs> */}
-      {/* `defaultValue` nói với <Tabs> rằng:
-        "Khi mới tải, hãy tự động chọn tab 'Khai vị'"
-        `key={lang}` force Tabs re-render khi đổi ngôn ngữ
-      */}
       <Tabs key={lang} defaultValue={firstCategory} className="w-full">
         
-        {/* 5. DANH SÁCH CÁC NÚT BẤM (TABS) */}
-        {/* `TabsList` là "thanh" chứa các nút */}
         <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2 h-auto mb-6">
-          {/* Lặp qua các tên danh mục (ví dụ: "Khai vị", "Món chính") */}
           {Object.keys(groupedMenu).map((categoryName) => (
-            // `TabsTrigger` là 1 "nút"
             <TabsTrigger 
               key={categoryName} 
-              value={categoryName} // 👈 Giá trị (value) phải KHỚP
+              value={categoryName}
               className="py-3 text-base"
             >
               {categoryName}
@@ -125,19 +105,12 @@ export default function MenuPage() {
           ))}
         </TabsList>
         
-        {/* 6. NỘI DUNG CỦA TỪNG TAB */}
-        {/* Lặp qua các tên danh mục một lần nữa */}
         {Object.keys(groupedMenu).map((categoryName) => (
           
-          // `TabsContent` là "nội dung"
           <TabsContent 
             key={categoryName} 
-            value={categoryName} // 👈 Giá trị (value) phải KHỚP
+            value={categoryName}
           >
-            {/*
-              Bên trong, chúng ta đặt LƯỚI (grid) các món ăn
-              (Logic này y hệt code cũ của bạn)
-            */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {groupedMenu[categoryName].map((item) => (
                 <Card key={item.id} className="flex flex-col">

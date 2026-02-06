@@ -13,15 +13,11 @@ export default function PasswordForm({ onSubmit, isLoading }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setError(''); // Xóa lỗi cũ
+    setError('');
 
-    // 1. 🧠 KHÁI NIỆM: Client-Side Validation
-    //    (Kiểm tra phía Client)
-    //    Tại sao? Để tiết kiệm 1 "chuyến" gọi API.
-    //    Không có lý do gì gửi 2 mật khẩu không khớp lên server.
     if (newPassword !== confirmPassword) {
       setError(t('account_page.password_mismatch'));
-      return; // Dừng lại
+      return;
     }
     
     if (newPassword.length < 6) {

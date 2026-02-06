@@ -3,8 +3,6 @@ import { prisma, io } from '../index.js';
 
 const router = express.Router();
 
-// POST /api/orders
-// Tạo một đơn hàng mới
 router.post('/', async (req, res) => {
   const { table_id, customer_name, items } = req.body;
 
@@ -13,8 +11,6 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    // 2. Lấy giá "thật" của các món ăn từ DB
-    // (Để chống gian lận - khách hàng không thể tự sửa giá)
     const itemIds = items.map((item) => item.item_id);
     const menuItemsInDb = await prisma.menuItem.findMany({
       where: {
@@ -22,13 +18,11 @@ router.post('/', async (req, res) => {
       },
     });
 
-    // 3. Tính toán tổng tiền (DỰA TRÊN GIÁ TỪ DB)
     let totalAmount = 0;
     const orderDetailsData = items.map((cartItem) => {
       const dbItem = menuItemsInDb.find((item) => item.id === cartItem.item_id);
       
       if (!dbItem) {
-        // Nếu 1 món trong giỏ hàng không có thật trong DB
         throw new Error(`Món ăn với ID ${cartItem.item_id} không tồn tại.`);
       }
       
@@ -42,10 +36,7 @@ router.post('/', async (req, res) => {
       };
     });
 
-    // 4. "ẢO THUẬT": Dùng GIAO DỊCH (Transaction)
-    //   (Hoặc cả hai cùng thành công, hoặc cả hai cùng thất bại)
     const newOrder = await prisma.$transaction(async (tx) => {
-      // 4a. Tạo Hóa đơn (Order) chính
       const order = await tx.order.create({
         data: {
           tableId: parseInt(table_id, 10),
@@ -55,21 +46,18 @@ router.post('/', async (req, res) => {
         },
       });
 
-      // 4b. Lấy order.id (vừa tạo) và "nhét" nó vào chi tiết
       const preparedDetails = orderDetailsData.map(detail => ({
         ...detail,
         orderId: order.id,
       }));
 
-      // 4c. Tạo các Chi tiết Đơn hàng (OrderDetail)
       await tx.orderDetail.createMany({
         data: preparedDetails,
       });
 
-      return order; // Trả về Hóa đơn chính
+      return order;
     });
 
-    // Lấy đơn hàng đầy đủ với relations để emit
     const orderWithDetails = await prisma.order.findUnique({
       where: { id: newOrder.id },
       include: {
@@ -83,7 +71,6 @@ router.post('/', async (req, res) => {
       }
     });
 
-    // Emit socket event
     io.emit('new_order_received', orderWithDetails);
 
     res.status(201).json(newOrder);
@@ -93,23 +80,20 @@ router.post('/', async (req, res) => {
   }
 });
 
-// API CÔNG KHAI
-// GET /api/orders/:id
-// Lấy chi tiết 1 đơn hàng (để Khách xem status)
 router.get('/:id', async (req, res) => {
   try {
     const orderId = parseInt(req.params.id);
     const order = await prisma.order.findUnique({
       where: { id: orderId },
       include: {
-        details: { // Kèm theo chi tiết món
+        details: {
           include: {
-            menuItem: { // Kèm theo tên món
+            menuItem: {
               select: { name: true, name_jp: true, imageUrl: true }
             }
           }
         },
-        table: { // Kèm theo tên bàn
+        table: {
           select: { name: true }
         }
       }
@@ -121,9 +105,8 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// GET /api/orders?table_id=5&customer_name=...
 router.get('/', async (req, res) => {
-  const { table_id, customer_name } = req.query; // Lấy từ query params
+  const { table_id, customer_name } = req.query;
 
   if (!table_id || !customer_name) {
     return res.status(400).json({ message: 'Thiếu thông tin bàn hoặc tên khách hàng.' });
@@ -135,7 +118,7 @@ router.get('/', async (req, res) => {
         tableId: parseInt(table_id, 10),
         customerName: customer_name,
       },
-      include: { // Vẫn lấy chi tiết
+      include: {
         details: {
           include: {
             menuItem: { select: { name: true, name_jp: true, imageUrl: true } }
@@ -144,24 +127,19 @@ router.get('/', async (req, res) => {
         table: { select: { name: true } }
       },
       orderBy: {
-        createdAt: 'desc' // 👈 Sắp xếp đơn mới nhất lên đầu
+        createdAt: 'desc'
       }
     });
-    // (Lưu ý: API này không trả về lỗi nếu không tìm thấy,
-    // nó chỉ trả về một mảng rỗng [])
     res.status(200).json(orders);
   } catch (error) {
     res.status(500).json({ message: 'Lỗi server', error: error.message });
   }
 });
 
-// POST /api/orders/:id/request-payment
-// Khách hàng yêu cầu thanh toán
 router.post('/:id/request-payment', async (req, res) => {
   const orderId = parseInt(req.params.id);
 
   try {
-    // Lấy thông tin đơn hàng
     const order = await prisma.order.findUnique({
       where: { id: orderId },
       include: {
@@ -178,14 +156,12 @@ router.post('/:id/request-payment', async (req, res) => {
       return res.status(404).json({ message: 'Không tìm thấy đơn hàng.' });
     }
 
-    // Kiểm tra trạng thái đơn hàng phải là SERVED
     if (order.status !== 'SERVED') {
       return res.status(400).json({ 
         message: 'Chỉ có thể yêu cầu thanh toán cho đơn hàng đã được phục vụ.' 
       });
     }
 
-    // Emit socket event đến admin
     io.emit('payment_requested', {
       orderId: order.id,
       tableId: order.table.id,
@@ -204,8 +180,6 @@ router.post('/:id/request-payment', async (req, res) => {
   }
 });
 
-// POST /api/orders/:id/cancel
-// Khách hàng hủy đơn hàng ở trạng thái PENDING
 router.post('/:id/cancel', async (req, res) => {
   const orderId = parseInt(req.params.id);
 
@@ -263,8 +237,6 @@ router.post('/:id/cancel', async (req, res) => {
   }
 });
 
-// DELETE /api/orders/clear-session
-// Hủy tất cả đơn hàng chưa thanh toán của khách hàng khi logout
 router.delete('/clear-session', async (req, res) => {
   const { table_id, customer_name } = req.body;
 
@@ -273,12 +245,11 @@ router.delete('/clear-session', async (req, res) => {
   }
 
   try {
-    // Chỉ hủy các đơn hàng đang chờ xử lý (PENDING)
     const result = await prisma.order.updateMany({
       where: {
         tableId: parseInt(table_id, 10),
         customerName: customer_name,
-        status: 'PENDING' // Chỉ hủy đơn hàng PENDING
+        status: 'PENDING'
       },
       data: {
         status: 'CANCELLED'

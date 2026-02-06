@@ -2,12 +2,8 @@ import express from 'express';
 import { prisma, io } from '../index.js';
 import { createPaymentUrl, verifySecureHash, getIpAddress } from '../services/vnpayService.js';
 
-// VNPay có thể gửi callback qua cả GET và POST
 const router = express.Router();
 
-/**
- * Render trang HTML thông báo thanh toán thành công
- */
 function renderSuccessPage({ orderId, amount, transactionNo, bankCode, payDate, redirectUrl }) {
   const formattedAmount = new Intl.NumberFormat('vi-VN').format(amount);
   const formattedDate = payDate && payDate.length === 14 
@@ -191,7 +187,6 @@ function renderSuccessPage({ orderId, amount, transactionNo, bankCode, payDate, 
             <button class="button button-secondary" onclick="window.close()">Đóng cửa sổ</button>
         </div>
         <script>
-            // Tự động redirect sau 3 giây nếu người dùng không click
             setTimeout(function() {
                 window.location.href = '${redirectUrl}';
             }, 3000);
@@ -206,9 +201,6 @@ function renderSuccessPage({ orderId, amount, transactionNo, bankCode, payDate, 
   `;
 }
 
-/**
- * Render trang HTML thông báo thanh toán thất bại
- */
 function renderFailedPage({ orderId, responseCode, redirectUrl }) {
   const errorMessages = {
     '07': 'Trừ tiền thành công. Giao dịch bị nghi ngờ (liên quan tới lừa đảo, giao dịch bất thường).',
@@ -407,9 +399,6 @@ function renderFailedPage({ orderId, responseCode, redirectUrl }) {
   `;
 }
 
-/**
- * Render trang HTML thông báo lỗi
- */
 function renderErrorPage({ message, redirectUrl }) {
   return `
 <!DOCTYPE html>
@@ -552,10 +541,6 @@ function renderErrorPage({ message, redirectUrl }) {
   `;
 }
 
-/**
- * POST /api/payments/create
- * Tạo payment URL cho đơn hàng
- */
 router.post('/create', async (req, res) => {
   const { orderId } = req.body;
 
@@ -564,7 +549,6 @@ router.post('/create', async (req, res) => {
   }
 
   try {
-    // Lấy thông tin đơn hàng + chi tiết để tính lại tiền
     const order = await prisma.order.findUnique({
       where: { id: parseInt(orderId, 10) },
       include: {
@@ -581,27 +565,23 @@ router.post('/create', async (req, res) => {
       return res.status(404).json({ message: 'Không tìm thấy đơn hàng.' });
     }
 
-    // Kiểm tra trạng thái đơn hàng
     if (order.status !== 'SERVED') {
       return res.status(400).json({ 
         message: 'Chỉ có thể thanh toán cho đơn hàng đã được phục vụ.' 
       });
     }
 
-    // Kiểm tra đã thanh toán chưa
     if (order.paymentStatus === 'PAID') {
       return res.status(400).json({ 
         message: 'Đơn hàng này đã được thanh toán.' 
       });
     }
 
-    // Tính lại tổng tiền từ chi tiết đơn hàng để đảm bảo chính xác
     const recalculatedTotal = order.details.reduce(
       (sum, detail) => sum + detail.quantity * detail.priceAtOrder,
       0
     );
 
-    // Nếu totalAmount trong DB khác với tổng tính lại thì đồng bộ lại
     let finalTotalAmount = recalculatedTotal;
     if (order.totalAmount !== recalculatedTotal) {
       await prisma.order.update({
@@ -610,10 +590,8 @@ router.post('/create', async (req, res) => {
       });
     }
 
-    // Tạo mã giao dịch duy nhất (vnpTxnRef) - chỉ dùng số để tránh lỗi format
     const vnpTxnRef = `${order.id}${Date.now()}`;
 
-    // Tạo payment record
     const payment = await prisma.payment.create({
       data: {
         orderId: order.id,
@@ -623,13 +601,10 @@ router.post('/create', async (req, res) => {
       }
     });
 
-    // Tạo mô tả đơn hàng
     const orderInfo = `Thanh toan don hang #${order.id} - Ban ${order.table.name}`;
 
-    // Lấy IP address của khách hàng
     const ipAddr = getIpAddress(req);
 
-    // Tạo payment URL với đúng số tiền món ăn đã gọi
     const paymentUrl = await createPaymentUrl({
       amount: finalTotalAmount,
       orderId: vnpTxnRef,
@@ -651,18 +626,11 @@ router.post('/create', async (req, res) => {
   }
 });
 
-/**
- * Callback handler - xử lý callback từ VNPay sau khi thanh toán
- * VNPay có thể gửi callback qua GET hoặc POST
- */
 const handleCallback = async (req, res) => {
-  // Clone params để tránh sửa trực tiếp req.query
   const vnp_Params = { ...req.query };
 
-  // Debug: Log để kiểm tra
   console.log('VNPay Callback Params:', JSON.stringify(vnp_Params, null, 2));
 
-  // Xác thực chữ ký bằng thư viện vnpay (verifyReturnUrl)
   const isValid = verifySecureHash(vnp_Params);
 
   if (!isValid) {
@@ -674,10 +642,9 @@ const handleCallback = async (req, res) => {
   const vnp_ResponseCode = vnp_Params['vnp_ResponseCode'];
   const vnp_TxnRef = vnp_Params['vnp_TxnRef'];
   const vnp_TransactionNo = vnp_Params['vnp_TransactionNo'];
-  const vnp_Amount = parseInt(vnp_Params['vnp_Amount'], 10) / 100; // Chia 100 vì VNPay nhân 100
+  const vnp_Amount = parseInt(vnp_Params['vnp_Amount'], 10) / 100;
 
   try {
-    // Tìm payment record
     const payment = await prisma.payment.findUnique({
       where: { vnpTxnRef: vnp_TxnRef },
       include: { order: true }
@@ -687,16 +654,12 @@ const handleCallback = async (req, res) => {
       return res.status(404).json({ message: 'Không tìm thấy giao dịch thanh toán.' });
     }
 
-    // Kiểm tra số tiền
     if (vnp_Amount !== payment.vnpAmount) {
       return res.status(400).json({ message: 'Số tiền thanh toán không khớp.' });
     }
 
-    // Xử lý kết quả thanh toán
     if (vnp_ResponseCode === '00') {
-      // Thanh toán thành công
       await prisma.$transaction(async (tx) => {
-        // Cập nhật payment
         await tx.payment.update({
           where: { id: payment.id },
           data: {
@@ -707,7 +670,6 @@ const handleCallback = async (req, res) => {
           }
         });
 
-        // Cập nhật order
         await tx.order.update({
           where: { id: payment.orderId },
           data: {
@@ -717,7 +679,6 @@ const handleCallback = async (req, res) => {
         });
       });
 
-      // Lấy lại đơn hàng đầy đủ với các quan hệ để gửi cho admin (giống các route admin khác)
       const updatedOrder = await prisma.order.findUnique({
         where: { id: payment.orderId },
         include: {
@@ -731,17 +692,12 @@ const handleCallback = async (req, res) => {
         }
       });
 
-      // Emit socket event tới khách hàng (room theo order)
       io.to(`order_${payment.orderId}`).emit('order_status_updated', {
         orderId: payment.orderId,
         newStatus: 'PAID',
       });
 
-      // Emit cho tất cả admin với full thông tin đơn hàng (bao gồm table & customerName)
-      // [FIX] Serialize Prisma object thành plain object để đảm bảo socket.io emit đúng
       if (updatedOrder) {
-        // Tạo plain object với tất cả các field cần thiết
-        // Convert Date objects thành ISO strings để đảm bảo serialize đúng qua socket.io
         const orderForEmit = {
           id: updatedOrder.id,
           customerName: updatedOrder.customerName || null,
@@ -772,19 +728,16 @@ const handleCallback = async (req, res) => {
           })) : []
         };
         
-        // Emit với JSON.parse(JSON.stringify()) để đảm bảo serialize hoàn toàn
         io.emit('order_updated_for_admin', JSON.parse(JSON.stringify(orderForEmit)));
       } else {
         console.error('❌ updatedOrder is null, cannot emit notification');
       }
 
-      // Redirect 302 thẳng về trang success của customer app
       console.log('✅ Payment successful, redirecting to customer success page for order:', payment.orderId);
       const customerAppUrl = process.env.CUSTOMER_APP_URL || 'http://localhost:5174';
       const redirectUrl = `${customerAppUrl}/payment/success?orderId=${payment.orderId}`;
       return res.redirect(302, redirectUrl);
     } else {
-      // Thanh toán thất bại
       await prisma.payment.update({
         where: { id: payment.id },
         data: {
@@ -795,7 +748,6 @@ const handleCallback = async (req, res) => {
         }
       });
 
-      // Redirect 302 thẳng về trang failed của customer app
       const customerAppUrl = process.env.CUSTOMER_APP_URL || 'http://localhost:5174';
       const redirectUrl = `${customerAppUrl}/payment/failed?orderId=${payment.orderId}&code=${vnp_ResponseCode}`;
       return res.redirect(302, redirectUrl);
@@ -806,19 +758,13 @@ const handleCallback = async (req, res) => {
     const customerAppUrl = process.env.CUSTOMER_APP_URL || 'http://localhost:5174';
     const redirectUrl = `${customerAppUrl}/payment/error`;
 
-    // Redirect 302 thẳng về trang error của customer app
     return res.redirect(302, redirectUrl);
   }
 };
 
-// VNPay có thể gửi callback qua cả GET và POST
 router.get('/callback', handleCallback);
 router.post('/callback', handleCallback);
 
-/**
- * GET /api/payments/:orderId/status
- * Kiểm tra trạng thái thanh toán của đơn hàng
- */
 router.get('/:orderId/status', async (req, res) => {
   const orderId = parseInt(req.params.orderId, 10);
 
@@ -835,7 +781,7 @@ router.get('/:orderId/status', async (req, res) => {
         },
         payments: {
           orderBy: { createdAt: 'desc' },
-          take: 1, // Lấy payment mới nhất
+          take: 1,
         }
       }
     });
@@ -865,4 +811,3 @@ router.get('/:orderId/status', async (req, res) => {
 });
 
 export default router;
-

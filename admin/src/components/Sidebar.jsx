@@ -10,7 +10,6 @@ import api from '../services/api';
 import { useNotificationSound } from '../hooks/useNotificationSound';
 import { useToast } from '@/hooks/use-toast';
 
-// NavItem (sử dụng theme colors)
 const NavItem = ({ to, icon, children, onClick, badge }) => {
   const Icon = icon;
   return (
@@ -44,27 +43,22 @@ export default function Sidebar({ onLinkClick, isMobileSheet = false }) {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Fetch pending orders count
     const fetchPendingCount = async () => {
       try {
         const response = await api.get('/api/admin/orders/pending-count');
         setPendingCount(response.data.count);
       } catch {
-        // Ignore pending count error to avoid console noise
       }
     };
 
     fetchPendingCount();
 
-    // Socket.IO listener cho các sự kiện real-time
     const socket = io(import.meta.env.VITE_API_URL || 'http://localhost:3000');
 
-    // Đơn hàng mới
     socket.on('new_order_received', (order) => {
       if (order.status === 'PENDING') {
         setPendingCount(prev => prev + 1);
         
-        // Chuông báo + toast
         play(); 
         toast({
           title: "Đơn hàng mới! 🔔",
@@ -75,7 +69,6 @@ export default function Sidebar({ onLinkClick, isMobileSheet = false }) {
       }
     });
 
-    // Khách yêu cầu thanh toán (tiền mặt)
     socket.on('payment_requested', (data) => {
       play();
       toast({
@@ -86,13 +79,11 @@ export default function Sidebar({ onLinkClick, isMobileSheet = false }) {
       });
     });
 
-    // Khách thanh toán VNPay thành công (order_updated_for_admin với paymentStatus = PAID)
     socket.on('order_updated_for_admin', (order) => {
       if (!order) return;
 
       const status = order.paymentStatus || order.status;
       if (status === 'PAID' || status === 'Paid' || status?.toUpperCase() === 'PAID') {
-        // Đảm bảo lấy đúng thông tin từ order
         const tableName = order.table?.name || order.tableName || 'Bàn ?';
         const customerName = order.customerName || 'Khách';
         const totalAmount = order.totalAmount ? Number(order.totalAmount).toLocaleString('vi-VN') : '0';
@@ -107,7 +98,6 @@ export default function Sidebar({ onLinkClick, isMobileSheet = false }) {
       }
     });
 
-    // Cập nhật lại số lượng đơn chờ khi trạng thái thay đổi
     socket.on('orderStatusChanged', () => {
       fetchPendingCount();
     });
@@ -123,7 +113,6 @@ export default function Sidebar({ onLinkClick, isMobileSheet = false }) {
         <div className="flex h-16 items-center justify-between border-b border-border px-6">
           <h1 className="text-lg font-bold text-card-foreground">{t('sidebar.restaurant_name')}</h1>
           
-          {/* 👇 2. CHỈ RENDER NÚT "X" KHI isMobileSheet LÀ TRUE */}
           {isMobileSheet && (
             <SheetClose asChild>
               <button className="text-muted-foreground hover:text-foreground transition-colors">
@@ -135,7 +124,6 @@ export default function Sidebar({ onLinkClick, isMobileSheet = false }) {
         </div>
         
         <nav className="flex-1 flex flex-col gap-1 px-4 text-sm font-medium">
-          {/* ... (các NavItem vẫn giữ nguyên) ... */}
           <NavItem to="/" icon={Home} onClick={onLinkClick}>
             {t('sidebar.dashboard')}
           </NavItem>

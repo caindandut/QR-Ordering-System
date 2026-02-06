@@ -1,15 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
-/**
- * StatsCard - Component hiển thị một thẻ thống kê
- * @param {string} title - Tiêu đề card
- * @param {string|number} value - Giá trị hiển thị 
- * @param {React.Component} icon - Icon component từ lucide-react
- * @param {string} description - Mô tả bổ sung (optional)
- * @param {string} trend - 'up' | 'down' | 'neutral' | null
- * @param {string} comparisonText - Text so sánh (e.g., "+15% so với hôm qua")
- */
 export default function StatsCard({ 
   title, 
   value, 

@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 
-// Import component của Shadcn
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,50 +10,40 @@ import { useTranslation } from 'react-i18next';
 import { LanguageToggle } from '@/components/LanguageToggle';
 
 export default function LoginPage() {
-  // 1. Lấy hàm `login` từ "Não"
   const login = useAuthStore((state) => state.login);
   const accessToken = useAuthStore((state) => state.accessToken);
-  const navigate = useNavigate(); // Hook để chuyển trang
+  const navigate = useNavigate();
 
   const { toast } = useToast();
   const { t } = useTranslation();
 
   const [isLoading, setIsLoading] = useState(false);
   
-  // 2. State cục bộ cho form
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  // const [error, setError] = useState('');
 
   useEffect(() => {
-    // Nếu phát hiện CÓ accessToken (đã đăng nhập)
     if (accessToken) {
-      // Chuyển hướng ngay lập tức về trang chủ
       navigate('/', { replace: true });
     }
-  }, [accessToken, navigate]); // Chạy lại khi token thay đổi
+  }, [accessToken, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true); // Bắt đầu loading
-    // setError(''); // Xóa lỗi cũ
+    setIsLoading(true);
 
-    // 3. Gọi hàm login từ "Não"
     const result = await login(email, password);
-    setIsLoading(false); // Kết thúc loading
+    setIsLoading(false);
 
     if (result.success) {
-      // 4. Nếu thành công, chuyển hướng về trang chủ
       toast({
         title: t('login_page.success_title'),
         description: t('login_page.success_desc'),
         duration: 5000
       });
-      navigate('/'); // (Trang '/' là Dashboard của chúng ta)
+      navigate('/');
     } else {
-      // 5. Nếu thất bại, hiển thị lỗi
-      // Map error code sang translation key
-      let errorMessage = t('login_page.error_desc'); // Default message
+      let errorMessage = t('login_page.error_desc');
       if (result.errorCode === 'MISSING_CREDENTIALS') {
         errorMessage = t('login_page.error_missing_credentials');
       } else if (result.errorCode === 'EMAIL_NOT_FOUND') {
@@ -69,13 +58,11 @@ export default function LoginPage() {
         variant: "destructive",
         duration: 5000
       });
-      // setError(result.error);
     }
   };
 
   return (
     <div className="flex items-center justify-center h-screen bg-background relative">
-      {/* Language Toggle Button - Top Right */}
       <div className="absolute top-4 right-4">
         <LanguageToggle />
       </div>
@@ -105,7 +92,6 @@ export default function LoginPage() {
           />
         </div>
         
-        {/* {error && <p className="text-red-500 text-sm">{error}</p>} */}
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? t('login_page.submitting') : t('login_page.submit')}
         </Button>

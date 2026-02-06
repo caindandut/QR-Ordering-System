@@ -20,9 +20,6 @@ const uploadImage = async (file) => {
 };
 
 
-// Form này nhận 2 props:
-// 1. `onSubmit`: "Công nhân Sửa" (updateProfileMutation)
-// 2. `isLoading`: Trạng thái của "Công nhân" đó
 export default function ProfileForm({ onSubmit, isLoading }) {
   const { toast } = useToast();
   const { t } = useTranslation();
@@ -33,21 +30,18 @@ export default function ProfileForm({ onSubmit, isLoading }) {
   const [phone, setPhone] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
 
-  // 2. "Sync" (Đồng bộ) Dữ liệu từ "Bộ não" vào Form
-  //    (Chỉ chạy 1 lần khi component tải)
   useEffect(() => {
     if (user) {
       setName(user.name || '');
       setPhone(user.phone || '');
       setAvatarUrl(user.avatarUrl || '');
     }
-  }, [user]); // Theo dõi `user` từ "bộ não"
+  }, [user]);
 
-  // 3. Logic Upload Ảnh (Tái sử dụng)
   const uploadImageMutation = useMutation({
     mutationFn: uploadImage,
     onSuccess: (data) => {
-      setAvatarUrl(data.imageUrl); // Cập nhật state của Form
+      setAvatarUrl(data.imageUrl);
       toast({ title: t('account_page.upload_success'), duration: 5000 });
     },
     onError: () => {
@@ -62,10 +56,8 @@ export default function ProfileForm({ onSubmit, isLoading }) {
     }
   };
 
-  // 4. Submit Form Chính
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Gửi dữ liệu (đã lọc) về cho "cha"
     onSubmit({
       name,
       phone,
@@ -75,7 +67,6 @@ export default function ProfileForm({ onSubmit, isLoading }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {/* 1. Logic Upload Ảnh (Y HỆT StaffForm) */}
       <div className="space-y-2">
         <Label htmlFor="avatar">{t('account_page.avatar')}</Label>
         <Input
@@ -105,7 +96,6 @@ export default function ProfileForm({ onSubmit, isLoading }) {
         />
       </div>
       
-      {/* 3. Tên Nhân viên */}
       <div className="space-y-2">
         <Label htmlFor="name">{t('account_page.display_name')}</Label>
         <Input id="name" value={name} onChange={(e) => setName(e.target.value)} required />

@@ -20,12 +20,6 @@ import { format } from 'date-fns';
 import { vi, ja } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
 
-/**
- * RevenueChart - Component hiển thị biểu đồ doanh thu với filter thời gian
- * @param {Array} data - Mảng dữ liệu [{date: 'YYYY-MM-DD', revenue: number}]
- * @param {string} period - Khoảng thời gian hiện tại ('week' hoặc 'month')
- * @param {Function} onPeriodChange - Callback khi thay đổi period
- */
 export default function RevenueChart({ data, period = 'week', onPeriodChange }) {
   const { t, i18n } = useTranslation();
   
@@ -34,7 +28,6 @@ export default function RevenueChart({ data, period = 'week', onPeriodChange }) 
     month: t('dashboard.revenue_chart.month'),
   };
 
-  // Không render nếu không có dữ liệu
   if (!data || data.length === 0) {
     return (
       <Card>
@@ -68,16 +61,14 @@ export default function RevenueChart({ data, period = 'week', onPeriodChange }) 
     );
   }
 
-  // Format dữ liệu cho biểu đồ
   const locale = i18n.language === 'jp' ? ja : vi;
   const chartData = data.map((item) => ({
-    name: format(new Date(item.date), 'dd/MM'), // Hiển thị ngắn gọn: 20/11
+    name: format(new Date(item.date), 'dd/MM'),
     doanhThu: item.revenue,
-    fullDate: item.date, // Giữ lại cho tooltip
-    dateObj: new Date(item.date), // Để format trong tooltip
+    fullDate: item.date,
+    dateObj: new Date(item.date),
   }));
 
-  // Custom Tooltip component
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
@@ -98,7 +89,6 @@ export default function RevenueChart({ data, period = 'week', onPeriodChange }) 
     return null;
   };
 
-  // Custom formatter cho trục Y (hiển thị triệu đồng)
   const formatYAxis = (value) => {
     if (value >= 1000000) {
       return `${(value / 1000000).toFixed(1)}tr`;

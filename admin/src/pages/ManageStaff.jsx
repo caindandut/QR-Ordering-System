@@ -36,7 +36,6 @@ const updateStaff = async ({ id, data }) => {
 const deleteStaff = async (id) => {
   await api.delete(`/api/staff/${id}`); 
 };
-// ---
 
 export default function ManageStaffPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -49,7 +48,6 @@ export default function ManageStaffPage() {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
 
-  // --- LOGIC ĐỌC (READ) ---
   const { 
     data: staffList,
     isLoading, 
@@ -60,7 +58,6 @@ export default function ManageStaffPage() {
     queryFn: fetchStaff, 
   });
 
-  // --- LOGIC GHI (CREATE) ---
   const addStaffMutation = useMutation({
     mutationFn: createStaff,
     onSuccess: () => {
@@ -78,7 +75,6 @@ export default function ManageStaffPage() {
     },
   });
 
-  // --- LOGIC SỬA (UPDATE) ---
   const updateStaffMutation = useMutation({
     mutationFn: updateStaff,
     onSuccess: () => {
@@ -96,7 +92,6 @@ export default function ManageStaffPage() {
     },
   });
   
-  // --- LOGIC XÓA (DELETE) ---
   const deleteStaffMutation = useMutation({
     mutationFn: deleteStaff,
     onSuccess: () => {
@@ -115,7 +110,6 @@ export default function ManageStaffPage() {
     },
   });
 
-  // --- HÀM XỬ LÝ SỰ KIỆN ---
   const handleOpenAddDialog = () => {
     setEditingStaff(null);
     setIsFormOpen(true);
@@ -142,7 +136,6 @@ export default function ManageStaffPage() {
 
   const getInitials = (name) => name?.split(' ').map((n) => n[0]).join('').toUpperCase() || 'NV';
 
-  // Filter staff by search term (tìm theo tên, email, hoặc số điện thoại)
   const filteredStaff = useMemo(() => {
     if (!staffList) return [];
     if (!searchTerm.trim()) return staffList;
@@ -158,7 +151,6 @@ export default function ManageStaffPage() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      {/* HEADER SECTION */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h1 className="text-2xl sm:text-3xl font-bold">{t('staff_page.title')}</h1>
         <Button onClick={handleOpenAddDialog} className="w-full sm:w-auto">
@@ -167,7 +159,6 @@ export default function ManageStaffPage() {
         </Button>
       </div>
 
-      {/* SEARCH SECTION */}
       <div className="max-w-md">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -181,7 +172,6 @@ export default function ManageStaffPage() {
         </div>
       </div>
 
-      {/* --- DIALOG (Modal) THÊM/SỬA --- */}
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
@@ -190,7 +180,7 @@ export default function ManageStaffPage() {
               {t('staff_page.form_desc')}
             </DialogDescription>
           </DialogHeader>
-          <StaffForm // 👈 Dùng Form "Nhân viên"
+          <StaffForm
             onSubmit={handleFormSubmit}
             isLoading={addStaffMutation.isLoading || updateStaffMutation.isLoading}
             initialData={editingStaff}
@@ -198,7 +188,6 @@ export default function ManageStaffPage() {
         </DialogContent>
       </Dialog>
       
-      {/* --- DIALOG (Alert) XÁC NHẬN XÓA --- */}
       <AlertDialog
         open={!!staffToDelete}
         onOpenChange={(open) => !open && setStaffToDelete(null)}
@@ -223,7 +212,6 @@ export default function ManageStaffPage() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* STAFF TABLE */}
       {isLoading ? (
         <div className="flex justify-center items-center h-64">
           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />

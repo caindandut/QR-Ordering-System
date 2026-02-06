@@ -1,4 +1,3 @@
-// src/layouts/AdminLayout.jsx
 import { Outlet } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
@@ -9,13 +8,10 @@ export default function AdminLayout() {
     <NotificationProvider>
       <div className="flex h-screen">
         
-        {/* 👇 BỌC SIDEBAR BẰNG DIV NÀY */}
-        {/* Div này sẽ ẩn Sidebar trên mobile (<md) */}
         <div className="hidden md:block">
           <Sidebar />
         </div>
 
-        {/* Phần nội dung chính */}
         <div className="flex-1 flex flex-col min-w-0">
           <Header />
           <main className="flex-1 p-2 sm:p-4 md:p-6 overflow-auto bg-background">
